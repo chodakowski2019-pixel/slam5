@@ -10,13 +10,13 @@ export default function LandingPage() {
         </span>
         <div className="flex items-center gap-3">
           <Link
-            href="/dashboard"
+            href="/login"
             className="text-sm text-muted-foreground hover:text-foreground transition-colors"
           >
             Log in
           </Link>
           <Link
-            href="/dashboard"
+            href="/login"
             className="text-sm px-4 py-2 rounded-lg bg-indigo-500 hover:bg-indigo-600 transition-colors font-medium"
           >
             Start free →
@@ -39,7 +39,7 @@ export default function LandingPage() {
         </p>
         <div className="flex items-center justify-center gap-4">
           <Link
-            href="/dashboard"
+            href="/login"
             className="px-8 py-3.5 rounded-xl bg-indigo-500 hover:bg-indigo-600 transition-colors text-lg font-medium"
           >
             Start for free — 3 days, no card 🥊
@@ -177,7 +177,7 @@ export default function LandingPage() {
           Your first 3 days are free. No credit card. Just you and your 5 tasks.
         </p>
         <Link
-          href="/dashboard"
+          href="/login"
           className="inline-block px-8 py-3.5 rounded-xl bg-indigo-500 hover:bg-indigo-600 transition-colors text-lg font-medium"
         >
           Start winning today →

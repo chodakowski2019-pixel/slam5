@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/lib/auth-context";
 import { StoreProvider } from "@/lib/store-context";
 import { Sidebar } from "@/components/sidebar";
 import { DashboardView } from "@/components/views/dashboard-view";
@@ -86,6 +88,25 @@ function AppContent() {
 }
 
 export default function Home() {
+  const { user, loading } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!loading && !user) {
+      router.push("/login");
+    }
+  }, [user, loading, router]);
+
+  if (loading) {
+    return (
+      <div className="h-screen w-screen flex items-center justify-center bg-background">
+        <div className="text-muted-foreground">Loading...</div>
+      </div>
+    );
+  }
+
+  if (!user) return null;
+
   return (
     <StoreProvider>
       <AppContent />
