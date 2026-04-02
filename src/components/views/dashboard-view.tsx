@@ -117,7 +117,7 @@ export function DashboardView({ onNavigate }: DashboardProps) {
       {/* Header */}
       <div className="mb-8">
         <h2 className="text-2xl font-heading font-bold tracking-tight">
-          {greeting} 🥊
+          {greeting}{data.profile?.name ? `, ${data.profile.name}` : ""} 🥊
         </h2>
         <p className="text-sm text-muted-foreground mt-1">{todayFormatted}</p>
       </div>

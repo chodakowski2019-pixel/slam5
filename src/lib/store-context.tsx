@@ -10,6 +10,7 @@ import {
   Milestone,
   ParkingLotItem,
   DayRecord,
+  UserProfile,
   generateId,
   getTodayKey,
 } from "./store";
@@ -32,6 +33,7 @@ interface StoreContextType {
   addParkingLotItem: (text: string) => void;
   deleteParkingLotItem: (id: string) => void;
   clearParkingLot: () => void;
+  updateProfile: (profile: Partial<UserProfile>) => void;
   getTodayRecord: () => DayRecord | undefined;
   getWeekWins: () => number;
   getMonthWins: () => number;
@@ -241,6 +243,14 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     setData((prev) => ({ ...prev, parkingLot: [] }));
   }, []);
 
+  const updateProfile = useCallback((updates: Partial<UserProfile>) => {
+    setData((prev) => ({
+      ...prev,
+      profile: { ...prev.profile, ...updates } as UserProfile,
+      phoneNumber: updates.phoneNumber ?? prev.profile?.phoneNumber ?? prev.phoneNumber,
+    }));
+  }, []);
+
   const getTodayRecord = useCallback(() => {
     return data.dayRecords.find((r) => r.date === getTodayKey());
   }, [data.dayRecords]);
@@ -303,7 +313,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
         addProject, deleteProject,
         addGoal, updateGoal, deleteGoal, addMilestone, toggleMilestone, deleteMilestone,
         addParkingLotItem, deleteParkingLotItem, clearParkingLot,
-        getTodayRecord, getWeekWins, getMonthWins, getCurrentStreak,
+        updateProfile, getTodayRecord, getWeekWins, getMonthWins, getCurrentStreak,
       }}
     >
       {children}

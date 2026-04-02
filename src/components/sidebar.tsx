@@ -10,6 +10,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Zap,
+  Settings,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useStore } from "@/lib/store-context";
@@ -27,6 +28,7 @@ const NAV_ITEMS = [
   { id: "leaderboard", label: "Leaderboard", icon: Users },
   { id: "projects", label: "Projects", icon: FolderKanban },
   { id: "goals", label: "Goals", icon: Trophy },
+  { id: "settings", label: "Settings", icon: Settings },
 ];
 
 export function Sidebar({ activeView, onViewChange }: SidebarProps) {
@@ -173,11 +175,11 @@ export function Sidebar({ activeView, onViewChange }: SidebarProps) {
       {/* User */}
       <div className="h-14 flex items-center px-4 border-t border-border">
         <div className="w-7 h-7 rounded-full bg-indigo-500 flex items-center justify-center text-xs font-medium text-white">
-          {user?.email?.[0]?.toUpperCase() || "?"}
+          {data.profile?.name?.[0]?.toUpperCase() || user?.email?.[0]?.toUpperCase() || "?"}
         </div>
         {!collapsed && (
           <div className="ml-3 flex-1 min-w-0">
-            <span className="text-sm truncate block">{user?.user_metadata?.full_name || user?.email?.split("@")[0] || "User"}</span>
+            <span className="text-sm truncate block">{data.profile?.name || user?.email?.split("@")[0] || "User"}</span>
             {isPro && <span className="text-[10px] text-indigo-400 font-medium">PRO</span>}
           </div>
         )}

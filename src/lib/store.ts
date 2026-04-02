@@ -66,6 +66,17 @@ export interface Subscription {
   currentPeriodEnd: string | null; // ISO date
 }
 
+export interface UserProfile {
+  name: string;
+  phoneNumber: string;
+  bodyGoal: string;
+  mindGoal: string;
+  moneyGoal: string;
+  planTime: "morning" | "evening";
+  planHour: string;
+  onboardingCompleted: boolean;
+}
+
 export interface StoreData {
   tasks: Task[];
   projects: Project[];
@@ -74,7 +85,8 @@ export interface StoreData {
   dayRecords: DayRecord[];
   totalPoints: number;
   subscription?: Subscription;
-  phoneNumber?: string; // for SMS reminders
+  profile?: UserProfile;
+  phoneNumber?: string; // legacy, use profile.phoneNumber
 }
 
 const STORE_KEY = "slam5-data";

@@ -10,6 +10,9 @@ import { TasksView } from "@/components/views/tasks-view";
 import { ProjectsView } from "@/components/views/projects-view";
 import { GoalsView } from "@/components/views/goals-view";
 import { LeaderboardView } from "@/components/views/leaderboard-view";
+import { SettingsView } from "@/components/views/settings-view";
+import { OnboardingView } from "@/components/views/onboarding-view";
+import type { OnboardingData } from "@/components/views/onboarding-view";
 import { CommandPalette } from "@/components/command-palette";
 import { FloatingTimer } from "@/components/floating-timer";
 import { WinToast } from "@/components/win-toast";
@@ -21,8 +24,22 @@ function AppContent() {
   const [view, setView] = useState("dashboard");
   const [cmdOpen, setCmdOpen] = useState(false);
   const [toastMsg, setToastMsg] = useState<string | null>(null);
-  const { data } = useStore();
+  const { data, updateProfile } = useStore();
   const prevCompletedRef = useRef<number>(0);
+  const needsOnboarding = !data.profile?.onboardingCompleted;
+
+  const handleOnboardingComplete = (onboardingData: OnboardingData) => {
+    updateProfile({
+      name: onboardingData.name,
+      phoneNumber: onboardingData.phoneNumber,
+      bodyGoal: onboardingData.bodyGoal,
+      mindGoal: onboardingData.mindGoal,
+      moneyGoal: onboardingData.moneyGoal,
+      planTime: onboardingData.planTime,
+      planHour: onboardingData.planHour,
+      onboardingCompleted: true,
+    });
+  };
 
   // Watch for task completions to fire celebrations
   useEffect(() => {
@@ -62,6 +79,10 @@ function AppContent() {
     setCmdOpen(false);
   };
 
+  if (needsOnboarding) {
+    return <OnboardingView onComplete={handleOnboardingComplete} />;
+  }
+
   return (
     <div className="flex h-screen overflow-hidden">
       <Sidebar activeView={view} onViewChange={navigate} />
@@ -71,6 +92,7 @@ function AppContent() {
         {view === "projects" && <ProjectsView />}
         {view === "goals" && <GoalsView />}
         {view === "leaderboard" && <LeaderboardView />}
+        {view === "settings" && <SettingsView />}
       </main>
       <CommandPalette
         open={cmdOpen}

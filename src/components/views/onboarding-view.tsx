@@ -9,6 +9,7 @@ interface OnboardingProps {
 
 export interface OnboardingData {
   name: string;
+  phoneNumber: string;
   bodyGoal: string;
   mindGoal: string;
   moneyGoal: string;
@@ -21,6 +22,7 @@ const STEPS = 6;
 export function OnboardingView({ onComplete }: OnboardingProps) {
   const [step, setStep] = useState(1);
   const [name, setName] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [bodyGoal, setBodyGoal] = useState("");
   const [mindGoal, setMindGoal] = useState("");
   const [moneyGoal, setMoneyGoal] = useState("");
@@ -37,7 +39,7 @@ export function OnboardingView({ onComplete }: OnboardingProps) {
   };
 
   const handleFinish = () => {
-    onComplete({ name: name.trim(), bodyGoal, mindGoal, moneyGoal, planTime, planHour });
+    onComplete({ name: name.trim(), phoneNumber: phoneNumber.trim(), bodyGoal, mindGoal, moneyGoal, planTime, planHour });
   };
 
   return (
@@ -55,7 +57,7 @@ export function OnboardingView({ onComplete }: OnboardingProps) {
           ))}
         </div>
 
-        {/* Step 1 — Name */}
+        {/* Step 1 — Name & Phone */}
         {step === 1 && (
           <div className="space-y-6">
             <div>
@@ -63,17 +65,33 @@ export function OnboardingView({ onComplete }: OnboardingProps) {
                 Slam your 5. Win the day.
               </h1>
               <p className="text-muted-foreground">
-                What should we call you?
+                Let&apos;s set you up.
               </p>
             </div>
-            <Input
-              placeholder="Your first name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && canNext() && next()}
-              className="text-lg py-6 bg-card"
-              autoFocus
-            />
+            <div className="space-y-4">
+              <div>
+                <label className="text-sm font-medium mb-1.5 block">Your first name</label>
+                <Input
+                  placeholder="e.g. Jake"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="text-lg py-6 bg-card"
+                  autoFocus
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium mb-1.5 block">Phone number <span className="text-xs text-muted-foreground">(for SMS reminders)</span></label>
+                <Input
+                  placeholder="+1 555 123 4567"
+                  type="tel"
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && canNext() && next()}
+                  className="text-lg py-6 bg-card"
+                />
+                <p className="text-xs text-muted-foreground mt-1">Optional. We&apos;ll text you your tasks and daily verdict.</p>
+              </div>
+            </div>
           </div>
         )}
 
