@@ -7,6 +7,10 @@ import Link from "next/link";
 export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [mode, setMode] = useState<"login" | "signup">("login");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [message, setMessage] = useState<string | null>(null);
 
   const handleGoogleLogin = async () => {
     setLoading(true);
@@ -23,16 +27,53 @@ export default function LoginPage() {
     }
   };
 
+  const handleEmailAuth = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email.trim() || !password.trim()) return;
+    setLoading(true);
+    setError(null);
+    setMessage(null);
+
+    if (mode === "signup") {
+      const { error } = await supabase.auth.signUp({
+        email: email.trim(),
+        password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
+        },
+      });
+      if (error) {
+        setError(error.message);
+      } else {
+        setMessage("Check your email for a confirmation link.");
+      }
+    } else {
+      const { error } = await supabase.auth.signInWithPassword({
+        email: email.trim(),
+        password,
+      });
+      if (error) {
+        setError(error.message);
+      } else {
+        window.location.href = "/dashboard";
+      }
+    }
+    setLoading(false);
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-8">
-      <div className="w-full max-w-sm text-center">
-        <Link href="/" className="text-2xl font-heading font-bold tracking-tight mb-2 block">
-          Slam<span className="text-indigo-500">5</span>
-        </Link>
-        <p className="text-sm text-muted-foreground mb-8">
-          Slam your 5. Win the day.
-        </p>
+      <div className="w-full max-w-sm">
+        <div className="text-center mb-8">
+          <Link href="/" className="text-2xl font-heading font-bold tracking-tight mb-2 block">
+            Slam<span className="text-indigo-500">5</span>
+          </Link>
+          <p className="text-sm text-muted-foreground">
+            Slam your 5. Win the day.
+          </p>
+        </div>
 
+        {/* Google */}
         <button
           onClick={handleGoogleLogin}
           disabled={loading}
@@ -47,11 +88,68 @@ export default function LoginPage() {
           {loading ? "Connecting..." : "Continue with Google"}
         </button>
 
+        {/* Divider */}
+        <div className="flex items-center gap-3 my-6">
+          <div className="flex-1 h-px bg-border" />
+          <span className="text-xs text-muted-foreground">or</span>
+          <div className="flex-1 h-px bg-border" />
+        </div>
+
+        {/* Email + Password */}
+        <form onSubmit={handleEmailAuth} className="space-y-3">
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="w-full px-4 py-3 rounded-xl border border-border bg-card text-sm outline-none focus:border-indigo-500 transition-colors"
+            required
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full px-4 py-3 rounded-xl border border-border bg-card text-sm outline-none focus:border-indigo-500 transition-colors"
+            minLength={6}
+            required
+          />
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full px-4 py-3 rounded-xl bg-indigo-500 hover:bg-indigo-600 transition-colors text-sm font-medium disabled:opacity-50"
+          >
+            {loading ? "..." : mode === "login" ? "Log in" : "Create account"}
+          </button>
+        </form>
+
+        {/* Toggle mode */}
+        <p className="text-center text-xs text-muted-foreground mt-4">
+          {mode === "login" ? (
+            <>
+              No account?{" "}
+              <button onClick={() => { setMode("signup"); setError(null); setMessage(null); }} className="text-indigo-400 hover:text-indigo-300">
+                Sign up
+              </button>
+            </>
+          ) : (
+            <>
+              Already have an account?{" "}
+              <button onClick={() => { setMode("login"); setError(null); setMessage(null); }} className="text-indigo-400 hover:text-indigo-300">
+                Log in
+              </button>
+            </>
+          )}
+        </p>
+
         {error && (
-          <p className="text-sm text-red-400 mt-4">{error}</p>
+          <p className="text-sm text-red-400 mt-4 text-center">{error}</p>
+        )}
+        {message && (
+          <p className="text-sm text-emerald-400 mt-4 text-center">{message}</p>
         )}
 
-        <p className="text-xs text-muted-foreground mt-6">
+        <p className="text-xs text-muted-foreground mt-6 text-center">
           3 days free. No credit card needed.
         </p>
       </div>
