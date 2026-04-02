@@ -43,7 +43,7 @@ export function SettingsView() {
       {/* Account */}
       <section className="mb-8">
         <h3 className="text-xs text-muted-foreground uppercase tracking-wider font-medium mb-4">Account</h3>
-        <div className="space-y-4 p-4 rounded-xl border border-border bg-card">
+        <div className="space-y-4 p-5 rounded-2xl border border-border bg-card">
           <div>
             <label className="text-sm font-medium mb-1.5 block">Email</label>
             <p className="text-sm text-muted-foreground">{user?.email || "—"}</p>
@@ -55,7 +55,7 @@ export function SettingsView() {
                 {isPro ? "Pro" : "Free"}
               </span>
               {isPro && data.subscription?.status === "trialing" && (
-                <span className="text-xs bg-indigo-500/20 text-indigo-400 px-2 py-0.5 rounded-full">Trial</span>
+                <span className="text-xs bg-indigo-500/15 text-indigo-400 px-2 py-0.5 rounded-full">Trial</span>
               )}
             </div>
           </div>
@@ -65,15 +65,15 @@ export function SettingsView() {
       {/* Profile */}
       <section className="mb-8">
         <h3 className="text-xs text-muted-foreground uppercase tracking-wider font-medium mb-4">Profile</h3>
-        <div className="space-y-4 p-4 rounded-xl border border-border bg-card">
+        <div className="space-y-4 p-5 rounded-2xl border border-border bg-card">
           <div>
             <label className="text-sm font-medium mb-1.5 block">Name</label>
             <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Your name" className="bg-background" />
           </div>
           <div>
-            <label className="text-sm font-medium mb-1.5 block">Phone number</label>
+            <label className="text-sm font-medium mb-1.5 block">Phone</label>
             <Input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+1 555 123 4567" type="tel" className="bg-background" />
-            <p className="text-xs text-muted-foreground mt-1">For SMS reminders (morning tasks + evening verdict)</p>
+            <p className="text-xs text-muted-foreground mt-1">For text reminders.</p>
           </div>
         </div>
       </section>
@@ -81,23 +81,17 @@ export function SettingsView() {
       {/* Goals */}
       <section className="mb-8">
         <h3 className="text-xs text-muted-foreground uppercase tracking-wider font-medium mb-4">Goals</h3>
-        <div className="space-y-4 p-4 rounded-xl border border-border bg-card">
+        <div className="space-y-4 p-5 rounded-2xl border border-border bg-card">
           <div>
-            <label className="text-sm font-medium flex items-center gap-2 mb-1.5">
-              🏋️ Body
-            </label>
+            <label className="text-sm font-medium flex items-center gap-2 mb-1.5">🏋️ Body</label>
             <Input value={bodyGoal} onChange={(e) => setBodyGoal(e.target.value)} placeholder="e.g. Lose 20 lbs" className="bg-background" />
           </div>
           <div>
-            <label className="text-sm font-medium flex items-center gap-2 mb-1.5">
-              🧠 Mind
-            </label>
-            <Input value={mindGoal} onChange={(e) => setMindGoal(e.target.value)} placeholder="e.g. Meditate daily" className="bg-background" />
+            <label className="text-sm font-medium flex items-center gap-2 mb-1.5">🧠 Mind</label>
+            <Input value={mindGoal} onChange={(e) => setMindGoal(e.target.value)} placeholder="e.g. Read daily" className="bg-background" />
           </div>
           <div>
-            <label className="text-sm font-medium flex items-center gap-2 mb-1.5">
-              💰 Money
-            </label>
+            <label className="text-sm font-medium flex items-center gap-2 mb-1.5">💰 Money</label>
             <Input value={moneyGoal} onChange={(e) => setMoneyGoal(e.target.value)} placeholder="e.g. Hit $10K/month" className="bg-background" />
           </div>
         </div>
@@ -106,22 +100,22 @@ export function SettingsView() {
       {/* Reminders */}
       <section className="mb-8">
         <h3 className="text-xs text-muted-foreground uppercase tracking-wider font-medium mb-4">Reminders</h3>
-        <div className="space-y-4 p-4 rounded-xl border border-border bg-card">
+        <div className="space-y-4 p-5 rounded-2xl border border-border bg-card">
           <div>
-            <label className="text-sm font-medium mb-2 block">When do you plan your day?</label>
+            <label className="text-sm font-medium mb-2 block">When do you plan?</label>
             <div className="flex gap-3">
               <button
                 onClick={() => { setPlanTime("morning"); setPlanHour("08:00"); }}
-                className={`flex-1 p-3 rounded-lg border text-center text-sm transition-colors ${
-                  planTime === "morning" ? "border-indigo-500 bg-indigo-500/10" : "border-border hover:bg-accent/50"
+                className={`flex-1 p-3 rounded-xl border text-center text-sm transition-all duration-200 ${
+                  planTime === "morning" ? "border-indigo-500/30 bg-indigo-500/10" : "border-border hover:bg-accent/50"
                 }`}
               >
                 🌅 Morning
               </button>
               <button
                 onClick={() => { setPlanTime("evening"); setPlanHour("21:00"); }}
-                className={`flex-1 p-3 rounded-lg border text-center text-sm transition-colors ${
-                  planTime === "evening" ? "border-indigo-500 bg-indigo-500/10" : "border-border hover:bg-accent/50"
+                className={`flex-1 p-3 rounded-xl border text-center text-sm transition-all duration-200 ${
+                  planTime === "evening" ? "border-indigo-500/30 bg-indigo-500/10" : "border-border hover:bg-accent/50"
                 }`}
               >
                 🌙 Evening
@@ -129,12 +123,12 @@ export function SettingsView() {
             </div>
           </div>
           <div>
-            <label className="text-sm font-medium mb-1.5 block">Reminder time</label>
+            <label className="text-sm font-medium mb-1.5 block">Time</label>
             <input
               type="time"
               value={planHour}
               onChange={(e) => setPlanHour(e.target.value)}
-              className="bg-background border border-border rounded-md px-3 py-2 text-sm outline-none"
+              className="bg-background border border-border rounded-xl px-3 py-2 text-sm outline-none"
             />
           </div>
         </div>
@@ -144,47 +138,44 @@ export function SettingsView() {
       <div className="flex items-center gap-4 mb-8">
         <button
           onClick={handleSave}
-          className="px-6 py-2.5 rounded-lg bg-indigo-500 hover:bg-indigo-600 text-sm font-medium transition-colors"
+          className="px-6 py-2.5 rounded-xl bg-indigo-500 hover:bg-indigo-400 text-sm font-medium transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
         >
-          {saved ? "Saved!" : "Save changes"}
+          {saved ? "Saved!" : "Save"}
         </button>
       </div>
 
-      {/* Support & Account Actions */}
+      {/* Support */}
       <section className="mb-8">
         <h3 className="text-xs text-muted-foreground uppercase tracking-wider font-medium mb-4">Support</h3>
-        <div className="space-y-3 p-4 rounded-xl border border-border bg-card">
+        <div className="space-y-3 p-5 rounded-2xl border border-border bg-card">
           <a
             href="mailto:support@slam5.app"
             className="flex items-center gap-3 text-sm text-muted-foreground hover:text-foreground transition-colors"
           >
-            <span>💬</span>
-            Contact support
+            💬 Contact support
           </a>
         </div>
       </section>
 
+      {/* Account actions */}
       <section>
         <h3 className="text-xs text-muted-foreground uppercase tracking-wider font-medium mb-4">Account</h3>
-        <div className="space-y-3 p-4 rounded-xl border border-border bg-card">
+        <div className="space-y-3 p-5 rounded-2xl border border-border bg-card">
           <button
             onClick={signOut}
             className="flex items-center gap-3 text-sm text-muted-foreground hover:text-foreground transition-colors"
           >
-            <span>🚪</span>
-            Sign out
+            🚪 Sign out
           </button>
           <button
             onClick={() => {
-              if (confirm("Are you sure? This will permanently delete your account and all data. This cannot be undone.")) {
-                // TODO: implement account deletion API
-                alert("Account deletion requested. Contact support@slam5.app for confirmation.");
+              if (confirm("Are you sure? This deletes everything. Can't be undone.")) {
+                alert("Email support@slam5.app to confirm.");
               }
             }}
             className="flex items-center gap-3 text-sm text-red-400 hover:text-red-300 transition-colors"
           >
-            <span>🗑️</span>
-            Delete account
+            🗑️ Delete account
           </button>
         </div>
       </section>

@@ -30,7 +30,7 @@ export function WinToast({ message, points, onDone }: WinToastProps) {
         visible ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"
       }`}
     >
-      <div className="bg-card border border-emerald-500/30 rounded-xl px-6 py-3 shadow-2xl flex items-center gap-3">
+      <div className="glass border border-emerald-500/20 rounded-2xl px-6 py-3.5 shadow-2xl flex items-center gap-3">
         <span className="text-emerald-400 font-bold text-sm">+{points}</span>
         <span className="text-sm">{message}</span>
       </div>

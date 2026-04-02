@@ -56,37 +56,37 @@ export function TasksView() {
   return (
     <div className="max-w-3xl mx-auto">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl font-heading font-semibold">Power List</h2>
+        <h2 className="text-xl font-heading font-bold">Power List</h2>
         <div className="flex items-center gap-3">
           <span className={`text-sm font-medium ${atLimit ? "text-amber-400" : "text-muted-foreground"}`}>
-            {todayTasks.length}/{MAX_DAILY_TASKS} tasks
+            {todayTasks.length}/{MAX_DAILY_TASKS}
           </span>
           <button
             onClick={() => setShowParkingLot(!showParkingLot)}
             className={cn(
-              "flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs transition-colors",
-              showParkingLot ? "bg-indigo-500/20 text-indigo-400" : "text-muted-foreground hover:bg-accent"
+              "flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs transition-all duration-200",
+              showParkingLot ? "bg-indigo-500/15 text-indigo-400" : "text-muted-foreground hover:bg-accent"
             )}
           >
             <ParkingSquare size={14} />
-            Parking Lot {data.parkingLot.length > 0 && `(${data.parkingLot.length})`}
+            {!showParkingLot && data.parkingLot.length > 0 && `(${data.parkingLot.length})`}
           </button>
         </div>
       </div>
 
-      {/* New task form */}
-      <div className="space-y-2 mb-6">
+      {/* Add task */}
+      <div className="space-y-2 mb-8">
         <div className="flex gap-2">
           <Input
-            placeholder={atLimit ? `Max ${MAX_DAILY_TASKS} tasks per day` : "What needs to get done?"}
+            placeholder={atLimit ? `Max ${MAX_DAILY_TASKS} tasks` : "What needs to get done?"}
             value={newTitle}
             onChange={(e) => setNewTitle(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleAdd()}
             disabled={atLimit}
-            className="flex-1 bg-card border-border"
+            className="flex-1 bg-card border-border h-10"
           />
-          <div className="flex items-center gap-1 bg-card border border-border rounded-md px-2">
-            <Clock size={14} className="text-muted-foreground" />
+          <div className="flex items-center gap-1 bg-card border border-border rounded-xl px-3">
+            <Clock size={13} className="text-muted-foreground" />
             <input
               type="number"
               min={1}
@@ -100,22 +100,21 @@ export function TasksView() {
           <button
             onClick={handleAdd}
             disabled={!newTitle.trim() || atLimit}
-            className="px-3 py-2 rounded-md bg-indigo-500 hover:bg-indigo-600 disabled:opacity-30 transition-colors"
+            className="px-3.5 py-2 rounded-xl bg-indigo-500 hover:bg-indigo-400 disabled:opacity-30 transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
           >
             <Plus size={16} />
           </button>
         </div>
         <div className="flex gap-2 items-center">
-          {/* Category selector */}
           <div className="flex gap-1">
             {CATEGORY_OPTIONS.map((cat) => (
               <button
                 key={cat.value}
                 onClick={() => setNewCategory(cat.value)}
                 className={cn(
-                  "px-2.5 py-1 rounded-md text-xs transition-colors",
+                  "px-3 py-1.5 rounded-xl text-xs transition-all duration-200",
                   newCategory === cat.value
-                    ? "bg-indigo-500/20 text-indigo-400"
+                    ? "bg-indigo-500/15 text-indigo-400 font-medium"
                     : "text-muted-foreground hover:bg-accent"
                 )}
               >
@@ -124,24 +123,22 @@ export function TasksView() {
             ))}
           </div>
           <div className="w-px h-4 bg-border" />
-          {/* Frog toggle */}
           <button
             onClick={() => setNewIsFrog(!newIsFrog)}
             className={cn(
-              "px-2.5 py-1 rounded-md text-xs transition-colors",
+              "px-3 py-1.5 rounded-xl text-xs transition-all duration-200",
               newIsFrog
-                ? "bg-amber-500/20 text-amber-400"
+                ? "bg-amber-500/15 text-amber-400 font-medium"
                 : "text-muted-foreground hover:bg-accent"
             )}
           >
             🐸 Frog
           </button>
           <div className="w-px h-4 bg-border" />
-          {/* Project selector */}
           <select
             value={newProjectId || ""}
             onChange={(e) => setNewProjectId(e.target.value || null)}
-            className="bg-card border border-border rounded-md px-2 py-1 text-xs outline-none"
+            className="bg-card border border-border rounded-xl px-3 py-1.5 text-xs outline-none"
           >
             <option value="">No project</option>
             {data.projects.map((p) => (
@@ -153,11 +150,11 @@ export function TasksView() {
         </div>
       </div>
 
-      {/* Active tasks — frog first */}
+      {/* Active tasks */}
       <div className="space-y-1">
         {activeTasks.length === 0 && todayTasks.length === 0 && (
-          <div className="text-center py-12 text-muted-foreground text-sm">
-            No tasks yet. Add your 5 wins for today.
+          <div className="text-center py-16 text-muted-foreground text-sm">
+            No tasks yet. Add your 5.
           </div>
         )}
         {activeTasks
@@ -169,11 +166,11 @@ export function TasksView() {
               <div
                 key={task.id}
                 className={cn(
-                  "group flex items-center gap-3 px-3 py-3 rounded-lg border transition-colors",
+                  "group flex items-center gap-3 px-4 py-3.5 rounded-2xl border transition-all duration-200",
                   task.timerRunning
-                    ? "border-indigo-500/30 bg-indigo-500/5"
+                    ? "border-indigo-500/20 bg-indigo-500/5"
                     : task.isFrog
-                    ? "border-amber-500/20 bg-amber-500/5"
+                    ? "border-amber-500/15 bg-amber-500/5"
                     : "border-transparent hover:bg-card"
                 )}
               >
@@ -189,7 +186,7 @@ export function TasksView() {
                   <Badge
                     variant="secondary"
                     className="text-xs"
-                    style={{ borderColor: project.color + "40", color: project.color }}
+                    style={{ borderColor: project.color + "30", color: project.color }}
                   >
                     {project.emoji} {project.name}
                   </Badge>
@@ -197,17 +194,16 @@ export function TasksView() {
                 <button
                   onClick={() => setFrog(task.id)}
                   className={cn(
-                    "text-xs px-1.5 py-0.5 rounded transition-colors",
+                    "text-xs px-1.5 py-0.5 rounded-lg transition-all duration-200",
                     task.isFrog ? "text-amber-400" : "opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-amber-400"
                   )}
-                  title="Set as frog (hardest task)"
                 >
                   🐸
                 </button>
                 <TaskTimer task={task} />
                 <button
                   onClick={() => deleteTask(task.id)}
-                  className="opacity-0 group-hover:opacity-100 p-1 rounded hover:bg-destructive/20 hover:text-destructive transition-all"
+                  className="opacity-0 group-hover:opacity-100 p-1 rounded-lg hover:bg-destructive/20 hover:text-destructive transition-all duration-200"
                 >
                   <Trash2 size={14} />
                 </button>
@@ -216,14 +212,14 @@ export function TasksView() {
           })}
       </div>
 
-      {/* Completed — Wins today */}
+      {/* Done */}
       {completedTasks.length > 0 && (
         <div className="mt-8">
           <button
             onClick={() => setShowCompleted(!showCompleted)}
-            className="text-sm text-emerald-400 hover:text-emerald-300 transition-colors mb-2"
+            className="text-sm text-emerald-400 hover:text-emerald-300 transition-colors mb-3"
           >
-            🏆 Wins today ({completedTasks.length}) — +{completedTasks.length * 10} pts
+            Done ({completedTasks.length}) — +{completedTasks.length * 10} pts
           </button>
           {showCompleted && (
             <div className="space-y-1">
@@ -232,7 +228,7 @@ export function TasksView() {
                 return (
                   <div
                     key={task.id}
-                    className="group flex items-center gap-3 px-3 py-2 rounded-lg"
+                    className="group flex items-center gap-3 px-4 py-2.5 rounded-2xl opacity-40"
                   >
                     <Checkbox checked={true} onCheckedChange={() => toggleTask(task.id)} />
                     <span className="text-xs">{catEmoji}</span>
@@ -242,7 +238,7 @@ export function TasksView() {
                     <span className="text-xs text-emerald-400">+10</span>
                     <button
                       onClick={() => deleteTask(task.id)}
-                      className="opacity-0 group-hover:opacity-100 p-1 rounded hover:bg-destructive/20 hover:text-destructive transition-all"
+                      className="opacity-0 group-hover:opacity-100 p-1 rounded-lg hover:bg-destructive/20 hover:text-destructive transition-all duration-200"
                     >
                       <Trash2 size={14} />
                     </button>
@@ -254,22 +250,22 @@ export function TasksView() {
         </div>
       )}
 
-      {/* Parking Lot panel */}
+      {/* Parking Lot */}
       {showParkingLot && (
-        <div className="mt-8 p-4 rounded-xl border border-border bg-card">
+        <div className="mt-8 p-5 rounded-2xl border border-border bg-card">
           <div className="flex items-center justify-between mb-3">
-            <h3 className="text-sm font-medium">🅿️ Parking Lot</h3>
+            <h3 className="text-sm font-medium">Parking Lot</h3>
             {data.parkingLot.length > 0 && (
               <button
                 onClick={clearParkingLot}
                 className="text-xs text-muted-foreground hover:text-destructive transition-colors"
               >
-                Clear all
+                Clear
               </button>
             )}
           </div>
           <p className="text-xs text-muted-foreground mb-3">
-            Got a thought? Park it here. Don&apos;t lose focus.
+            Random thought? Park it here. Stay focused.
           </p>
           <div className="flex gap-2 mb-3">
             <Input
@@ -282,25 +278,25 @@ export function TasksView() {
             <button
               onClick={handleParkingAdd}
               disabled={!parkingInput.trim()}
-              className="px-3 py-2 rounded-md bg-indigo-500 hover:bg-indigo-600 disabled:opacity-30 transition-colors"
+              className="px-3 py-2 rounded-xl bg-indigo-500 hover:bg-indigo-400 disabled:opacity-30 transition-all duration-200"
             >
               <Plus size={14} />
             </button>
           </div>
           <div className="space-y-1">
             {data.parkingLot.map((item) => (
-              <div key={item.id} className="group flex items-center gap-2 px-2 py-1.5 rounded text-sm">
+              <div key={item.id} className="group flex items-center gap-2 px-3 py-2 rounded-xl text-sm hover:bg-accent/30 transition-colors">
                 <span className="flex-1 text-muted-foreground">{item.text}</span>
                 <button
                   onClick={() => deleteParkingLotItem(item.id)}
-                  className="opacity-0 group-hover:opacity-100 p-1 rounded hover:bg-destructive/20 hover:text-destructive transition-all"
+                  className="opacity-0 group-hover:opacity-100 p-1 rounded-lg hover:bg-destructive/20 hover:text-destructive transition-all"
                 >
                   <Trash2 size={12} />
                 </button>
               </div>
             ))}
             {data.parkingLot.length === 0 && (
-              <p className="text-xs text-muted-foreground text-center py-2">Empty. Good — stay focused.</p>
+              <p className="text-xs text-muted-foreground text-center py-3">Empty. Stay focused.</p>
             )}
           </div>
         </div>

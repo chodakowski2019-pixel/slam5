@@ -66,10 +66,10 @@ export default function LoginPage() {
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
           <Link href="/" className="text-2xl font-heading font-bold tracking-tight mb-2 block">
-            Slam<span className="text-indigo-500">5</span>
+            Slam<span className="text-indigo-400">5</span>
           </Link>
           <p className="text-sm text-muted-foreground">
-            Slam your 5. Win the day.
+            5 tasks. Win the day.
           </p>
         </div>
 
@@ -117,7 +117,7 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full px-4 py-3 rounded-xl bg-indigo-500 hover:bg-indigo-600 transition-colors text-sm font-medium disabled:opacity-50"
+            className="w-full px-4 py-3 rounded-xl bg-indigo-500 hover:bg-indigo-400 transition-all duration-200 text-sm font-medium disabled:opacity-50"
           >
             {loading ? "..." : mode === "login" ? "Log in" : "Create account"}
           </button>

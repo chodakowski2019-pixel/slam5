@@ -18,11 +18,11 @@ interface CommandPaletteProps {
 }
 
 const COMMANDS = [
-  { id: "dashboard", label: "Go to Dashboard", icon: LayoutDashboard, keywords: "home overview" },
-  { id: "tasks", label: "Go to Power List", icon: CheckSquare, keywords: "todo list timer tasks slam" },
-  { id: "leaderboard", label: "Go to Leaderboard", icon: Users, keywords: "friends rank score compete" },
-  { id: "projects", label: "Go to Projects", icon: FolderKanban, keywords: "project business" },
-  { id: "goals", label: "Go to Goals", icon: Trophy, keywords: "goal vision mission long-term body mind money" },
+  { id: "dashboard", label: "Dashboard", icon: LayoutDashboard, keywords: "home overview" },
+  { id: "tasks", label: "Power List", icon: CheckSquare, keywords: "todo list timer tasks slam" },
+  { id: "leaderboard", label: "Leaderboard", icon: Users, keywords: "friends rank score compete" },
+  { id: "projects", label: "Projects", icon: FolderKanban, keywords: "project business" },
+  { id: "goals", label: "Goals", icon: Trophy, keywords: "goal vision body mind money" },
 ];
 
 export function CommandPalette({ open, onClose, onNavigate }: CommandPaletteProps) {
@@ -66,32 +66,30 @@ export function CommandPalette({ open, onClose, onNavigate }: CommandPaletteProp
 
   return (
     <>
-      {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black/50 z-40"
+        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 transition-opacity"
         onClick={onClose}
       />
 
-      {/* Palette */}
-      <div className="fixed top-[20%] left-1/2 -translate-x-1/2 w-[520px] bg-card border border-border rounded-xl shadow-2xl z-50 overflow-hidden">
-        <div className="flex items-center gap-3 px-4 py-3 border-b border-border">
+      <div className="fixed top-[20%] left-1/2 -translate-x-1/2 w-[520px] bg-card border border-border rounded-2xl shadow-2xl z-50 overflow-hidden">
+        <div className="flex items-center gap-3 px-5 py-4 border-b border-border">
           <Search size={16} className="text-muted-foreground" />
           <input
             ref={inputRef}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="Type a command..."
+            placeholder="Where to?"
             className="flex-1 bg-transparent outline-none text-sm placeholder:text-muted-foreground"
           />
-          <kbd className="text-[10px] text-muted-foreground bg-background px-1.5 py-0.5 rounded border border-border">
+          <kbd className="text-[10px] text-muted-foreground bg-background px-2 py-0.5 rounded-lg border border-border">
             ESC
           </kbd>
         </div>
-        <div className="py-1 max-h-64 overflow-y-auto">
+        <div className="py-2 max-h-64 overflow-y-auto">
           {filtered.length === 0 && (
-            <div className="px-4 py-6 text-sm text-muted-foreground text-center">
-              No results found.
+            <div className="px-5 py-8 text-sm text-muted-foreground text-center">
+              Nothing found.
             </div>
           )}
           {filtered.map((cmd, i) => {
@@ -102,7 +100,7 @@ export function CommandPalette({ open, onClose, onNavigate }: CommandPaletteProp
                 onClick={() => onNavigate(cmd.id)}
                 onMouseEnter={() => setSelected(i)}
                 className={cn(
-                  "w-full flex items-center gap-3 px-4 py-2.5 text-sm transition-colors",
+                  "w-full flex items-center gap-3 px-5 py-3 text-sm transition-all duration-150",
                   i === selected
                     ? "bg-accent text-accent-foreground"
                     : "text-muted-foreground"

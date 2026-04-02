@@ -10,11 +10,10 @@ interface LeaderboardEntry {
   name: string;
   points: number;
   streak: number;
-  todayWon: boolean | null; // null = not finished
+  todayWon: boolean | null;
   rank: number;
 }
 
-// TODO: Replace with Supabase data
 function useMockLeaderboard(): LeaderboardEntry[] {
   const { data, getCurrentStreak, getTodayRecord } = useStore();
   const todayRecord = getTodayRecord();
@@ -22,7 +21,7 @@ function useMockLeaderboard(): LeaderboardEntry[] {
   return [
     {
       id: "me",
-      name: "You",
+      name: data.profile?.name || "You",
       points: data.totalPoints,
       streak: getCurrentStreak(),
       todayWon: todayRecord ? todayRecord.won : null,
@@ -35,7 +34,6 @@ export function LeaderboardView() {
   const entries = useMockLeaderboard();
   const [copied, setCopied] = useState(false);
 
-  // TODO: Generate real invite link with Supabase
   const inviteLink = typeof window !== "undefined"
     ? `${window.location.origin}/invite/demo`
     : "";
@@ -49,14 +47,14 @@ export function LeaderboardView() {
   return (
     <div className="max-w-2xl mx-auto">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl font-heading font-semibold">Leaderboard</h2>
+        <h2 className="text-xl font-heading font-bold">Leaderboard</h2>
       </div>
 
       {/* Invite */}
-      <div className="p-4 rounded-xl border border-border bg-card mb-6">
-        <h3 className="text-sm font-medium mb-2">Invite a friend</h3>
-        <p className="text-xs text-muted-foreground mb-3">
-          They&apos;ll see your score. You&apos;ll see theirs. Competition makes you both better.
+      <div className="p-5 rounded-2xl border border-border bg-card mb-6">
+        <h3 className="text-sm font-medium mb-1">Invite a friend</h3>
+        <p className="text-xs text-muted-foreground mb-4">
+          They see your score. You see theirs. Competition helps.
         </p>
         <div className="flex gap-2">
           <Input
@@ -66,7 +64,7 @@ export function LeaderboardView() {
           />
           <button
             onClick={handleCopy}
-            className="px-3 py-2 rounded-md bg-indigo-500 hover:bg-indigo-600 transition-colors text-xs flex items-center gap-1.5"
+            className="px-4 py-2 rounded-xl bg-indigo-500 hover:bg-indigo-400 transition-all duration-200 text-xs flex items-center gap-1.5 font-medium hover:scale-[1.02] active:scale-[0.98]"
           >
             {copied ? <Check size={14} /> : <Copy size={14} />}
             {copied ? "Copied" : "Copy"}
@@ -79,13 +77,12 @@ export function LeaderboardView() {
         {entries.map((entry) => (
           <div
             key={entry.id}
-            className={`flex items-center gap-4 p-4 rounded-xl border transition-colors ${
+            className={`flex items-center gap-4 p-5 rounded-2xl border transition-all duration-200 ${
               entry.id === "me"
-                ? "border-indigo-500/30 bg-indigo-500/5"
+                ? "border-indigo-500/20 bg-indigo-500/5"
                 : "border-border bg-card"
             }`}
           >
-            {/* Rank */}
             <div className="w-8 text-center">
               {entry.rank === 1 ? (
                 <Crown size={20} className="text-amber-400 mx-auto" />
@@ -96,7 +93,6 @@ export function LeaderboardView() {
               )}
             </div>
 
-            {/* Name + status */}
             <div className="flex-1">
               <span className="font-medium text-sm">{entry.name}</span>
               <div className="flex items-center gap-2 mt-0.5">
@@ -114,13 +110,11 @@ export function LeaderboardView() {
               </div>
             </div>
 
-            {/* Streak */}
             <div className="flex items-center gap-1 text-sm">
               <Flame size={14} className={entry.streak > 0 ? "text-orange-400" : "text-muted-foreground"} />
               <span className="font-mono text-xs">{entry.streak}d</span>
             </div>
 
-            {/* Points */}
             <div className="text-right">
               <span className="text-lg font-heading font-bold text-indigo-400">{entry.points}</span>
               <span className="text-xs text-muted-foreground ml-1">pts</span>
@@ -129,9 +123,8 @@ export function LeaderboardView() {
         ))}
 
         {entries.length <= 1 && (
-          <div className="text-center py-8 text-muted-foreground text-sm">
-            <p>No friends yet. Share your invite link above.</p>
-            <p className="text-xs mt-1">They&apos;ll only see your name, score, and win/lose status.</p>
+          <div className="text-center py-12 text-muted-foreground text-sm">
+            <p>No friends yet. Share your link.</p>
           </div>
         )}
       </div>

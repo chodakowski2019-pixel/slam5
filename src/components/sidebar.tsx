@@ -62,30 +62,30 @@ export function Sidebar({ activeView, onViewChange }: SidebarProps) {
   return (
     <aside
       className={cn(
-        "h-screen flex flex-col border-r border-border bg-[oklch(0.16_0_0)] transition-all duration-200",
-        collapsed ? "w-[60px]" : "w-[240px]"
+        "h-screen flex flex-col border-r border-border bg-sidebar transition-all duration-300 ease-out",
+        collapsed ? "w-[64px]" : "w-[240px]"
       )}
     >
       {/* Header */}
       <div className="h-14 flex items-center px-4 border-b border-border">
         {!collapsed && (
-          <h1 className="text-sm font-semibold tracking-tight truncate">
-            Slam5
+          <h1 className="text-base font-heading font-bold tracking-tight">
+            Slam<span className="text-indigo-400">5</span>
           </h1>
         )}
         <button
           onClick={() => setCollapsed(!collapsed)}
           className={cn(
-            "p-1 rounded hover:bg-accent transition-colors",
+            "p-1.5 rounded-lg hover:bg-accent transition-all duration-200",
             collapsed ? "mx-auto" : "ml-auto"
           )}
         >
-          {collapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
+          {collapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
         </button>
       </div>
 
       {/* Nav */}
-      <nav className="flex-1 py-2 space-y-0.5 px-2">
+      <nav className="flex-1 py-3 space-y-0.5 px-2">
         {NAV_ITEMS.map((item) => {
           const Icon = item.icon;
           const isActive = activeView === item.id;
@@ -94,18 +94,18 @@ export function Sidebar({ activeView, onViewChange }: SidebarProps) {
               key={item.id}
               onClick={() => onViewChange(item.id)}
               className={cn(
-                "w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors",
+                "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all duration-200",
                 isActive
-                  ? "bg-accent text-accent-foreground"
-                  : "text-muted-foreground hover:bg-accent/50 hover:text-foreground"
+                  ? "bg-indigo-500/15 text-indigo-400 font-medium"
+                  : "text-muted-foreground hover:bg-accent hover:text-foreground"
               )}
             >
-              <Icon size={18} />
+              <Icon size={18} className={isActive ? "text-indigo-400" : ""} />
               {!collapsed && (
                 <>
                   <span className="truncate">{item.label}</span>
                   {item.id === "tasks" && activeTasks > 0 && (
-                    <span className="ml-auto text-xs bg-indigo-500/20 text-indigo-400 px-1.5 py-0.5 rounded-full">
+                    <span className="ml-auto text-[11px] bg-indigo-500/20 text-indigo-400 px-2 py-0.5 rounded-full font-medium">
                       {activeTasks}
                     </span>
                   )}
@@ -116,18 +116,16 @@ export function Sidebar({ activeView, onViewChange }: SidebarProps) {
         })}
       </nav>
 
-      {/* Running timer indicator */}
+      {/* Running timer */}
       {runningTimer && (
-        <div className="px-3 py-3 border-t border-border">
+        <div className="mx-2 mb-2 px-3 py-2.5 rounded-xl bg-indigo-500/10 border border-indigo-500/20">
           {!collapsed ? (
-            <div className="text-xs text-muted-foreground">
-              <div className="flex items-center gap-2">
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75" />
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-indigo-500" />
-                </span>
-                <span className="truncate">{runningTimer.title}</span>
-              </div>
+            <div className="flex items-center gap-2 text-xs">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-indigo-500" />
+              </span>
+              <span className="truncate text-indigo-300">{runningTimer.title}</span>
             </div>
           ) : (
             <div className="flex justify-center">
@@ -142,30 +140,30 @@ export function Sidebar({ activeView, onViewChange }: SidebarProps) {
 
       {/* Noise player */}
       {!collapsed && (
-        <div className="px-2 py-2 border-t border-border">
+        <div className="px-2 py-2">
           <NoisePlayer />
         </div>
       )}
 
       {/* Upgrade */}
       {!isPro && (
-        <div className="px-2 py-2 border-t border-border">
+        <div className="px-2 py-2">
           {!collapsed ? (
             <button
               onClick={handleUpgrade}
               disabled={upgrading}
-              className="w-full flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium bg-indigo-500 hover:bg-indigo-600 transition-colors disabled:opacity-50"
+              className="w-full flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl text-sm font-medium bg-gradient-to-r from-indigo-500 to-violet-500 hover:from-indigo-400 hover:to-violet-400 transition-all duration-200 disabled:opacity-50 shadow-lg shadow-indigo-500/20 hover:scale-[1.02] active:scale-[0.98]"
             >
-              <Zap size={16} />
-              {upgrading ? "Loading..." : "Upgrade to Pro"}
+              <Zap size={14} />
+              {upgrading ? "Loading..." : "Go Pro"}
             </button>
           ) : (
             <button
               onClick={handleUpgrade}
               disabled={upgrading}
-              className="w-full flex justify-center p-2 rounded-md bg-indigo-500 hover:bg-indigo-600 transition-colors disabled:opacity-50"
+              className="w-full flex justify-center p-2.5 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-500 hover:from-indigo-400 hover:to-violet-400 transition-all duration-200 disabled:opacity-50"
             >
-              <Zap size={16} />
+              <Zap size={14} />
             </button>
           )}
         </div>
@@ -175,17 +173,17 @@ export function Sidebar({ activeView, onViewChange }: SidebarProps) {
       <button
         onClick={() => onViewChange("settings")}
         className={cn(
-          "h-14 flex items-center px-4 border-t border-border w-full hover:bg-accent/50 transition-colors",
+          "h-14 flex items-center px-4 border-t border-border w-full hover:bg-accent/50 transition-all duration-200",
           activeView === "settings" && "bg-accent"
         )}
       >
-        <div className="w-7 h-7 rounded-full bg-indigo-500 flex items-center justify-center text-xs font-medium text-white flex-shrink-0">
+        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-violet-500 flex items-center justify-center text-xs font-bold text-white flex-shrink-0">
           {data.profile?.name?.[0]?.toUpperCase() || user?.email?.[0]?.toUpperCase() || "?"}
         </div>
         {!collapsed && (
           <>
             <div className="ml-3 flex-1 min-w-0 text-left">
-              <span className="text-sm truncate block">{data.profile?.name || user?.email?.split("@")[0] || "User"}</span>
+              <span className="text-sm truncate block font-medium">{data.profile?.name || user?.email?.split("@")[0] || "User"}</span>
               {isPro && <span className="text-[10px] text-indigo-400 font-medium">PRO</span>}
             </div>
             <Settings size={14} className="text-muted-foreground flex-shrink-0" />

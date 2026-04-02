@@ -48,7 +48,7 @@ function GoalCard({ goal }: { goal: Goal }) {
   return (
     <div
       className={cn(
-        "rounded-xl border bg-card transition-all",
+        "rounded-2xl border bg-card transition-all",
         goal.completed ? "border-emerald-500/30 opacity-60" : "border-border"
       )}
     >
@@ -144,7 +144,7 @@ function GoalCard({ goal }: { goal: Goal }) {
             {!goal.completed && (
               <button
                 onClick={() => updateGoal(goal.id, { completed: true, progress: 100 })}
-                className="p-1.5 rounded-md hover:bg-emerald-500/20 hover:text-emerald-400 transition-colors text-muted-foreground"
+                className="p-1.5 rounded-xl hover:bg-emerald-500/20 hover:text-emerald-400 transition-colors text-muted-foreground"
                 title="Mark complete"
               >
                 <Trophy size={14} />
@@ -152,7 +152,7 @@ function GoalCard({ goal }: { goal: Goal }) {
             )}
             <button
               onClick={() => deleteGoal(goal.id)}
-              className="p-1.5 rounded-md hover:bg-destructive/20 hover:text-destructive transition-colors text-muted-foreground"
+              className="p-1.5 rounded-xl hover:bg-destructive/20 hover:text-destructive transition-colors text-muted-foreground"
             >
               <Trash2 size={14} />
             </button>
@@ -167,7 +167,7 @@ function GoalCard({ goal }: { goal: Goal }) {
             {goal.milestones.map((ms) => (
               <div
                 key={ms.id}
-                className="group flex items-center gap-2.5 px-2 py-1.5 rounded-md hover:bg-accent/30 transition-colors"
+                className="group flex items-center gap-2.5 px-2 py-1.5 rounded-xl hover:bg-accent/30 transition-colors"
               >
                 <Checkbox
                   checked={ms.completed}
@@ -203,7 +203,7 @@ function GoalCard({ goal }: { goal: Goal }) {
               <button
                 onClick={handleAddMs}
                 disabled={!newMs.trim()}
-                className="px-2 h-8 rounded-md bg-indigo-500 hover:bg-indigo-600 disabled:opacity-30 transition-colors"
+                className="px-2 h-8 rounded-xl bg-indigo-500 hover:bg-indigo-600 disabled:opacity-30 transition-colors"
               >
                 <Plus size={12} />
               </button>
@@ -248,7 +248,7 @@ export function GoalsView() {
         <h2 className="text-xl font-heading font-bold">Goals</h2>
         <button
           onClick={() => setShowForm(!showForm)}
-          className="flex items-center gap-2 px-3 py-1.5 rounded-md bg-indigo-500 hover:bg-indigo-600 transition-colors text-sm"
+          className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-indigo-500 hover:bg-indigo-600 transition-colors text-sm"
         >
           <Plus size={14} />
           New goal
@@ -260,7 +260,7 @@ export function GoalsView() {
         <button
           onClick={() => setFilter("all")}
           className={cn(
-            "px-3 py-1 rounded-md text-xs transition-colors",
+            "px-3 py-1 rounded-xl text-xs transition-colors",
             filter === "all"
               ? "bg-accent text-accent-foreground"
               : "text-muted-foreground hover:text-foreground"
@@ -275,7 +275,7 @@ export function GoalsView() {
               key={h.value}
               onClick={() => setFilter(h.value)}
               className={cn(
-                "px-3 py-1 rounded-md text-xs transition-colors",
+                "px-3 py-1 rounded-xl text-xs transition-colors",
                 filter === h.value
                   ? "text-white"
                   : "text-muted-foreground hover:text-foreground"
@@ -294,7 +294,7 @@ export function GoalsView() {
 
       {/* New goal form */}
       {showForm && (
-        <div className="p-4 rounded-xl border border-border bg-card mb-6 space-y-3">
+        <div className="p-4 rounded-2xl border border-border bg-card mb-6 space-y-3">
           <Input
             placeholder="Goal title"
             value={title}
@@ -318,7 +318,7 @@ export function GoalsView() {
                     key={h.value}
                     onClick={() => setHorizon(h.value)}
                     className={cn(
-                      "px-2.5 py-1 rounded-md text-xs transition-colors",
+                      "px-2.5 py-1 rounded-xl text-xs transition-colors",
                       horizon === h.value ? "text-white" : "text-muted-foreground"
                     )}
                     style={
@@ -340,7 +340,7 @@ export function GoalsView() {
                 type="date"
                 value={deadline}
                 onChange={(e) => setDeadline(e.target.value)}
-                className="bg-background border border-border rounded-md px-2 py-1 text-sm outline-none"
+                className="bg-background border border-border rounded-xl px-2 py-1 text-sm outline-none"
               />
             </div>
             <div>
@@ -350,7 +350,7 @@ export function GoalsView() {
               <select
                 value={projectId || ""}
                 onChange={(e) => setProjectId(e.target.value || null)}
-                className="bg-background border border-border rounded-md px-2 py-1 text-sm outline-none h-[34px]"
+                className="bg-background border border-border rounded-xl px-2 py-1 text-sm outline-none h-[34px]"
               >
                 <option value="">None</option>
                 {data.projects.map((p) => (
@@ -371,7 +371,7 @@ export function GoalsView() {
             <button
               onClick={handleAdd}
               disabled={!title.trim() || !deadline}
-              className="px-3 py-1.5 text-sm rounded-md bg-indigo-500 hover:bg-indigo-600 disabled:opacity-30 transition-colors"
+              className="px-3 py-1.5 text-sm rounded-xl bg-indigo-500 hover:bg-indigo-600 disabled:opacity-30 transition-colors"
             >
               Create
             </button>
@@ -384,7 +384,7 @@ export function GoalsView() {
         {filteredActive.length === 0 && (
           <div className="text-center py-16 text-muted-foreground">
             <Trophy size={48} className="mx-auto mb-4 opacity-20" />
-            <p className="text-sm">No goals yet. Set your first one.</p>
+            <p className="text-sm">No goals yet. Add one.</p>
           </div>
         )}
         {filteredActive.map((goal) => (

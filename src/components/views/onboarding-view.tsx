@@ -46,11 +46,11 @@ export function OnboardingView({ onComplete }: OnboardingProps) {
     <div className="min-h-screen flex items-center justify-center bg-background p-8">
       <div className="w-full max-w-md">
         {/* Progress */}
-        <div className="flex gap-1.5 mb-8">
+        <div className="flex gap-1.5 mb-10">
           {Array.from({ length: STEPS }, (_, i) => (
             <div
               key={i}
-              className={`h-1 flex-1 rounded-full transition-colors ${
+              className={`h-1 flex-1 rounded-full transition-all duration-300 ${
                 i < step ? "bg-indigo-500" : "bg-border"
               }`}
             />
@@ -62,25 +62,21 @@ export function OnboardingView({ onComplete }: OnboardingProps) {
           <div className="space-y-6">
             <div>
               <h1 className="text-3xl font-heading font-bold mb-2">
-                Slam your 5. Win the day.
+                Let&apos;s go.
               </h1>
               <p className="text-muted-foreground">
-                Let&apos;s set you up.
+                What&apos;s your name?
               </p>
             </div>
             <div className="space-y-4">
+              <Input
+                placeholder="Your first name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="text-lg py-6 bg-card"
+                autoFocus
+              />
               <div>
-                <label className="text-sm font-medium mb-1.5 block">Your first name</label>
-                <Input
-                  placeholder="e.g. Jake"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="text-lg py-6 bg-card"
-                  autoFocus
-                />
-              </div>
-              <div>
-                <label className="text-sm font-medium mb-1.5 block">Phone number <span className="text-xs text-muted-foreground">(for SMS reminders)</span></label>
                 <Input
                   placeholder="+1 555 123 4567"
                   type="tel"
@@ -89,7 +85,7 @@ export function OnboardingView({ onComplete }: OnboardingProps) {
                   onKeyDown={(e) => e.key === "Enter" && canNext() && next()}
                   className="text-lg py-6 bg-card"
                 />
-                <p className="text-xs text-muted-foreground mt-1">Optional. We&apos;ll text you your tasks and daily verdict.</p>
+                <p className="text-xs text-muted-foreground mt-2">Optional. For text reminders.</p>
               </div>
             </div>
           </div>
@@ -98,50 +94,41 @@ export function OnboardingView({ onComplete }: OnboardingProps) {
         {/* Step 2 — How it works */}
         {step === 2 && (
           <div className="space-y-6">
-            <h2 className="text-2xl font-heading font-bold">How Slam5 works</h2>
+            <h2 className="text-2xl font-heading font-bold">How it works</h2>
             <div className="space-y-4">
-              <div className="flex items-start gap-3">
-                <span className="text-2xl">🥊</span>
-                <div>
-                  <p className="font-medium">Add 5 tasks for the day</p>
-                  <p className="text-sm text-muted-foreground">Only the stuff that actually moves your life forward.</p>
+              {[
+                { icon: "🥊", title: "Pick 5 tasks", desc: "The stuff that moves your life forward." },
+                { icon: "⏱", title: "Set a timer and do it", desc: "Focus on one thing at a time." },
+                { icon: "🏆", title: "Win or lose", desc: "All 5 done = you won. That simple." },
+              ].map((item) => (
+                <div key={item.icon} className="flex items-start gap-4 p-4 rounded-2xl bg-card border border-border">
+                  <span className="text-2xl">{item.icon}</span>
+                  <div>
+                    <p className="font-medium">{item.title}</p>
+                    <p className="text-sm text-muted-foreground">{item.desc}</p>
+                  </div>
                 </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <span className="text-2xl">⏱</span>
-                <div>
-                  <p className="font-medium">Set a timer and fight</p>
-                  <p className="text-sm text-muted-foreground">Focus. No distractions. Just do the thing.</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <span className="text-2xl">🏆</span>
-                <div>
-                  <p className="font-medium">Win or lose the day</p>
-                  <p className="text-sm text-muted-foreground">All 5 done = you won. Miss one = you lost. Simple.</p>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
         )}
 
-        {/* Step 3 — Goals (3 states) */}
+        {/* Step 3 — Goals */}
         {step === 3 && (
           <div className="space-y-6">
             <div>
-              <h2 className="text-2xl font-heading font-bold">Your goals</h2>
+              <h2 className="text-2xl font-heading font-bold">What do you want?</h2>
               <p className="text-sm text-muted-foreground mt-1">
-                What do you want to change in these 3 areas?
+                Pick at least one.
               </p>
             </div>
             <div className="space-y-4">
               <div>
                 <label className="text-sm font-medium flex items-center gap-2 mb-1.5">
                   🏋️ Body
-                  <span className="text-xs text-muted-foreground">health, fitness, energy</span>
                 </label>
                 <Input
-                  placeholder="e.g. Lose 20 lbs, run a 5K, eat clean"
+                  placeholder="e.g. Lose 20 lbs, run a 5K"
                   value={bodyGoal}
                   onChange={(e) => setBodyGoal(e.target.value)}
                   className="bg-card"
@@ -150,10 +137,9 @@ export function OnboardingView({ onComplete }: OnboardingProps) {
               <div>
                 <label className="text-sm font-medium flex items-center gap-2 mb-1.5">
                   🧠 Mind
-                  <span className="text-xs text-muted-foreground">mental health, relationships, learning</span>
                 </label>
                 <Input
-                  placeholder="e.g. Meditate daily, read 1 book/month"
+                  placeholder="e.g. Read 1 book a month"
                   value={mindGoal}
                   onChange={(e) => setMindGoal(e.target.value)}
                   className="bg-card"
@@ -162,10 +148,9 @@ export function OnboardingView({ onComplete }: OnboardingProps) {
               <div>
                 <label className="text-sm font-medium flex items-center gap-2 mb-1.5">
                   💰 Money
-                  <span className="text-xs text-muted-foreground">business, career, finances</span>
                 </label>
                 <Input
-                  placeholder="e.g. Hit $10K/month, launch my product"
+                  placeholder="e.g. Hit $10K/month"
                   value={moneyGoal}
                   onChange={(e) => setMoneyGoal(e.target.value)}
                   className="bg-card"
@@ -175,83 +160,74 @@ export function OnboardingView({ onComplete }: OnboardingProps) {
           </div>
         )}
 
-        {/* Step 4 — Planning time */}
+        {/* Step 4 — When */}
         {step === 4 && (
           <div className="space-y-6">
             <div>
               <h2 className="text-2xl font-heading font-bold">When do you plan?</h2>
               <p className="text-sm text-muted-foreground mt-1">
-                We&apos;ll remind you to write your Power List.
+                We&apos;ll remind you.
               </p>
             </div>
             <div className="flex gap-3">
               <button
                 onClick={() => { setPlanTime("morning"); if (!planHour || planHour === "21:00") setPlanHour("08:00"); }}
-                className={`flex-1 p-4 rounded-xl border text-center transition-colors ${
+                className={`flex-1 p-5 rounded-2xl border text-center transition-all duration-200 ${
                   planTime === "morning"
-                    ? "border-indigo-500 bg-indigo-500/10"
+                    ? "border-indigo-500/30 bg-indigo-500/10"
                     : "border-border hover:bg-accent/50"
                 }`}
               >
-                <span className="text-2xl block mb-1">🌅</span>
+                <span className="text-3xl block mb-2">🌅</span>
                 <span className="text-sm font-medium">Morning</span>
               </button>
               <button
                 onClick={() => { setPlanTime("evening"); if (!planHour || planHour === "08:00") setPlanHour("21:00"); }}
-                className={`flex-1 p-4 rounded-xl border text-center transition-colors ${
+                className={`flex-1 p-5 rounded-2xl border text-center transition-all duration-200 ${
                   planTime === "evening"
-                    ? "border-indigo-500 bg-indigo-500/10"
+                    ? "border-indigo-500/30 bg-indigo-500/10"
                     : "border-border hover:bg-accent/50"
                 }`}
               >
-                <span className="text-2xl block mb-1">🌙</span>
+                <span className="text-3xl block mb-2">🌙</span>
                 <span className="text-sm font-medium">Evening</span>
               </button>
             </div>
             <div>
-              <label className="text-sm font-medium mb-1.5 block">What time exactly?</label>
+              <label className="text-sm font-medium mb-1.5 block">What time?</label>
               <Input
                 type="time"
                 value={planHour}
                 onChange={(e) => setPlanHour(e.target.value)}
                 className="text-lg py-6 bg-card w-40"
               />
-              <p className="text-xs text-muted-foreground mt-1">Pick any time that works for you.</p>
             </div>
           </div>
         )}
 
-        {/* Step 5 — Notifications */}
+        {/* Step 5 — Reminders */}
         {step === 5 && (
           <div className="space-y-6">
             <div>
-              <h2 className="text-2xl font-heading font-bold">Stay on track</h2>
+              <h2 className="text-2xl font-heading font-bold">We got you.</h2>
               <p className="text-sm text-muted-foreground mt-1">
-                We&apos;ll text you so you don&apos;t forget.
+                Here&apos;s what you&apos;ll get.
               </p>
             </div>
             <div className="space-y-3">
-              <div className="flex items-center gap-3 p-3 rounded-lg bg-card border border-border">
-                <span>🌅</span>
-                <div className="flex-1">
-                  <p className="text-sm font-medium">Morning reminder</p>
-                  <p className="text-xs text-muted-foreground">Your 5 tasks are waiting.</p>
+              {[
+                { icon: "🌅", title: "Morning push", desc: "Your tasks are waiting." },
+                { icon: "⏰", title: "Mid-day check", desc: "How many did you do?" },
+                { icon: "🏆", title: "Daily verdict", desc: "Win or lose. No excuses." },
+              ].map((item) => (
+                <div key={item.icon} className="flex items-center gap-4 p-4 rounded-2xl bg-card border border-border">
+                  <span className="text-xl">{item.icon}</span>
+                  <div className="flex-1">
+                    <p className="text-sm font-medium">{item.title}</p>
+                    <p className="text-xs text-muted-foreground">{item.desc}</p>
+                  </div>
                 </div>
-              </div>
-              <div className="flex items-center gap-3 p-3 rounded-lg bg-card border border-border">
-                <span>⏰</span>
-                <div className="flex-1">
-                  <p className="text-sm font-medium">Mid-day check</p>
-                  <p className="text-xs text-muted-foreground">How many did you slam?</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-3 p-3 rounded-lg bg-card border border-border">
-                <span>🏆</span>
-                <div className="flex-1">
-                  <p className="text-sm font-medium">Daily verdict</p>
-                  <p className="text-xs text-muted-foreground">Win or lose — in the app.</p>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
         )}
@@ -259,24 +235,24 @@ export function OnboardingView({ onComplete }: OnboardingProps) {
         {/* Step 6 — Ready */}
         {step === 6 && (
           <div className="space-y-6 text-center">
-            <span className="text-6xl block">🥊</span>
+            <span className="text-7xl block">🥊</span>
             <div>
-              <h2 className="text-2xl font-heading font-bold">
-                Ready to fight, {name}?
+              <h2 className="text-3xl font-heading font-bold">
+                Ready, {name}?
               </h2>
-              <p className="text-muted-foreground mt-2">
-                3 days free. No credit card. Just show up and win.
+              <p className="text-muted-foreground mt-3">
+                3 days free. No card. Just show up and win.
               </p>
             </div>
           </div>
         )}
 
-        {/* Navigation */}
-        <div className="flex gap-3 mt-8">
+        {/* Nav */}
+        <div className="flex gap-3 mt-10">
           {step > 1 && (
             <button
               onClick={prev}
-              className="px-4 py-2.5 rounded-lg border border-border text-sm hover:bg-accent transition-colors"
+              className="px-5 py-3 rounded-xl border border-border text-sm hover:bg-accent transition-all duration-200"
             >
               Back
             </button>
@@ -284,9 +260,9 @@ export function OnboardingView({ onComplete }: OnboardingProps) {
           <button
             onClick={step === STEPS ? handleFinish : next}
             disabled={!canNext()}
-            className="flex-1 px-4 py-2.5 rounded-lg bg-indigo-500 hover:bg-indigo-600 disabled:opacity-30 text-sm font-medium transition-colors"
+            className="flex-1 px-5 py-3 rounded-xl bg-indigo-500 hover:bg-indigo-400 disabled:opacity-30 text-sm font-medium transition-all duration-200 hover:scale-[1.01] active:scale-[0.99]"
           >
-            {step === STEPS ? "Start winning →" : "Next →"}
+            {step === STEPS ? "Let's go" : "Next"}
           </button>
         </div>
       </div>
