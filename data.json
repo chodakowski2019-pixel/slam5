@@ -1,0 +1,318 @@
+{
+  "tasks": [
+    {
+      "id": "mnfzhoedg7ago",
+      "title": "Metidation",
+      "completed": true,
+      "projectId": "mnessb4obgu06",
+      "timerMinutes": 25,
+      "timerSecondsLeft": null,
+      "timerRunning": false,
+      "createdAt": "2026-04-01T11:50:07.813Z",
+      "completedAt": "2026-04-01T19:41:16.372Z"
+    },
+    {
+      "id": "mnfzhi002xag6",
+      "title": "Twillo",
+      "completed": true,
+      "projectId": "omg",
+      "timerMinutes": 30,
+      "timerSecondsLeft": 98,
+      "timerRunning": false,
+      "createdAt": "2026-04-01T11:49:59.520Z",
+      "completedAt": "2026-04-01T12:32:41.890Z"
+    },
+    {
+      "id": "mnfzg9himzfrn",
+      "title": "Buy shoes",
+      "completed": true,
+      "projectId": "omg",
+      "timerMinutes": 30,
+      "timerSecondsLeft": null,
+      "timerRunning": false,
+      "createdAt": "2026-04-01T11:49:01.830Z",
+      "completedAt": "2026-04-01T13:04:41.212Z"
+    },
+    {
+      "id": "mnfzfzp4sj2np",
+      "title": "Ask about casting meeting for girls",
+      "completed": true,
+      "projectId": "omg",
+      "timerMinutes": 20,
+      "timerSecondsLeft": 419,
+      "timerRunning": false,
+      "createdAt": "2026-04-01T11:48:49.144Z",
+      "completedAt": "2026-04-01T12:51:14.819Z"
+    },
+    {
+      "id": "mnfzfhwbp533j",
+      "title": "Check payments on OMG",
+      "completed": true,
+      "projectId": "omg",
+      "timerMinutes": 60,
+      "timerSecondsLeft": 2161,
+      "timerRunning": false,
+      "createdAt": "2026-04-01T11:48:26.075Z",
+      "completedAt": "2026-04-01T13:16:05.990Z"
+    },
+    {
+      "id": "mnfzfapzrxr2y",
+      "title": "Create invoice for OMG",
+      "completed": true,
+      "projectId": "omg",
+      "timerMinutes": 30,
+      "timerSecondsLeft": 0,
+      "timerRunning": false,
+      "createdAt": "2026-04-01T11:48:16.775Z",
+      "completedAt": "2026-04-01T14:39:04.946Z"
+    },
+    {
+      "id": "mnfzf0nxazypf",
+      "title": "Luiza Prepare",
+      "completed": true,
+      "projectId": "omg",
+      "timerMinutes": 30,
+      "timerSecondsLeft": null,
+      "timerRunning": false,
+      "createdAt": "2026-04-01T11:48:03.741Z",
+      "completedAt": "2026-04-01T15:51:38.682Z"
+    },
+    {
+      "id": "mnfzeu8h5zztv",
+      "title": "Luiza",
+      "completed": true,
+      "projectId": "omg",
+      "timerMinutes": 120,
+      "timerSecondsLeft": null,
+      "timerRunning": false,
+      "createdAt": "2026-04-01T11:47:55.409Z",
+      "completedAt": "2026-04-01T15:55:21.610Z"
+    },
+    {
+      "id": "mnexa831lv6ju",
+      "title": "KEY API Electron",
+      "completed": false,
+      "projectId": "omg",
+      "timerMinutes": 29,
+      "timerSecondsLeft": null,
+      "timerRunning": false,
+      "createdAt": "2026-03-31T18:00:34.669Z",
+      "completedAt": null
+    },
+    {
+      "id": "mneuf5m06b94i",
+      "title": "CRM system",
+      "completed": true,
+      "projectId": "omg",
+      "timerMinutes": 30,
+      "timerSecondsLeft": 0,
+      "timerRunning": false,
+      "createdAt": "2026-03-31T16:40:25.896Z",
+      "completedAt": "2026-03-31T17:58:47.651Z"
+    },
+    {
+      "id": "mnesucn9n9ica",
+      "title": "Write 20 message about AI system for barbers or Beauty salons.",
+      "completed": true,
+      "projectId": null,
+      "timerMinutes": 60,
+      "timerSecondsLeft": 2688,
+      "timerRunning": false,
+      "createdAt": "2026-03-31T15:56:15.621Z",
+      "completedAt": "2026-03-31T16:20:19.514Z"
+    },
+    {
+      "id": "mnesstd0w0g6m",
+      "title": "Credits",
+      "completed": false,
+      "projectId": "mnessb4obgu06",
+      "timerMinutes": 30,
+      "timerSecondsLeft": 0,
+      "timerRunning": false,
+      "createdAt": "2026-03-31T15:55:03.972Z",
+      "completedAt": null
+    },
+    {
+      "id": "mnessjhy5lkji",
+      "title": "ESTA",
+      "completed": true,
+      "projectId": "mnessb4obgu06",
+      "timerMinutes": 120,
+      "timerSecondsLeft": 6905,
+      "timerRunning": false,
+      "createdAt": "2026-03-31T15:54:51.190Z",
+      "completedAt": "2026-04-01T18:19:45.042Z"
+    },
+    {
+      "id": "mnesrke3zfqu0",
+      "title": "CHANGE CRM FROM CICKUP",
+      "completed": true,
+      "projectId": "omg",
+      "timerMinutes": 30,
+      "timerSecondsLeft": 1793,
+      "timerRunning": false,
+      "createdAt": "2026-03-31T15:54:05.691Z",
+      "completedAt": "2026-03-31T17:58:38.674Z"
+    },
+    {
+      "id": "mnesr15xtazbq",
+      "title": "AI VIDEO",
+      "completed": false,
+      "projectId": "omg",
+      "timerMinutes": 120,
+      "timerSecondsLeft": null,
+      "timerRunning": false,
+      "createdAt": "2026-03-31T15:53:40.773Z",
+      "completedAt": null
+    },
+    {
+      "id": "mnesqr3vtl5us",
+      "title": "VIP payments",
+      "completed": true,
+      "projectId": "omg",
+      "timerMinutes": 30,
+      "timerSecondsLeft": 1354,
+      "timerRunning": false,
+      "createdAt": "2026-03-31T15:53:27.739Z",
+      "completedAt": "2026-03-31T16:40:10.198Z"
+    },
+    {
+      "id": "mnesqjyironh2",
+      "title": "IG Instagram",
+      "completed": true,
+      "projectId": "omg",
+      "timerMinutes": 120,
+      "timerSecondsLeft": null,
+      "timerRunning": false,
+      "createdAt": "2026-03-31T15:53:18.474Z",
+      "completedAt": "2026-04-01T11:47:34.072Z"
+    },
+    {
+      "id": "mnervoh0n0ouo",
+      "title": "TAk",
+      "completed": true,
+      "projectId": "itera",
+      "timerMinutes": 50,
+      "timerSecondsLeft": 2997,
+      "timerRunning": false,
+      "createdAt": "2026-03-31T15:29:17.988Z",
+      "completedAt": "2026-03-31T15:29:25.460Z"
+    }
+  ],
+  "projects": [
+    {
+      "id": "omg",
+      "name": "PROJECT_B",
+      "emoji": "O",
+      "color": "#ec4899",
+      "description": "Fashion/modeling education platform",
+      "createdAt": "2026-03-31T00:00:00.000Z"
+    },
+    {
+      "id": "itera",
+      "name": "Itera City",
+      "emoji": "I",
+      "color": "#6366f1",
+      "description": "AI city guide mobile app",
+      "createdAt": "2026-03-31T00:00:00.000Z"
+    },
+    {
+      "id": "apigo",
+      "name": "APIGO",
+      "emoji": "A",
+      "color": "#10b981",
+      "description": "Personal AI mobile apps platform",
+      "createdAt": "2026-03-31T00:00:00.000Z"
+    },
+    {
+      "id": "mnessb4obgu06",
+      "name": "LIFE",
+      "emoji": "V",
+      "color": "#10b981",
+      "description": "",
+      "createdAt": "2026-03-31T15:54:40.344Z"
+    },
+    {
+      "id": "mnesuzceulc1q",
+      "name": "AI Agent for Instagram",
+      "emoji": "VI",
+      "color": "#ef4444",
+      "description": "",
+      "createdAt": "2026-03-31T15:56:45.038Z"
+    }
+  ],
+  "finances": [],
+  "notes": [],
+  "noteFolders": [
+    {
+      "id": "notes",
+      "name": "Notes",
+      "color": "#6366f1"
+    }
+  ],
+  "goals": [
+    {
+      "title": "Create one own company worth 100.000.000 $",
+      "description": "",
+      "deadline": "2027-05-31",
+      "horizon": "1y",
+      "projectId": null,
+      "id": "mnesnncviiugi",
+      "milestones": [],
+      "progress": 0,
+      "completed": false,
+      "createdAt": "2026-03-31T15:51:02.911Z"
+    },
+    {
+      "title": "Buy a house",
+      "description": "Find one place for you all staff",
+      "deadline": "2028-08-31",
+      "horizon": "1y",
+      "projectId": null,
+      "id": "mnesioedgqwez",
+      "milestones": [],
+      "progress": 0,
+      "completed": false,
+      "createdAt": "2026-03-31T15:47:10.981Z"
+    },
+    {
+      "title": "Finish OMG",
+      "description": "Sell Company",
+      "deadline": "2026-12-31",
+      "horizon": "1y",
+      "projectId": "omg",
+      "id": "mnesfmfkwgn6t",
+      "milestones": [],
+      "progress": 0,
+      "completed": false,
+      "createdAt": "2026-03-31T15:44:48.464Z"
+    },
+    {
+      "title": "Perfect body",
+      "description": "80 kg, good cheest, perfect hands.",
+      "deadline": "2026-08-31",
+      "horizon": "6m",
+      "projectId": null,
+      "id": "mneseuzm5i2up",
+      "milestones": [],
+      "progress": 0,
+      "completed": false,
+      "createdAt": "2026-03-31T15:44:12.898Z"
+    },
+    {
+      "title": "Earn 20.000 $ per month",
+      "description": "Passive income for live",
+      "deadline": "2027-02-19",
+      "horizon": "1y",
+      "projectId": null,
+      "id": "mnesdgpf17the",
+      "milestones": [],
+      "progress": 0,
+      "completed": false,
+      "createdAt": "2026-03-31T15:43:07.731Z"
+    }
+  ],
+  "crmPersons": [],
+  "crmCohorts": [],
+  "crmColumns": []
+}
