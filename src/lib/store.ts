@@ -59,6 +59,13 @@ export interface DayRecord {
   points: number;
 }
 
+export interface Subscription {
+  status: "active" | "trialing" | "cancelled" | "past_due" | "none";
+  stripeCustomerId: string | null;
+  stripeSubscriptionId: string | null;
+  currentPeriodEnd: string | null; // ISO date
+}
+
 export interface StoreData {
   tasks: Task[];
   projects: Project[];
@@ -66,6 +73,8 @@ export interface StoreData {
   parkingLot: ParkingLotItem[];
   dayRecords: DayRecord[];
   totalPoints: number;
+  subscription?: Subscription;
+  phoneNumber?: string; // for SMS reminders
 }
 
 const STORE_KEY = "slam5-data";

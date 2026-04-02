@@ -9,9 +9,11 @@ import {
   Users,
   ChevronLeft,
   ChevronRight,
+  Zap,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useStore } from "@/lib/store-context";
+import { useAuth } from "@/lib/auth-context";
 import { NoisePlayer } from "@/components/noise-player";
 
 interface SidebarProps {
@@ -29,10 +31,32 @@ const NAV_ITEMS = [
 
 export function Sidebar({ activeView, onViewChange }: SidebarProps) {
   const [collapsed, setCollapsed] = useState(false);
+  const [upgrading, setUpgrading] = useState(false);
   const { data } = useStore();
+  const { user } = useAuth();
 
   const activeTasks = data.tasks.filter((t) => !t.completed).length;
   const runningTimer = data.tasks.find((t) => t.timerRunning);
+  const isPro = data.subscription?.status === "active" || data.subscription?.status === "trialing";
+
+  const handleUpgrade = async () => {
+    if (!user) return;
+    setUpgrading(true);
+    try {
+      const res = await fetch("/api/stripe/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId: user.id, email: user.email }),
+      });
+      const { url, error } = await res.json();
+      if (url) window.location.href = url;
+      else alert(error || "Something went wrong");
+    } catch {
+      alert("Failed to start checkout");
+    } finally {
+      setUpgrading(false);
+    }
+  };
 
   return (
     <aside
@@ -122,13 +146,40 @@ export function Sidebar({ activeView, onViewChange }: SidebarProps) {
         </div>
       )}
 
+      {/* Upgrade */}
+      {!isPro && (
+        <div className="px-2 py-2 border-t border-border">
+          {!collapsed ? (
+            <button
+              onClick={handleUpgrade}
+              disabled={upgrading}
+              className="w-full flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium bg-indigo-500 hover:bg-indigo-600 transition-colors disabled:opacity-50"
+            >
+              <Zap size={16} />
+              {upgrading ? "Loading..." : "Upgrade to Pro"}
+            </button>
+          ) : (
+            <button
+              onClick={handleUpgrade}
+              disabled={upgrading}
+              className="w-full flex justify-center p-2 rounded-md bg-indigo-500 hover:bg-indigo-600 transition-colors disabled:opacity-50"
+            >
+              <Zap size={16} />
+            </button>
+          )}
+        </div>
+      )}
+
       {/* User */}
       <div className="h-14 flex items-center px-4 border-t border-border">
         <div className="w-7 h-7 rounded-full bg-indigo-500 flex items-center justify-center text-xs font-medium text-white">
-          J
+          {user?.email?.[0]?.toUpperCase() || "?"}
         </div>
         {!collapsed && (
-          <span className="ml-3 text-sm truncate">Jakub</span>
+          <div className="ml-3 flex-1 min-w-0">
+            <span className="text-sm truncate block">{user?.user_metadata?.full_name || user?.email?.split("@")[0] || "User"}</span>
+            {isPro && <span className="text-[10px] text-indigo-400 font-medium">PRO</span>}
+          </div>
         )}
       </div>
     </aside>
