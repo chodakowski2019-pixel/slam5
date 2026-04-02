@@ -141,20 +141,53 @@ export function SettingsView() {
       </section>
 
       {/* Save */}
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-4 mb-8">
         <button
           onClick={handleSave}
           className="px-6 py-2.5 rounded-lg bg-indigo-500 hover:bg-indigo-600 text-sm font-medium transition-colors"
         >
           {saved ? "Saved!" : "Save changes"}
         </button>
-        <button
-          onClick={signOut}
-          className="px-4 py-2.5 rounded-lg border border-border text-sm text-muted-foreground hover:bg-accent/50 transition-colors"
-        >
-          Sign out
-        </button>
       </div>
+
+      {/* Support & Account Actions */}
+      <section className="mb-8">
+        <h3 className="text-xs text-muted-foreground uppercase tracking-wider font-medium mb-4">Support</h3>
+        <div className="space-y-3 p-4 rounded-xl border border-border bg-card">
+          <a
+            href="mailto:support@slam5.app"
+            className="flex items-center gap-3 text-sm text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <span>💬</span>
+            Contact support
+          </a>
+        </div>
+      </section>
+
+      <section>
+        <h3 className="text-xs text-muted-foreground uppercase tracking-wider font-medium mb-4">Account</h3>
+        <div className="space-y-3 p-4 rounded-xl border border-border bg-card">
+          <button
+            onClick={signOut}
+            className="flex items-center gap-3 text-sm text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <span>🚪</span>
+            Sign out
+          </button>
+          <button
+            onClick={() => {
+              if (confirm("Are you sure? This will permanently delete your account and all data. This cannot be undone.")) {
+                // TODO: implement account deletion API
+                alert("Account deletion requested. Contact support@slam5.app for confirmation.");
+              }
+            }}
+            className="flex items-center gap-3 text-sm text-red-400 hover:text-red-300 transition-colors"
+          >
+            <span>🗑️</span>
+            Delete account
+          </button>
+        </div>
+      </section>
     </div>
   );
 }

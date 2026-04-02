@@ -28,7 +28,6 @@ const NAV_ITEMS = [
   { id: "leaderboard", label: "Leaderboard", icon: Users },
   { id: "projects", label: "Projects", icon: FolderKanban },
   { id: "goals", label: "Goals", icon: Trophy },
-  { id: "settings", label: "Settings", icon: Settings },
 ];
 
 export function Sidebar({ activeView, onViewChange }: SidebarProps) {
@@ -172,18 +171,27 @@ export function Sidebar({ activeView, onViewChange }: SidebarProps) {
         </div>
       )}
 
-      {/* User */}
-      <div className="h-14 flex items-center px-4 border-t border-border">
-        <div className="w-7 h-7 rounded-full bg-indigo-500 flex items-center justify-center text-xs font-medium text-white">
+      {/* User + Settings */}
+      <button
+        onClick={() => onViewChange("settings")}
+        className={cn(
+          "h-14 flex items-center px-4 border-t border-border w-full hover:bg-accent/50 transition-colors",
+          activeView === "settings" && "bg-accent"
+        )}
+      >
+        <div className="w-7 h-7 rounded-full bg-indigo-500 flex items-center justify-center text-xs font-medium text-white flex-shrink-0">
           {data.profile?.name?.[0]?.toUpperCase() || user?.email?.[0]?.toUpperCase() || "?"}
         </div>
         {!collapsed && (
-          <div className="ml-3 flex-1 min-w-0">
-            <span className="text-sm truncate block">{data.profile?.name || user?.email?.split("@")[0] || "User"}</span>
-            {isPro && <span className="text-[10px] text-indigo-400 font-medium">PRO</span>}
-          </div>
+          <>
+            <div className="ml-3 flex-1 min-w-0 text-left">
+              <span className="text-sm truncate block">{data.profile?.name || user?.email?.split("@")[0] || "User"}</span>
+              {isPro && <span className="text-[10px] text-indigo-400 font-medium">PRO</span>}
+            </div>
+            <Settings size={14} className="text-muted-foreground flex-shrink-0" />
+          </>
         )}
-      </div>
+      </button>
     </aside>
   );
 }

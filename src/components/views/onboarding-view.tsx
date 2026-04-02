@@ -186,7 +186,7 @@ export function OnboardingView({ onComplete }: OnboardingProps) {
             </div>
             <div className="flex gap-3">
               <button
-                onClick={() => { setPlanTime("morning"); setPlanHour("08:00"); }}
+                onClick={() => { setPlanTime("morning"); if (!planHour || planHour === "21:00") setPlanHour("08:00"); }}
                 className={`flex-1 p-4 rounded-xl border text-center transition-colors ${
                   planTime === "morning"
                     ? "border-indigo-500 bg-indigo-500/10"
@@ -197,7 +197,7 @@ export function OnboardingView({ onComplete }: OnboardingProps) {
                 <span className="text-sm font-medium">Morning</span>
               </button>
               <button
-                onClick={() => { setPlanTime("evening"); setPlanHour("21:00"); }}
+                onClick={() => { setPlanTime("evening"); if (!planHour || planHour === "08:00") setPlanHour("21:00"); }}
                 className={`flex-1 p-4 rounded-xl border text-center transition-colors ${
                   planTime === "evening"
                     ? "border-indigo-500 bg-indigo-500/10"
@@ -209,13 +209,14 @@ export function OnboardingView({ onComplete }: OnboardingProps) {
               </button>
             </div>
             <div>
-              <label className="text-sm text-muted-foreground mb-1 block">Time</label>
-              <input
+              <label className="text-sm font-medium mb-1.5 block">What time exactly?</label>
+              <Input
                 type="time"
                 value={planHour}
                 onChange={(e) => setPlanHour(e.target.value)}
-                className="bg-card border border-border rounded-md px-3 py-2 text-sm outline-none"
+                className="text-lg py-6 bg-card w-40"
               />
+              <p className="text-xs text-muted-foreground mt-1">Pick any time that works for you.</p>
             </div>
           </div>
         )}
