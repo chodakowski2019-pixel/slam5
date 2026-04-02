@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Open_Sans, Space_Grotesk } from "next/font/google";
 import { Geist_Mono } from "next/font/google";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { PwaRegister } from "@/components/pwa-register";
 import "./globals.css";
 
 const openSans = Open_Sans({
@@ -20,8 +21,21 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Command Center",
-  description: "Personal life & project management hub",
+  title: "Slam5 — Slam your 5. Win the day.",
+  description: "Gamified task management for brains that work differently. 5 wins a day. Every day.",
+  manifest: "/manifest.json",
+  themeColor: "#6366f1",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "Slam5",
+  },
+  viewport: {
+    width: "device-width",
+    initialScale: 1,
+    maximumScale: 1,
+    userScalable: false,
+  },
 };
 
 export default function RootLayout({
@@ -36,6 +50,7 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col bg-background text-foreground">
         <TooltipProvider>{children}</TooltipProvider>
+        <PwaRegister />
       </body>
     </html>
   );

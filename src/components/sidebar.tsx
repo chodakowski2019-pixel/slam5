@@ -5,8 +5,6 @@ import {
   LayoutDashboard,
   CheckSquare,
   FolderKanban,
-  DollarSign,
-  StickyNote,
   Trophy,
   Users,
   ChevronLeft,
@@ -14,6 +12,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useStore } from "@/lib/store-context";
+import { NoisePlayer } from "@/components/noise-player";
 
 interface SidebarProps {
   activeView: string;
@@ -22,12 +21,10 @@ interface SidebarProps {
 
 const NAV_ITEMS = [
   { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { id: "tasks", label: "Tasks", icon: CheckSquare },
+  { id: "tasks", label: "Power List", icon: CheckSquare },
+  { id: "leaderboard", label: "Leaderboard", icon: Users },
   { id: "projects", label: "Projects", icon: FolderKanban },
-  { id: "finances", label: "Finances", icon: DollarSign },
-  { id: "notes", label: "Notes", icon: StickyNote },
   { id: "goals", label: "Goals", icon: Trophy },
-  { id: "crm", label: "CRM", icon: Users },
 ];
 
 export function Sidebar({ activeView, onViewChange }: SidebarProps) {
@@ -48,7 +45,7 @@ export function Sidebar({ activeView, onViewChange }: SidebarProps) {
       <div className="h-14 flex items-center px-4 border-b border-border">
         {!collapsed && (
           <h1 className="text-sm font-semibold tracking-tight truncate">
-            Command Center
+            Slam5
           </h1>
         )}
         <button
@@ -115,6 +112,13 @@ export function Sidebar({ activeView, onViewChange }: SidebarProps) {
               </span>
             </div>
           )}
+        </div>
+      )}
+
+      {/* Noise player */}
+      {!collapsed && (
+        <div className="px-2 py-2 border-t border-border">
+          <NoisePlayer />
         </div>
       )}
 

@@ -3,23 +3,21 @@
 import { useMemo } from "react";
 import {
   CheckSquare,
-  FolderKanban,
-  DollarSign,
-  Clock,
-  TrendingUp,
-  TrendingDown,
-  Flame,
   Target,
+  Flame,
+  Trophy,
+  Frown,
+  Zap,
 } from "lucide-react";
 import { useStore } from "@/lib/store-context";
 import { TaskTimer } from "@/components/task-timer";
 import { Checkbox } from "@/components/ui/checkbox";
+import { getTodayKey } from "@/lib/store";
 
 interface DashboardProps {
   onNavigate: (view: string) => void;
 }
 
-// Mini bar chart component (pure SVG, no deps)
 function MiniBarChart({
   data,
   color,
@@ -31,7 +29,6 @@ function MiniBarChart({
 }) {
   const max = Math.max(...data, 1);
   const barWidth = 100 / data.length;
-
   return (
     <svg width="100%" height={height} viewBox={`0 0 100 ${height}`} preserveAspectRatio="none">
       {data.map((val, i) => {
@@ -52,120 +49,22 @@ function MiniBarChart({
   );
 }
 
-// Donut chart component
-function DonutChart({
-  segments,
-  size = 120,
-  strokeWidth = 14,
-}: {
-  segments: { value: number; color: string; label: string }[];
-  size?: number;
-  strokeWidth?: number;
-}) {
-  const radius = (size - strokeWidth) / 2;
-  const circumference = 2 * Math.PI * radius;
-  const total = segments.reduce((sum, s) => sum + s.value, 0) || 1;
-
-  let offset = 0;
-
-  return (
-    <div className="relative" style={{ width: size, height: size }}>
-      <svg width={size} height={size} className="-rotate-90">
-        {/* Background circle */}
-        <circle
-          cx={size / 2}
-          cy={size / 2}
-          r={radius}
-          fill="none"
-          stroke="currentColor"
-          strokeWidth={strokeWidth}
-          className="text-border"
-        />
-        {/* Segments */}
-        {segments.map((seg, i) => {
-          const segLength = (seg.value / total) * circumference;
-          const dash = `${segLength} ${circumference - segLength}`;
-          const currentOffset = offset;
-          offset += segLength;
-          return (
-            <circle
-              key={i}
-              cx={size / 2}
-              cy={size / 2}
-              r={radius}
-              fill="none"
-              stroke={seg.color}
-              strokeWidth={strokeWidth}
-              strokeDasharray={dash}
-              strokeDashoffset={-currentOffset}
-              strokeLinecap="round"
-              className="transition-all duration-500"
-            />
-          );
-        })}
-      </svg>
-      <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className="text-lg font-heading font-bold">{total}</span>
-        <span className="text-[10px] text-muted-foreground">total</span>
-      </div>
-    </div>
-  );
-}
-
-// Progress bar with label
-function ProgressStat({
-  label,
-  value,
-  max,
-  color,
-  suffix = "",
-}: {
-  label: string;
-  value: number;
-  max: number;
-  color: string;
-  suffix?: string;
-}) {
-  const pct = max > 0 ? Math.min((value / max) * 100, 100) : 0;
-  return (
-    <div className="space-y-1.5">
-      <div className="flex items-center justify-between text-xs">
-        <span className="text-muted-foreground">{label}</span>
-        <span className="font-medium">
-          {value}{suffix} <span className="text-muted-foreground">/ {max}{suffix}</span>
-        </span>
-      </div>
-      <div className="h-2 rounded-full bg-border overflow-hidden">
-        <div
-          className="h-full rounded-full transition-all duration-500"
-          style={{ width: `${pct}%`, backgroundColor: color }}
-        />
-      </div>
-    </div>
-  );
-}
-
 export function DashboardView({ onNavigate }: DashboardProps) {
-  const { data, toggleTask } = useStore();
+  const { data, toggleTask, getTodayRecord, getWeekWins, getCurrentStreak } = useStore();
 
-  const activeTasks = data.tasks.filter((t) => !t.completed);
-  const completedToday = data.tasks.filter((t) => {
-    if (!t.completedAt) return false;
-    const d = new Date(t.completedAt);
-    const now = new Date();
-    return d.toDateString() === now.toDateString();
-  });
-
+  const today = getTodayKey();
+  const todayTasks = data.tasks.filter((t) => t.createdAt.startsWith(today));
+  const activeTasks = todayTasks.filter((t) => !t.completed);
+  const completedToday = todayTasks.filter((t) => t.completed);
+  const totalToday = todayTasks.length;
+  const frogTask = todayTasks.find((t) => t.isFrog && !t.completed);
   const runningTask = data.tasks.find((t) => t.timerRunning);
+  const streak = getCurrentStreak();
+  const weekWins = getWeekWins();
+  const todayRecord = getTodayRecord();
+  const todayWon = todayRecord?.won ?? false;
 
-  const totalIncome = data.finances
-    .filter((f) => f.type === "income")
-    .reduce((sum, f) => sum + f.amount, 0);
-  const totalExpenses = data.finances
-    .filter((f) => f.type === "expense")
-    .reduce((sum, f) => sum + f.amount, 0);
-
-  // Compute weekly task completion (last 7 days)
+  // Weekly data for chart
   const weeklyData = useMemo(() => {
     const days: number[] = [];
     for (let i = 6; i >= 0; i--) {
@@ -180,84 +79,50 @@ export function DashboardView({ onNavigate }: DashboardProps) {
     return days;
   }, [data.tasks]);
 
-  // Compute weekly spending (last 7 days)
-  const weeklySpending = useMemo(() => {
-    const days: number[] = [];
+  // Win/Lose history for last 7 days
+  const weekHistory = useMemo(() => {
+    const results: { day: string; won: boolean | null }[] = [];
     for (let i = 6; i >= 0; i--) {
       const d = new Date();
       d.setDate(d.getDate() - i);
-      const dateStr = d.toDateString();
-      const sum = data.finances
-        .filter((f) => f.type === "expense" && new Date(f.date).toDateString() === dateStr)
-        .reduce((s, f) => s + f.amount, 0);
-      days.push(sum);
+      const key = d.toISOString().split("T")[0];
+      const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+      const record = data.dayRecords.find((r) => r.date === key);
+      results.push({
+        day: dayNames[d.getDay()],
+        won: record ? record.won : null,
+      });
     }
-    return days;
-  }, [data.finances]);
+    return results;
+  }, [data.dayRecords]);
 
-  // Tasks per project for donut
-  const projectSegments = useMemo(() => {
-    return data.projects
-      .map((p) => ({
-        value: data.tasks.filter((t) => t.projectId === p.id && !t.completed).length,
-        color: p.color,
-        label: p.name,
-      }))
-      .filter((s) => s.value > 0);
-  }, [data.projects, data.tasks]);
+  const weekLabels = weekHistory.map((h) => h.day);
 
-  // Add "No project" segment
-  const noProjectTasks = activeTasks.filter((t) => !t.projectId).length;
-  const allSegments = useMemo(() => {
-    const segs = [...projectSegments];
-    if (noProjectTasks > 0) {
-      segs.push({ value: noProjectTasks, color: "#71717a", label: "No project" });
-    }
-    return segs;
-  }, [projectSegments, noProjectTasks]);
-
-  // Streak (consecutive days with at least 1 completion)
-  const streak = useMemo(() => {
-    let count = 0;
-    for (let i = 0; i <= 365; i++) {
-      const d = new Date();
-      d.setDate(d.getDate() - i);
-      const dateStr = d.toDateString();
-      const hasCompletion = data.tasks.some(
-        (t) => t.completedAt && new Date(t.completedAt).toDateString() === dateStr
-      );
-      if (hasCompletion) count++;
-      else if (i > 0) break; // day 0 (today) can be 0 without breaking streak
-    }
-    return count;
-  }, [data.tasks]);
-
-  const today = new Date().toLocaleDateString("en-US", {
+  const todayFormatted = new Date().toLocaleDateString("en-US", {
     weekday: "long",
     month: "long",
     day: "numeric",
     year: "numeric",
   });
 
-  const dayNames = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-  const todayIdx = new Date().getDay();
-  const weekLabels = Array.from({ length: 7 }, (_, i) => {
-    const d = new Date();
-    d.setDate(d.getDate() - (6 - i));
-    return dayNames[d.getDay() === 0 ? 6 : d.getDay() - 1];
-  });
+  const greeting = (() => {
+    const h = new Date().getHours();
+    if (h < 12) return "Good morning";
+    if (h < 18) return "Good afternoon";
+    return "Good evening";
+  })();
 
   return (
     <div className="max-w-5xl mx-auto">
       {/* Header */}
       <div className="mb-8">
         <h2 className="text-2xl font-heading font-bold tracking-tight">
-          Good morning, Jakub
+          {greeting} 🥊
         </h2>
-        <p className="text-sm text-muted-foreground mt-1">{today}</p>
+        <p className="text-sm text-muted-foreground mt-1">{todayFormatted}</p>
       </div>
 
-      {/* Running timer */}
+      {/* Running timer alert */}
       {runningTask && (
         <div className="mb-6 p-4 rounded-xl border border-indigo-500/30 bg-indigo-500/5">
           <div className="flex items-center gap-2 mb-2">
@@ -276,7 +141,20 @@ export function DashboardView({ onNavigate }: DashboardProps) {
         </div>
       )}
 
-      {/* Stats grid — row 1 */}
+      {/* Frog alert */}
+      {frogTask && !runningTask && (
+        <div className="mb-6 p-4 rounded-xl border border-amber-500/30 bg-amber-500/5">
+          <div className="flex items-center gap-2 mb-1">
+            <span className="text-lg">🐸</span>
+            <span className="text-xs text-amber-400 uppercase tracking-wider font-medium">
+              Eat the frog first
+            </span>
+          </div>
+          <span className="text-lg font-heading font-semibold">{frogTask.title}</span>
+        </div>
+      )}
+
+      {/* Stats grid */}
       <div className="grid grid-cols-4 gap-4 mb-6">
         <button
           onClick={() => onNavigate("tasks")}
@@ -297,13 +175,13 @@ export function DashboardView({ onNavigate }: DashboardProps) {
             <Target size={16} />
             <span className="text-xs">Done today</span>
           </div>
-          <span className="text-2xl font-heading font-bold">{completedToday.length}</span>
+          <div className="flex items-baseline gap-1">
+            <span className="text-2xl font-heading font-bold">{completedToday.length}</span>
+            <span className="text-xs text-muted-foreground">/ {totalToday}</span>
+          </div>
         </button>
 
-        <button
-          onClick={() => onNavigate("tasks")}
-          className="p-4 rounded-xl border border-border bg-card hover:bg-accent/50 transition-colors text-left"
-        >
+        <div className="p-4 rounded-xl border border-border bg-card text-left">
           <div className="flex items-center gap-2 text-muted-foreground mb-2">
             <Flame size={16} className={streak > 0 ? "text-orange-400" : ""} />
             <span className="text-xs">Streak</span>
@@ -312,29 +190,54 @@ export function DashboardView({ onNavigate }: DashboardProps) {
             <span className="text-2xl font-heading font-bold">{streak}</span>
             <span className="text-xs text-muted-foreground">days</span>
           </div>
-        </button>
+        </div>
 
-        <button
-          onClick={() => onNavigate("finances")}
-          className="p-4 rounded-xl border border-border bg-card hover:bg-accent/50 transition-colors text-left"
-        >
+        <div className="p-4 rounded-xl border border-border bg-card text-left">
           <div className="flex items-center gap-2 text-muted-foreground mb-2">
-            <DollarSign size={16} />
-            <span className="text-xs">Balance</span>
+            <Zap size={16} className="text-indigo-400" />
+            <span className="text-xs">Points</span>
           </div>
-          <span
-            className={`text-2xl font-heading font-bold ${
-              totalIncome - totalExpenses >= 0 ? "text-emerald-400" : "text-red-400"
-            }`}
-          >
-            ${(totalIncome - totalExpenses).toLocaleString()}
-          </span>
-        </button>
+          <span className="text-2xl font-heading font-bold">{data.totalPoints}</span>
+        </div>
       </div>
 
-      {/* Charts row */}
-      <div className="grid grid-cols-3 gap-4 mb-6">
-        {/* Weekly task completions */}
+      {/* Week history + chart */}
+      <div className="grid grid-cols-2 gap-4 mb-6">
+        {/* Win/Lose week */}
+        <div className="p-4 rounded-xl border border-border bg-card">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-xs text-muted-foreground uppercase tracking-wider font-medium">
+              This week
+            </h3>
+            <span className="text-xs font-medium">
+              {weekWins >= 5 ? (
+                <span className="text-emerald-400">🏆 Week: WON</span>
+              ) : (
+                <span className="text-muted-foreground">{weekWins}/7 wins (need 30/35)</span>
+              )}
+            </span>
+          </div>
+          <div className="flex gap-2 justify-between">
+            {weekHistory.map((h, i) => (
+              <div key={i} className="flex flex-col items-center gap-1">
+                <div
+                  className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold ${
+                    h.won === true
+                      ? "bg-emerald-500/20 text-emerald-400"
+                      : h.won === false
+                      ? "bg-red-500/20 text-red-400"
+                      : "bg-border/50 text-muted-foreground"
+                  }`}
+                >
+                  {h.won === true ? "W" : h.won === false ? "L" : "-"}
+                </div>
+                <span className="text-[9px] text-muted-foreground">{h.day}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Tasks completed chart */}
         <div className="p-4 rounded-xl border border-border bg-card">
           <h3 className="text-xs text-muted-foreground uppercase tracking-wider font-medium mb-3">
             Tasks completed (7d)
@@ -346,170 +249,112 @@ export function DashboardView({ onNavigate }: DashboardProps) {
             ))}
           </div>
         </div>
-
-        {/* Weekly spending */}
-        <div className="p-4 rounded-xl border border-border bg-card">
-          <h3 className="text-xs text-muted-foreground uppercase tracking-wider font-medium mb-3">
-            Spending (7d)
-          </h3>
-          <MiniBarChart data={weeklySpending} color="#ef4444" height={56} />
-          <div className="flex justify-between mt-2">
-            {weekLabels.map((d, i) => (
-              <span key={i} className="text-[9px] text-muted-foreground">{d}</span>
-            ))}
-          </div>
-        </div>
-
-        {/* Tasks by project donut */}
-        <div className="p-4 rounded-xl border border-border bg-card flex items-center gap-4">
-          <DonutChart segments={allSegments.length > 0 ? allSegments : [{ value: 1, color: "#27272a", label: "None" }]} size={100} strokeWidth={12} />
-          <div className="flex-1 space-y-1.5">
-            <h3 className="text-xs text-muted-foreground uppercase tracking-wider font-medium mb-2">
-              Tasks by project
-            </h3>
-            {allSegments.map((seg, i) => (
-              <div key={i} className="flex items-center gap-2 text-xs">
-                <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: seg.color }} />
-                <span className="text-muted-foreground truncate">{seg.label}</span>
-                <span className="ml-auto font-medium">{seg.value}</span>
-              </div>
-            ))}
-            {allSegments.length === 0 && (
-              <span className="text-xs text-muted-foreground">No active tasks</span>
-            )}
-          </div>
-        </div>
       </div>
 
-      {/* Project progress bars */}
-      {data.projects.length > 0 && (
-        <div className="p-4 rounded-xl border border-border bg-card mb-6">
-          <h3 className="text-xs text-muted-foreground uppercase tracking-wider font-medium mb-4">
-            Project progress
-          </h3>
-          <div className="space-y-3">
-            {data.projects.map((project) => {
-              const total = data.tasks.filter((t) => t.projectId === project.id).length;
-              const done = data.tasks.filter(
-                (t) => t.projectId === project.id && t.completed
-              ).length;
-              return (
-                <ProgressStat
-                  key={project.id}
-                  label={`${project.emoji} ${project.name}`}
-                  value={done}
-                  max={total}
-                  color={project.color}
-                  suffix=" tasks"
-                />
-              );
-            })}
-          </div>
+      {/* Today's verdict (if day is done) */}
+      {totalToday > 0 && activeTasks.length === 0 && (
+        <div className={`mb-6 p-6 rounded-xl border text-center ${
+          todayWon
+            ? "border-emerald-500/30 bg-emerald-500/5"
+            : "border-red-500/30 bg-red-500/5"
+        }`}>
+          {todayWon ? (
+            <>
+              <Trophy size={32} className="text-emerald-400 mx-auto mb-2" />
+              <h3 className="text-xl font-heading font-bold text-emerald-400">YOU WON TODAY 🏆</h3>
+              <p className="text-sm text-muted-foreground mt-1">
+                {completedToday.length}/{totalToday} tasks slammed. +{completedToday.length * 10} pts
+              </p>
+            </>
+          ) : (
+            <>
+              <Frown size={32} className="text-red-400 mx-auto mb-2" />
+              <h3 className="text-xl font-heading font-bold text-red-400">DAY LOST</h3>
+              <p className="text-sm text-muted-foreground mt-1">
+                {completedToday.length}/{totalToday} done. Tomorrow is a new fight.
+              </p>
+            </>
+          )}
         </div>
       )}
 
-      {/* Two column layout */}
-      <div className="grid grid-cols-2 gap-6">
-        {/* Today's tasks */}
-        <div>
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="text-xs text-muted-foreground uppercase tracking-wider font-medium">
-              Today&apos;s tasks
-            </h3>
-            <button
-              onClick={() => onNavigate("tasks")}
-              className="text-xs text-indigo-400 hover:text-indigo-300 transition-colors"
-            >
-              View all
-            </button>
-          </div>
-          <div className="space-y-1">
-            {activeTasks.length === 0 && (
-              <p className="text-sm text-muted-foreground py-4">
-                No active tasks. Add one in Tasks.
-              </p>
-            )}
-            {activeTasks.slice(0, 8).map((task) => {
+      {/* Today's tasks */}
+      <div>
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="text-xs text-muted-foreground uppercase tracking-wider font-medium">
+            Today&apos;s power list
+          </h3>
+          <button
+            onClick={() => onNavigate("tasks")}
+            className="text-xs text-indigo-400 hover:text-indigo-300 transition-colors"
+          >
+            View all
+          </button>
+        </div>
+        <div className="space-y-1">
+          {todayTasks.length === 0 && (
+            <p className="text-sm text-muted-foreground py-4">
+              No tasks yet. Add your 5 wins for today.
+            </p>
+          )}
+          {/* Show frog first, then rest */}
+          {todayTasks
+            .sort((a, b) => {
+              if (a.completed !== b.completed) return a.completed ? 1 : -1;
+              if (a.isFrog !== b.isFrog) return a.isFrog ? -1 : 1;
+              return 0;
+            })
+            .map((task) => {
               const project = data.projects.find((p) => p.id === task.projectId);
+              const categoryEmoji = task.category === "body" ? "🏋️" : task.category === "mind" ? "🧠" : "💰";
               return (
                 <div
                   key={task.id}
-                  className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-accent/30 transition-colors"
+                  className={`flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-accent/30 transition-colors ${
+                    task.completed ? "opacity-50" : ""
+                  }`}
                 >
                   <Checkbox
-                    checked={false}
+                    checked={task.completed}
                     onCheckedChange={() => toggleTask(task.id)}
                     className="border-muted-foreground/40"
                   />
-                  <span className="flex-1 text-sm truncate">{task.title}</span>
+                  {task.isFrog && <span className="text-sm">🐸</span>}
+                  <span className="text-xs">{categoryEmoji}</span>
+                  <span className={`flex-1 text-sm truncate ${task.completed ? "line-through" : ""}`}>
+                    {task.title}
+                  </span>
                   {project && (
                     <span
                       className="w-2 h-2 rounded-full flex-shrink-0"
                       style={{ backgroundColor: project.color }}
                     />
                   )}
-                  <TaskTimer task={task} compact />
+                  {!task.completed && <TaskTimer task={task} compact />}
+                  {task.completed && (
+                    <span className="text-xs text-emerald-400 font-medium">+10</span>
+                  )}
                 </div>
               );
             })}
-          </div>
         </div>
+      </div>
 
-        {/* Quick finances */}
-        <div>
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="text-xs text-muted-foreground uppercase tracking-wider font-medium">
-              Recent transactions
-            </h3>
-            <button
-              onClick={() => onNavigate("finances")}
-              className="text-xs text-indigo-400 hover:text-indigo-300 transition-colors"
-            >
-              View all
-            </button>
-          </div>
+      {/* Parking Lot */}
+      {data.parkingLot.length > 0 && (
+        <div className="mt-6">
+          <h3 className="text-xs text-muted-foreground uppercase tracking-wider font-medium mb-2">
+            🅿️ Parking Lot
+          </h3>
           <div className="space-y-1">
-            {data.finances.length === 0 && (
-              <p className="text-sm text-muted-foreground py-4">
-                No transactions yet. Add one in Finances.
-              </p>
-            )}
-            {data.finances.slice(0, 8).map((entry) => (
-              <div
-                key={entry.id}
-                className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-accent/30 transition-colors"
-              >
-                <div
-                  className={`p-1 rounded ${
-                    entry.type === "income"
-                      ? "bg-emerald-500/10 text-emerald-400"
-                      : "bg-red-500/10 text-red-400"
-                  }`}
-                >
-                  {entry.type === "income" ? (
-                    <TrendingUp size={14} />
-                  ) : (
-                    <TrendingDown size={14} />
-                  )}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <span className="text-sm truncate block">{entry.description}</span>
-                  <span className="text-xs text-muted-foreground">{entry.category}</span>
-                </div>
-                <span
-                  className={`text-sm font-mono tabular-nums ${
-                    entry.type === "income" ? "text-emerald-400" : "text-red-400"
-                  }`}
-                >
-                  {entry.type === "income" ? "+" : "-"}
-                  {entry.currency === "USD" ? "$" : entry.currency === "PLN" ? "zl" : "E"}
-                  {entry.amount.toLocaleString()}
-                </span>
+            {data.parkingLot.map((item) => (
+              <div key={item.id} className="text-sm px-3 py-1.5 rounded-lg bg-accent/20 text-muted-foreground">
+                {item.text}
               </div>
             ))}
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

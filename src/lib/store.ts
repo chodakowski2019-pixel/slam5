@@ -1,15 +1,20 @@
-// Simple client-side store with localStorage persistence
+// Slam5 — data store
+
+export type TaskCategory = "body" | "mind" | "money";
 
 export interface Task {
   id: string;
   title: string;
   completed: boolean;
   projectId: string | null;
+  category: TaskCategory;
+  isFrog: boolean; // 🐸 Eat the Frog — hardest task first
   timerMinutes: number;
   timerSecondsLeft: number | null; // null = not started
   timerRunning: boolean;
   createdAt: string;
   completedAt: string | null;
+  points: number; // +10 per completion
 }
 
 export interface Project {
@@ -19,32 +24,6 @@ export interface Project {
   color: string;
   description: string;
   createdAt: string;
-}
-
-export interface FinanceEntry {
-  id: string;
-  type: "income" | "expense";
-  amount: number;
-  currency: "USD" | "PLN" | "EUR";
-  category: string;
-  description: string;
-  projectId: string | null;
-  date: string;
-}
-
-export interface Note {
-  id: string;
-  title: string;
-  content: string;
-  folderId: string | null;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface NoteFolder {
-  id: string;
-  name: string;
-  color: string;
 }
 
 export interface Goal {
@@ -66,86 +45,38 @@ export interface Milestone {
   completed: boolean;
 }
 
-export interface CrmPerson {
+export interface ParkingLotItem {
   id: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  instagram: string;
-  phone: string;
-  cohortId: string;
-  payments: boolean[]; // 6 months
-  notes: string;
-  needsInvoice: boolean;
-  customFields: Record<string, string>;
+  text: string;
   createdAt: string;
 }
 
-export interface CrmCohort {
-  id: string;
-  name: string; // e.g. "MARZEC XI"
-  color: string;
-  createdAt: string;
-}
-
-export interface CrmCustomColumn {
-  id: string;
-  name: string;
+export interface DayRecord {
+  date: string; // YYYY-MM-DD
+  tasksTotal: number;
+  tasksCompleted: number;
+  won: boolean; // all tasks completed
+  points: number;
 }
 
 export interface StoreData {
   tasks: Task[];
   projects: Project[];
-  finances: FinanceEntry[];
-  notes: Note[];
-  noteFolders: NoteFolder[];
   goals: Goal[];
-  crmPersons: CrmPerson[];
-  crmCohorts: CrmCohort[];
-  crmColumns: CrmCustomColumn[];
+  parkingLot: ParkingLotItem[];
+  dayRecords: DayRecord[];
+  totalPoints: number;
 }
 
-const STORE_KEY = "command-center-data";
-
-const DEFAULT_PROJECTS: Project[] = [
-  {
-    id: "omg",
-    name: "PROJECT_B",
-    emoji: "O",
-    color: "#ec4899",
-    description: "Fashion/modeling education platform",
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: "itera",
-    name: "Itera City",
-    emoji: "I",
-    color: "#6366f1",
-    description: "AI city guide mobile app",
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: "apigo",
-    name: "APIGO",
-    emoji: "A",
-    color: "#10b981",
-    description: "Personal AI mobile apps platform",
-    createdAt: new Date().toISOString(),
-  },
-];
+const STORE_KEY = "slam5-data";
 
 const DEFAULT_DATA: StoreData = {
   tasks: [],
-  projects: DEFAULT_PROJECTS,
-  finances: [],
-  notes: [],
-  noteFolders: [
-    { id: "notes", name: "Notes", color: "#6366f1" },
-  ],
+  projects: [],
   goals: [],
-  crmPersons: [],
-  crmCohorts: [],
-  crmColumns: [],
+  parkingLot: [],
+  dayRecords: [],
+  totalPoints: 0,
 };
 
 export function loadStore(): StoreData {
@@ -166,4 +97,8 @@ export function saveStore(data: StoreData): void {
 
 export function generateId(): string {
   return Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+}
+
+export function getTodayKey(): string {
+  return new Date().toISOString().split("T")[0];
 }

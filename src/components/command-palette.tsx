@@ -5,8 +5,6 @@ import {
   LayoutDashboard,
   CheckSquare,
   FolderKanban,
-  DollarSign,
-  StickyNote,
   Trophy,
   Users,
   Search,
@@ -21,12 +19,10 @@ interface CommandPaletteProps {
 
 const COMMANDS = [
   { id: "dashboard", label: "Go to Dashboard", icon: LayoutDashboard, keywords: "home overview" },
-  { id: "tasks", label: "Go to Tasks", icon: CheckSquare, keywords: "todo list timer" },
+  { id: "tasks", label: "Go to Power List", icon: CheckSquare, keywords: "todo list timer tasks slam" },
+  { id: "leaderboard", label: "Go to Leaderboard", icon: Users, keywords: "friends rank score compete" },
   { id: "projects", label: "Go to Projects", icon: FolderKanban, keywords: "project business" },
-  { id: "finances", label: "Go to Finances", icon: DollarSign, keywords: "money income expense" },
-  { id: "notes", label: "Go to Notes", icon: StickyNote, keywords: "note write text document" },
-  { id: "goals", label: "Go to Goals", icon: Trophy, keywords: "goal vision mission long-term" },
-  { id: "crm", label: "Go to CRM", icon: Users, keywords: "crm people students contacts" },
+  { id: "goals", label: "Go to Goals", icon: Trophy, keywords: "goal vision mission long-term body mind money" },
 ];
 
 export function CommandPalette({ open, onClose, onNavigate }: CommandPaletteProps) {

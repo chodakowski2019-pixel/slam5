@@ -4,94 +4,71 @@ import React, { createContext, useContext, useState, useEffect, useCallback, use
 import {
   StoreData,
   Task,
+  TaskCategory,
   Project,
-  FinanceEntry,
-  Note,
-  NoteFolder,
   Goal,
   Milestone,
-  CrmPerson,
-  CrmCohort,
-  CrmCustomColumn,
+  ParkingLotItem,
+  DayRecord,
   generateId,
+  getTodayKey,
 } from "./store";
 
 interface StoreContextType {
   data: StoreData;
-  // Tasks
-  addTask: (title: string, projectId: string | null, timerMinutes: number) => void;
+  addTask: (title: string, projectId: string | null, timerMinutes: number, category: TaskCategory, isFrog: boolean) => void;
   toggleTask: (id: string) => void;
   deleteTask: (id: string) => void;
   updateTaskTimer: (id: string, secondsLeft: number | null, running: boolean) => void;
-  // Projects
+  setFrog: (id: string) => void;
   addProject: (name: string, emoji: string, color: string, description: string) => void;
   deleteProject: (id: string) => void;
-  // Finances
-  addFinance: (entry: Omit<FinanceEntry, "id">) => void;
-  deleteFinance: (id: string) => void;
-  // Notes
-  addNote: (folderId: string | null) => string;
-  updateNote: (id: string, title: string, content: string) => void;
-  deleteNote: (id: string) => void;
-  addNoteFolder: (name: string, color: string) => void;
-  deleteNoteFolder: (id: string) => void;
-  // Goals
   addGoal: (goal: Omit<Goal, "id" | "createdAt" | "milestones" | "completed" | "progress">) => void;
   updateGoal: (id: string, updates: Partial<Goal>) => void;
   deleteGoal: (id: string) => void;
   addMilestone: (goalId: string, title: string) => void;
   toggleMilestone: (goalId: string, milestoneId: string) => void;
   deleteMilestone: (goalId: string, milestoneId: string) => void;
-  // CRM
-  addCrmPerson: (person: Omit<CrmPerson, "id" | "createdAt" | "payments" | "needsInvoice" | "notes" | "customFields">) => void;
-  updateCrmPerson: (id: string, updates: Partial<CrmPerson>) => void;
-  deleteCrmPerson: (id: string) => void;
-  toggleCrmPayment: (personId: string, monthIndex: number) => void;
-  addCrmCohort: (name: string, color: string) => void;
-  deleteCrmCohort: (id: string) => void;
-  addCrmColumn: (name: string) => void;
-  deleteCrmColumn: (id: string) => void;
+  addParkingLotItem: (text: string) => void;
+  deleteParkingLotItem: (id: string) => void;
+  clearParkingLot: () => void;
+  getTodayRecord: () => DayRecord | undefined;
+  getWeekWins: () => number;
+  getMonthWins: () => number;
+  getCurrentStreak: () => number;
 }
 
 const StoreContext = createContext<StoreContextType | null>(null);
 
-const EMPTY: StoreData = { tasks: [], projects: [], finances: [], notes: [], noteFolders: [], goals: [], crmPersons: [], crmCohorts: [], crmColumns: [] };
+const EMPTY: StoreData = { tasks: [], projects: [], goals: [], parkingLot: [], dayRecords: [], totalPoints: 0 };
 
 export function StoreProvider({ children }: { children: React.ReactNode }) {
   const [data, setData] = useState<StoreData>(EMPTY);
   const [loaded, setLoaded] = useState(false);
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const dataRef = useRef(data);
-  dataRef.current = data;
 
-  // Load from API on mount
   useEffect(() => {
     fetch("/api/data")
       .then((r) => r.json())
       .then((d) => {
-        // Ensure new fields exist for old data files
         setData({
-          ...d,
-          notes: d.notes || [],
-          noteFolders: d.noteFolders || [{ id: "notes", name: "Notes", color: "#6366f1" }],
+          tasks: d.tasks || [],
+          projects: d.projects || [],
           goals: d.goals || [],
-          crmPersons: d.crmPersons || [],
-          crmCohorts: d.crmCohorts || [],
-          crmColumns: d.crmColumns || [],
+          parkingLot: d.parkingLot || [],
+          dayRecords: d.dayRecords || [],
+          totalPoints: d.totalPoints || 0,
         });
         setLoaded(true);
       })
       .catch(() => setLoaded(true));
   }, []);
 
-  // Debounced save to API
   useEffect(() => {
     if (!loaded) return;
     if (saveTimer.current) clearTimeout(saveTimer.current);
-
     const hasRunningTimer = data.tasks.some((t) => t.timerRunning);
     const delay = hasRunningTimer ? 2000 : 300;
-
     saveTimer.current = setTimeout(() => {
       fetch("/api/data", {
         method: "POST",
@@ -99,25 +76,49 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
         body: JSON.stringify(data),
       }).catch(() => {});
     }, delay);
-
-    return () => {
-      if (saveTimer.current) clearTimeout(saveTimer.current);
-    };
+    return () => { if (saveTimer.current) clearTimeout(saveTimer.current); };
   }, [data, loaded]);
 
-  // Tasks
+  // Update day record when tasks change
+  useEffect(() => {
+    if (!loaded) return;
+    const today = getTodayKey();
+    const todayTasks = data.tasks.filter((t) => t.createdAt.startsWith(today));
+    const completed = todayTasks.filter((t) => t.completed).length;
+    const total = todayTasks.length;
+    if (total === 0) return;
+
+    setData((prev) => {
+      const existing = prev.dayRecords.find((r) => r.date === today);
+      const record: DayRecord = {
+        date: today,
+        tasksTotal: total,
+        tasksCompleted: completed,
+        won: total > 0 && completed === total,
+        points: completed * 10,
+      };
+      const dayRecords = existing
+        ? prev.dayRecords.map((r) => (r.date === today ? record : r))
+        : [...prev.dayRecords, record];
+      return { ...prev, dayRecords };
+    });
+  }, [data.tasks, loaded]);
+
   const addTask = useCallback(
-    (title: string, projectId: string | null, timerMinutes: number) => {
+    (title: string, projectId: string | null, timerMinutes: number, category: TaskCategory, isFrog: boolean) => {
       const task: Task = {
         id: generateId(),
         title,
         completed: false,
         projectId,
+        category,
+        isFrog,
         timerMinutes,
         timerSecondsLeft: null,
         timerRunning: false,
         createdAt: new Date().toISOString(),
         completedAt: null,
+        points: 0,
       };
       setData((prev) => ({ ...prev, tasks: [task, ...prev.tasks] }));
     },
@@ -125,19 +126,21 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   );
 
   const toggleTask = useCallback((id: string) => {
-    setData((prev) => ({
-      ...prev,
-      tasks: prev.tasks.map((t) =>
-        t.id === id
-          ? {
-              ...t,
-              completed: !t.completed,
-              completedAt: !t.completed ? new Date().toISOString() : null,
-              timerRunning: false,
-            }
-          : t
-      ),
-    }));
+    setData((prev) => {
+      const task = prev.tasks.find((t) => t.id === id);
+      if (!task) return prev;
+      const completing = !task.completed;
+      const pointsDelta = completing ? 10 : -10;
+      return {
+        ...prev,
+        totalPoints: prev.totalPoints + pointsDelta,
+        tasks: prev.tasks.map((t) =>
+          t.id === id
+            ? { ...t, completed: completing, completedAt: completing ? new Date().toISOString() : null, timerRunning: false, points: completing ? 10 : 0 }
+            : t
+        ),
+      };
+    });
   }, []);
 
   const deleteTask = useCallback((id: string) => {
@@ -156,17 +159,16 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     []
   );
 
-  // Projects
+  const setFrog = useCallback((id: string) => {
+    setData((prev) => ({
+      ...prev,
+      tasks: prev.tasks.map((t) => ({ ...t, isFrog: t.id === id })),
+    }));
+  }, []);
+
   const addProject = useCallback(
     (name: string, emoji: string, color: string, description: string) => {
-      const project: Project = {
-        id: generateId(),
-        name,
-        emoji,
-        color,
-        description,
-        createdAt: new Date().toISOString(),
-      };
+      const project: Project = { id: generateId(), name, emoji, color, description, createdAt: new Date().toISOString() };
       setData((prev) => ({ ...prev, projects: [...prev.projects, project] }));
     },
     []
@@ -176,74 +178,16 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     setData((prev) => ({ ...prev, projects: prev.projects.filter((p) => p.id !== id) }));
   }, []);
 
-  // Finances
-  const addFinance = useCallback((entry: Omit<FinanceEntry, "id">) => {
-    const finance: FinanceEntry = { ...entry, id: generateId() };
-    setData((prev) => ({ ...prev, finances: [finance, ...prev.finances] }));
-  }, []);
-
-  const deleteFinance = useCallback((id: string) => {
-    setData((prev) => ({ ...prev, finances: prev.finances.filter((f) => f.id !== id) }));
-  }, []);
-
-  // Notes
-  const addNote = useCallback((folderId: string | null): string => {
-    const id = generateId();
-    const note: Note = {
-      id,
-      title: "",
-      content: "",
-      folderId,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
-    setData((prev) => ({ ...prev, notes: [note, ...prev.notes] }));
-    return id;
-  }, []);
-
-  const updateNote = useCallback((id: string, title: string, content: string) => {
-    setData((prev) => ({
-      ...prev,
-      notes: prev.notes.map((n) =>
-        n.id === id ? { ...n, title, content, updatedAt: new Date().toISOString() } : n
-      ),
-    }));
-  }, []);
-
-  const deleteNote = useCallback((id: string) => {
-    setData((prev) => ({ ...prev, notes: prev.notes.filter((n) => n.id !== id) }));
-  }, []);
-
-  const addNoteFolder = useCallback((name: string, color: string) => {
-    const folder: NoteFolder = { id: generateId(), name, color };
-    setData((prev) => ({ ...prev, noteFolders: [...prev.noteFolders, folder] }));
-  }, []);
-
-  const deleteNoteFolder = useCallback((id: string) => {
-    setData((prev) => ({ ...prev, noteFolders: prev.noteFolders.filter((f) => f.id !== id) }));
-  }, []);
-
-  // Goals
   const addGoal = useCallback(
     (goal: Omit<Goal, "id" | "createdAt" | "milestones" | "completed" | "progress">) => {
-      const newGoal: Goal = {
-        ...goal,
-        id: generateId(),
-        milestones: [],
-        progress: 0,
-        completed: false,
-        createdAt: new Date().toISOString(),
-      };
+      const newGoal: Goal = { ...goal, id: generateId(), milestones: [], progress: 0, completed: false, createdAt: new Date().toISOString() };
       setData((prev) => ({ ...prev, goals: [newGoal, ...prev.goals] }));
     },
     []
   );
 
   const updateGoal = useCallback((id: string, updates: Partial<Goal>) => {
-    setData((prev) => ({
-      ...prev,
-      goals: prev.goals.map((g) => (g.id === id ? { ...g, ...updates } : g)),
-    }));
+    setData((prev) => ({ ...prev, goals: prev.goals.map((g) => (g.id === id ? { ...g, ...updates } : g)) }));
   }, []);
 
   const deleteGoal = useCallback((id: string) => {
@@ -254,9 +198,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     const ms: Milestone = { id: generateId(), title, completed: false };
     setData((prev) => ({
       ...prev,
-      goals: prev.goals.map((g) =>
-        g.id === goalId ? { ...g, milestones: [...g.milestones, ms] } : g
-      ),
+      goals: prev.goals.map((g) => g.id === goalId ? { ...g, milestones: [...g.milestones, ms] } : g),
     }));
   }, []);
 
@@ -265,9 +207,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       ...prev,
       goals: prev.goals.map((g) => {
         if (g.id !== goalId) return g;
-        const milestones = g.milestones.map((m) =>
-          m.id === milestoneId ? { ...m, completed: !m.completed } : m
-        );
+        const milestones = g.milestones.map((m) => m.id === milestoneId ? { ...m, completed: !m.completed } : m);
         const done = milestones.filter((m) => m.completed).length;
         const progress = milestones.length > 0 ? Math.round((done / milestones.length) * 100) : g.progress;
         return { ...g, milestones, progress };
@@ -288,63 +228,65 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     }));
   }, []);
 
-  // CRM
-  const addCrmPerson = useCallback(
-    (person: Omit<CrmPerson, "id" | "createdAt" | "payments" | "needsInvoice" | "notes" | "customFields">) => {
-      const p: CrmPerson = {
-        ...person,
-        id: generateId(),
-        payments: [false, false, false, false, false, false],
-        needsInvoice: false,
-        notes: "",
-        customFields: {},
-        createdAt: new Date().toISOString(),
-      };
-      setData((prev) => ({ ...prev, crmPersons: [...prev.crmPersons, p] }));
-    },
-    []
-  );
-
-  const updateCrmPerson = useCallback((id: string, updates: Partial<CrmPerson>) => {
-    setData((prev) => ({
-      ...prev,
-      crmPersons: prev.crmPersons.map((p) => (p.id === id ? { ...p, ...updates } : p)),
-    }));
+  const addParkingLotItem = useCallback((text: string) => {
+    const item: ParkingLotItem = { id: generateId(), text, createdAt: new Date().toISOString() };
+    setData((prev) => ({ ...prev, parkingLot: [item, ...prev.parkingLot] }));
   }, []);
 
-  const deleteCrmPerson = useCallback((id: string) => {
-    setData((prev) => ({ ...prev, crmPersons: prev.crmPersons.filter((p) => p.id !== id) }));
+  const deleteParkingLotItem = useCallback((id: string) => {
+    setData((prev) => ({ ...prev, parkingLot: prev.parkingLot.filter((i) => i.id !== id) }));
   }, []);
 
-  const toggleCrmPayment = useCallback((personId: string, monthIndex: number) => {
-    setData((prev) => ({
-      ...prev,
-      crmPersons: prev.crmPersons.map((p) => {
-        if (p.id !== personId) return p;
-        const payments = [...p.payments];
-        payments[monthIndex] = !payments[monthIndex];
-        return { ...p, payments };
-      }),
-    }));
+  const clearParkingLot = useCallback(() => {
+    setData((prev) => ({ ...prev, parkingLot: [] }));
   }, []);
 
-  const addCrmCohort = useCallback((name: string, color: string) => {
-    const cohort: CrmCohort = { id: generateId(), name, color, createdAt: new Date().toISOString() };
-    setData((prev) => ({ ...prev, crmCohorts: [...prev.crmCohorts, cohort] }));
-  }, []);
+  const getTodayRecord = useCallback(() => {
+    return data.dayRecords.find((r) => r.date === getTodayKey());
+  }, [data.dayRecords]);
 
-  const deleteCrmCohort = useCallback((id: string) => {
-    setData((prev) => ({ ...prev, crmCohorts: prev.crmCohorts.filter((c) => c.id !== id) }));
-  }, []);
+  const getWeekWins = useCallback(() => {
+    const now = new Date();
+    const weekAgo = new Date(now);
+    weekAgo.setDate(weekAgo.getDate() - 7);
+    return data.dayRecords.filter((r) => {
+      const d = new Date(r.date);
+      return d >= weekAgo && d <= now && r.won;
+    }).length;
+  }, [data.dayRecords]);
 
-  const addCrmColumn = useCallback((name: string) => {
-    const col: CrmCustomColumn = { id: generateId(), name };
-    setData((prev) => ({ ...prev, crmColumns: [...prev.crmColumns, col] }));
-  }, []);
+  const getMonthWins = useCallback(() => {
+    const now = new Date();
+    const monthAgo = new Date(now);
+    monthAgo.setDate(monthAgo.getDate() - 28);
+    let weekWins = 0;
+    for (let w = 0; w < 4; w++) {
+      const weekStart = new Date(monthAgo);
+      weekStart.setDate(weekStart.getDate() + w * 7);
+      const weekEnd = new Date(weekStart);
+      weekEnd.setDate(weekEnd.getDate() + 7);
+      const totalCompleted = data.dayRecords
+        .filter((r) => { const d = new Date(r.date); return d >= weekStart && d < weekEnd; })
+        .reduce((sum, r) => sum + r.tasksCompleted, 0);
+      if (totalCompleted >= 30) weekWins++;
+    }
+    return weekWins;
+  }, [data.dayRecords]);
 
-  const deleteCrmColumn = useCallback((id: string) => {
-    setData((prev) => ({ ...prev, crmColumns: prev.crmColumns.filter((c) => c.id !== id) }));
-  }, []);
+  const getCurrentStreak = useCallback(() => {
+    let streak = 0;
+    const today = new Date();
+    for (let i = 0; i < 365; i++) {
+      const d = new Date(today);
+      d.setDate(d.getDate() - i);
+      const key = d.toISOString().split("T")[0];
+      const record = data.dayRecords.find((r) => r.date === key);
+      if (record && record.won) { streak++; }
+      else if (i === 0) { continue; }
+      else { break; }
+    }
+    return streak;
+  }, [data.dayRecords]);
 
   if (!loaded) {
     return (
@@ -357,34 +299,11 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   return (
     <StoreContext.Provider
       value={{
-        data,
-        addTask,
-        toggleTask,
-        deleteTask,
-        updateTaskTimer,
-        addProject,
-        deleteProject,
-        addFinance,
-        deleteFinance,
-        addNote,
-        updateNote,
-        deleteNote,
-        addNoteFolder,
-        deleteNoteFolder,
-        addGoal,
-        updateGoal,
-        deleteGoal,
-        addMilestone,
-        toggleMilestone,
-        deleteMilestone,
-        addCrmPerson,
-        updateCrmPerson,
-        deleteCrmPerson,
-        toggleCrmPayment,
-        addCrmCohort,
-        deleteCrmCohort,
-        addCrmColumn,
-        deleteCrmColumn,
+        data, addTask, toggleTask, deleteTask, updateTaskTimer, setFrog,
+        addProject, deleteProject,
+        addGoal, updateGoal, deleteGoal, addMilestone, toggleMilestone, deleteMilestone,
+        addParkingLotItem, deleteParkingLotItem, clearParkingLot,
+        getTodayRecord, getWeekWins, getMonthWins, getCurrentStreak,
       }}
     >
       {children}
