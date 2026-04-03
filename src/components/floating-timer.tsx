@@ -4,15 +4,9 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import { MonitorUp, X } from "lucide-react";
 import { useStore } from "@/lib/store-context";
 
-const CHANNEL_NAME = "cc-timer";
-
 export function FloatingTimer() {
-  const { data, updateTaskTimer } = useStore();
+  const { data } = useStore();
   const runningTask = data.tasks.find((t) => t.timerRunning);
-  const [popupOpen, setPopupOpen] = useState(false);
-  const popupRef = useRef<Window | null>(null);
-  const channelRef = useRef<BroadcastChannel | null>(null);
-
   const pausedTask = data.tasks.find(
     (t) =>
       t.timerSecondsLeft !== null &&
@@ -22,132 +16,166 @@ export function FloatingTimer() {
   );
   const activeTask = runningTask || pausedTask;
 
-  // Setup BroadcastChannel — send data to popup, receive commands back
-  useEffect(() => {
-    const channel = new BroadcastChannel(CHANNEL_NAME);
-    channelRef.current = channel;
+  const [pipActive, setPipActive] = useState(false);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const animFrameRef = useRef<number>(0);
 
-    channel.onmessage = (e) => {
-      const { type } = e.data;
+  // Draw timer on canvas
+  const drawTimer = useCallback(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
 
-      if (type === "request-sync") {
-        // Popup just opened, send current state
-        sendSync(channel);
-        return;
-      }
+    const task = data.tasks.find((t) => t.timerRunning) || data.tasks.find(
+      (t) => t.timerSecondsLeft !== null && t.timerSecondsLeft > 0 && !t.timerRunning && !t.completed
+    );
 
-      if (type === "pause") {
-        const running = data.tasks.find((t) => t.timerRunning);
-        if (running) {
-          updateTaskTimer(running.id, running.timerSecondsLeft, false);
-        } else {
-          const paused = data.tasks.find(
-            (t) =>
-              t.timerSecondsLeft !== null &&
-              t.timerSecondsLeft > 0 &&
-              !t.timerRunning &&
-              !t.completed
-          );
-          if (paused) {
-            updateTaskTimer(paused.id, paused.timerSecondsLeft, true);
-          }
-        }
-      } else if (type === "stop") {
-        const running = data.tasks.find((t) => t.timerRunning);
-        if (running) {
-          updateTaskTimer(running.id, running.timerMinutes * 60, false);
-        }
-        closePopup();
-      }
-    };
+    const seconds = task?.timerSecondsLeft ?? 0;
+    const total = (task?.timerMinutes ?? 0) * 60;
+    const running = !!data.tasks.find((t) => t.timerRunning);
+    const title = task?.title || "";
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    const timeStr = `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
+    const pct = total > 0 ? seconds / total : 0;
 
-    return () => channel.close();
-  }, [data.tasks, updateTaskTimer]);
+    // Background
+    ctx.fillStyle = "#1a1a2e";
+    ctx.fillRect(0, 0, 400, 200);
 
-  const sendSync = useCallback(
-    (channel?: BroadcastChannel) => {
-      const ch = channel || channelRef.current;
-      if (!ch) return;
-      const task = activeTask;
-      ch.postMessage({
-        type: "sync",
-        timer: {
-          title: task?.title || "",
-          secondsLeft: task?.timerSecondsLeft ?? 0,
-          totalSeconds: (task?.timerMinutes ?? 0) * 60,
-          running: !!runningTask,
-        },
-      });
-    },
-    [activeTask, runningTask]
-  );
+    // Progress bar background
+    ctx.fillStyle = "#2a2a4a";
+    ctx.beginPath();
+    ctx.roundRect(20, 150, 360, 12, 6);
+    ctx.fill();
 
-  // Push timer updates to popup every 250ms
-  useEffect(() => {
-    if (!popupOpen) return;
-    const interval = setInterval(() => sendSync(), 250);
-    return () => clearInterval(interval);
-  }, [popupOpen, sendSync]);
+    // Progress bar fill
+    const gradient = ctx.createLinearGradient(20, 0, 380, 0);
+    gradient.addColorStop(0, "#818cf8");
+    gradient.addColorStop(1, "#a78bfa");
+    ctx.fillStyle = gradient;
+    ctx.beginPath();
+    ctx.roundRect(20, 150, 360 * pct, 12, 6);
+    ctx.fill();
 
-  // Detect popup closed by user
-  useEffect(() => {
-    if (!popupOpen) return;
-    const interval = setInterval(() => {
-      if (popupRef.current && popupRef.current.closed) {
-        popupRef.current = null;
-        setPopupOpen(false);
-      }
-    }, 500);
-    return () => clearInterval(interval);
-  }, [popupOpen]);
+    // Time
+    ctx.fillStyle = running ? "#818cf8" : "#60607a";
+    ctx.font = "bold 64px monospace";
+    ctx.textAlign = "center";
+    ctx.fillText(timeStr, 200, 85);
 
-  const openPopup = useCallback(() => {
-    if (popupRef.current && !popupRef.current.closed) {
-      popupRef.current.focus();
-      return;
+    // Title
+    ctx.fillStyle = "#a0a0c0";
+    ctx.font = "20px sans-serif";
+    const displayTitle = title.length > 28 ? title.slice(0, 28) + "..." : title;
+    ctx.fillText(displayTitle, 200, 130);
+
+    // Status dot
+    if (running) {
+      ctx.fillStyle = "#818cf8";
+      ctx.beginPath();
+      ctx.arc(20, 20, 6, 0, Math.PI * 2);
+      ctx.fill();
     }
 
+    animFrameRef.current = requestAnimationFrame(drawTimer);
+  }, [data.tasks]);
+
+  // Setup canvas and video
+  useEffect(() => {
+    if (!canvasRef.current) {
+      const canvas = document.createElement("canvas");
+      canvas.width = 400;
+      canvas.height = 200;
+      canvasRef.current = canvas;
+    }
+
+    if (!videoRef.current) {
+      const video = document.createElement("video");
+      video.muted = true;
+      video.playsInline = true;
+      videoRef.current = video;
+
+      const stream = canvasRef.current.captureStream(30);
+      video.srcObject = stream;
+    }
+
+    return () => {
+      if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
+    };
+  }, []);
+
+  // Start drawing when PiP is active or task is running
+  useEffect(() => {
+    if (activeTask && pipActive) {
+      animFrameRef.current = requestAnimationFrame(drawTimer);
+    }
+    return () => {
+      if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
+    };
+  }, [activeTask, pipActive, drawTimer]);
+
+  const enterPiP = useCallback(async () => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    try {
+      await video.play();
+      if (video.requestPictureInPicture) {
+        await video.requestPictureInPicture();
+        setPipActive(true);
+
+        video.addEventListener("leavepictureinpicture", () => {
+          setPipActive(false);
+        }, { once: true });
+      }
+    } catch (err) {
+      console.error("PiP failed:", err);
+      // Fallback — open popup window
+      openPopup();
+    }
+  }, []);
+
+  const exitPiP = useCallback(async () => {
+    try {
+      if (document.pictureInPictureElement) {
+        await document.exitPictureInPicture();
+      }
+    } catch {}
+    setPipActive(false);
+  }, []);
+
+  // Fallback popup for browsers without PiP
+  const openPopup = useCallback(() => {
     const w = 240;
     const h = 100;
     const left = window.screen.width - w - 20;
     const top = 40;
-
-    const popup = window.open(
+    window.open(
       "/timer",
       "cc-timer",
       `width=${w},height=${h},left=${left},top=${top},menubar=no,toolbar=no,location=no,status=no,resizable=yes`
     );
-
-    if (popup) {
-      popupRef.current = popup;
-      setPopupOpen(true);
-    }
-  }, []);
-
-  const closePopup = useCallback(() => {
-    if (popupRef.current && !popupRef.current.closed) {
-      popupRef.current.close();
-    }
-    popupRef.current = null;
-    setPopupOpen(false);
   }, []);
 
   return (
     <>
       {activeTask && (
         <div className="fixed bottom-4 right-4 z-50">
-          {popupOpen ? (
+          {pipActive ? (
             <button
-              onClick={closePopup}
-              className="flex items-center gap-2 px-3 py-2 rounded-lg bg-card border border-border shadow-lg hover:bg-accent transition-colors text-sm"
+              onClick={exitPiP}
+              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-card border border-border shadow-lg hover:bg-accent transition-all duration-200 text-sm"
             >
               <X size={14} />
-              Close float
+              Close PiP
             </button>
           ) : (
             <button
-              onClick={openPopup}
-              className="flex items-center gap-2 px-3 py-2 rounded-lg bg-indigo-500 hover:bg-indigo-600 shadow-lg transition-colors text-sm text-white"
+              onClick={enterPiP}
+              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-indigo-500 hover:bg-indigo-400 shadow-lg shadow-indigo-500/20 transition-all duration-200 text-sm text-white hover:scale-[1.02] active:scale-[0.98]"
             >
               <MonitorUp size={14} />
               Float timer

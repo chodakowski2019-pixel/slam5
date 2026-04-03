@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { Plus, Trash2, Clock, ParkingSquare } from "lucide-react";
+import { useState, useRef } from "react";
+import { Plus, Trash2, Clock, ParkingSquare, GripVertical } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -19,7 +19,8 @@ const CATEGORY_OPTIONS: { value: TaskCategory; label: string; emoji: string }[] 
 const MAX_DAILY_TASKS = 7;
 
 export function TasksView() {
-  const { data, addTask, toggleTask, deleteTask, setFrog, addParkingLotItem, deleteParkingLotItem, clearParkingLot } = useStore();
+  const { data, addTask, toggleTask, deleteTask, setFrog, reorderTasks, addParkingLotItem, deleteParkingLotItem, clearParkingLot } = useStore();
+  const dragId = useRef<string | null>(null);
   const [newTitle, setNewTitle] = useState("");
   const [newMinutes, setNewMinutes] = useState(25);
   const [newProjectId, setNewProjectId] = useState<string | null>(null);
@@ -37,7 +38,9 @@ export function TasksView() {
 
   const handleAdd = () => {
     if (!newTitle.trim() || atLimit) return;
-    addTask(newTitle.trim(), newProjectId, newMinutes, newCategory, newIsFrog);
+    // First 3 tasks auto-get frog
+    const autoFrog = todayTasks.length < 3 ? true : newIsFrog;
+    addTask(newTitle.trim(), newProjectId, newMinutes, newCategory, autoFrog);
     setNewTitle("");
     setNewMinutes(25);
     setNewProjectId(null);
@@ -105,24 +108,29 @@ export function TasksView() {
             <Plus size={16} />
           </button>
         </div>
-        <div className="flex gap-2 items-center">
-          <div className="flex gap-1">
-            {CATEGORY_OPTIONS.map((cat) => (
-              <button
-                key={cat.value}
-                onClick={() => setNewCategory(cat.value)}
-                className={cn(
-                  "px-3 py-1.5 rounded-xl text-xs transition-all duration-200",
-                  newCategory === cat.value
-                    ? "bg-indigo-500/15 text-indigo-400 font-medium"
-                    : "text-muted-foreground hover:bg-accent"
-                )}
-              >
-                {cat.emoji} {cat.label}
-              </button>
-            ))}
-          </div>
-          <div className="w-px h-4 bg-border" />
+        <div className="flex gap-2 items-center flex-wrap">
+          {data.projects.length > 0 && (
+            <>
+              <div className="flex gap-1">
+                {data.projects.map((p) => (
+                  <button
+                    key={p.id}
+                    onClick={() => setNewProjectId(newProjectId === p.id ? null : p.id)}
+                    className={cn(
+                      "px-3 py-1.5 rounded-xl text-xs transition-all duration-200",
+                      newProjectId === p.id
+                        ? "font-medium"
+                        : "text-muted-foreground hover:bg-accent"
+                    )}
+                    style={newProjectId === p.id ? { backgroundColor: p.color + "20", color: p.color } : {}}
+                  >
+                    {p.emoji} {p.name}
+                  </button>
+                ))}
+              </div>
+              <div className="w-px h-4 bg-border" />
+            </>
+          )}
           <button
             onClick={() => setNewIsFrog(!newIsFrog)}
             className={cn(
@@ -134,19 +142,6 @@ export function TasksView() {
           >
             🐸 Frog
           </button>
-          <div className="w-px h-4 bg-border" />
-          <select
-            value={newProjectId || ""}
-            onChange={(e) => setNewProjectId(e.target.value || null)}
-            className="bg-card border border-border rounded-xl px-3 py-1.5 text-xs outline-none"
-          >
-            <option value="">No project</option>
-            {data.projects.map((p) => (
-              <option key={p.id} value={p.id}>
-                {p.emoji} {p.name}
-              </option>
-            ))}
-          </select>
         </div>
       </div>
 
@@ -158,15 +153,23 @@ export function TasksView() {
           </div>
         )}
         {activeTasks
-          .sort((a, b) => (a.isFrog === b.isFrog ? 0 : a.isFrog ? -1 : 1))
           .map((task) => {
             const project = getProject(task.projectId);
             const catEmoji = task.category === "body" ? "🏋️" : task.category === "mind" ? "🧠" : "💰";
             return (
               <div
                 key={task.id}
+                draggable
+                onDragStart={() => { dragId.current = task.id; }}
+                onDragOver={(e) => { e.preventDefault(); }}
+                onDrop={() => {
+                  if (dragId.current && dragId.current !== task.id) {
+                    reorderTasks(dragId.current, task.id);
+                  }
+                  dragId.current = null;
+                }}
                 className={cn(
-                  "group flex items-center gap-3 px-4 py-3.5 rounded-2xl border transition-all duration-200",
+                  "group flex items-center gap-3 px-4 py-3.5 rounded-2xl border transition-all duration-200 cursor-grab active:cursor-grabbing",
                   task.timerRunning
                     ? "border-indigo-500/20 bg-indigo-500/5"
                     : task.isFrog
@@ -174,6 +177,7 @@ export function TasksView() {
                     : "border-transparent hover:bg-card"
                 )}
               >
+                <GripVertical size={14} className="text-muted-foreground/40 group-hover:text-muted-foreground transition-colors flex-shrink-0" />
                 <Checkbox
                   checked={false}
                   onCheckedChange={() => toggleTask(task.id)}

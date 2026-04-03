@@ -23,6 +23,7 @@ interface StoreContextType {
   deleteTask: (id: string) => void;
   updateTaskTimer: (id: string, secondsLeft: number | null, running: boolean) => void;
   setFrog: (id: string) => void;
+  reorderTasks: (fromId: string, toId: string) => void;
   addProject: (name: string, emoji: string, color: string, description: string) => void;
   deleteProject: (id: string) => void;
   addGoal: (goal: Omit<Goal, "id" | "createdAt" | "milestones" | "completed" | "progress">) => void;
@@ -184,6 +185,18 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     }));
   }, []);
 
+  const reorderTasks = useCallback((fromId: string, toId: string) => {
+    setData((prev) => {
+      const tasks = [...prev.tasks];
+      const fromIdx = tasks.findIndex((t) => t.id === fromId);
+      const toIdx = tasks.findIndex((t) => t.id === toId);
+      if (fromIdx === -1 || toIdx === -1) return prev;
+      const [moved] = tasks.splice(fromIdx, 1);
+      tasks.splice(toIdx, 0, moved);
+      return { ...prev, tasks };
+    });
+  }, []);
+
   const addProject = useCallback(
     (name: string, emoji: string, color: string, description: string) => {
       const project: Project = { id: generateId(), name, emoji, color, description, createdAt: new Date().toISOString() };
@@ -325,7 +338,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   return (
     <StoreContext.Provider
       value={{
-        data, addTask, toggleTask, deleteTask, updateTaskTimer, setFrog,
+        data, addTask, toggleTask, deleteTask, updateTaskTimer, setFrog, reorderTasks,
         addProject, deleteProject,
         addGoal, updateGoal, deleteGoal, addMilestone, toggleMilestone, deleteMilestone,
         addParkingLotItem, deleteParkingLotItem, clearParkingLot,
