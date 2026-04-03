@@ -1,6 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from "react";
+import { supabase } from "./supabase";
 import {
   StoreData,
   Task,
@@ -44,15 +45,25 @@ const StoreContext = createContext<StoreContextType | null>(null);
 
 const EMPTY: StoreData = { tasks: [], projects: [], goals: [], parkingLot: [], dayRecords: [], totalPoints: 0 };
 
+async function getAuthHeaders(): Promise<Record<string, string>> {
+  const { data } = await supabase.auth.getSession();
+  const token = data.session?.access_token;
+  return token
+    ? { "Content-Type": "application/json", Authorization: `Bearer ${token}` }
+    : { "Content-Type": "application/json" };
+}
+
 export function StoreProvider({ children }: { children: React.ReactNode }) {
   const [data, setData] = useState<StoreData>(EMPTY);
   const [loaded, setLoaded] = useState(false);
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
-    fetch("/api/data")
-      .then((r) => r.json())
-      .then((d) => {
+    (async () => {
+      try {
+        const headers = await getAuthHeaders();
+        const r = await fetch("/api/data", { headers });
+        const d = await r.json();
         setData({
           tasks: d.tasks || [],
           projects: d.projects || [],
@@ -60,10 +71,12 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
           parkingLot: d.parkingLot || [],
           dayRecords: d.dayRecords || [],
           totalPoints: d.totalPoints || 0,
+          profile: d.profile,
+          subscription: d.subscription,
         });
-        setLoaded(true);
-      })
-      .catch(() => setLoaded(true));
+      } catch {}
+      setLoaded(true);
+    })();
   }, []);
 
   useEffect(() => {
@@ -71,12 +84,15 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     if (saveTimer.current) clearTimeout(saveTimer.current);
     const hasRunningTimer = data.tasks.some((t) => t.timerRunning);
     const delay = hasRunningTimer ? 2000 : 300;
-    saveTimer.current = setTimeout(() => {
-      fetch("/api/data", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      }).catch(() => {});
+    saveTimer.current = setTimeout(async () => {
+      try {
+        const headers = await getAuthHeaders();
+        await fetch("/api/data", {
+          method: "POST",
+          headers,
+          body: JSON.stringify(data),
+        });
+      } catch {}
     }, delay);
     return () => { if (saveTimer.current) clearTimeout(saveTimer.current); };
   }, [data, loaded]);

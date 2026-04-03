@@ -128,7 +128,7 @@ export function OnboardingView({ onComplete }: OnboardingProps) {
                   🏋️ Body
                 </label>
                 <Input
-                  placeholder="e.g. Lose 20 lbs, run a 5K"
+                  placeholder="e.g. Run a 5K, do 50 pushups"
                   value={bodyGoal}
                   onChange={(e) => setBodyGoal(e.target.value)}
                   className="bg-card"
@@ -139,7 +139,7 @@ export function OnboardingView({ onComplete }: OnboardingProps) {
                   🧠 Mind
                 </label>
                 <Input
-                  placeholder="e.g. Read 1 book a month"
+                  placeholder="e.g. Read 1 book a month, meditate daily"
                   value={mindGoal}
                   onChange={(e) => setMindGoal(e.target.value)}
                   className="bg-card"
@@ -150,7 +150,7 @@ export function OnboardingView({ onComplete }: OnboardingProps) {
                   💰 Money
                 </label>
                 <Input
-                  placeholder="e.g. Hit $10K/month"
+                  placeholder="e.g. Launch my product, hit $10K/month"
                   value={moneyGoal}
                   onChange={(e) => setMoneyGoal(e.target.value)}
                   className="bg-card"
@@ -169,38 +169,20 @@ export function OnboardingView({ onComplete }: OnboardingProps) {
                 We&apos;ll remind you.
               </p>
             </div>
-            <div className="flex gap-3">
-              <button
-                onClick={() => { setPlanTime("morning"); if (!planHour || planHour === "21:00") setPlanHour("08:00"); }}
-                className={`flex-1 p-5 rounded-2xl border text-center transition-all duration-200 ${
-                  planTime === "morning"
-                    ? "border-indigo-500/30 bg-indigo-500/10"
-                    : "border-border hover:bg-accent/50"
-                }`}
-              >
-                <span className="text-3xl block mb-2">🌅</span>
-                <span className="text-sm font-medium">Morning</span>
-              </button>
-              <button
-                onClick={() => { setPlanTime("evening"); if (!planHour || planHour === "08:00") setPlanHour("21:00"); }}
-                className={`flex-1 p-5 rounded-2xl border text-center transition-all duration-200 ${
-                  planTime === "evening"
-                    ? "border-indigo-500/30 bg-indigo-500/10"
-                    : "border-border hover:bg-accent/50"
-                }`}
-              >
-                <span className="text-3xl block mb-2">🌙</span>
-                <span className="text-sm font-medium">Evening</span>
-              </button>
-            </div>
             <div>
-              <label className="text-sm font-medium mb-1.5 block">What time?</label>
+              <label className="text-sm font-medium mb-2 block">Pick your planning time</label>
               <Input
                 type="time"
                 value={planHour}
-                onChange={(e) => setPlanHour(e.target.value)}
-                className="text-lg py-6 bg-card w-40"
+                onChange={(e) => {
+                  setPlanHour(e.target.value);
+                  const h = parseInt(e.target.value.split(":")[0]);
+                  setPlanTime(h < 15 ? "morning" : "evening");
+                }}
+                className="text-2xl py-8 bg-card w-48 text-center font-mono"
+                autoFocus
               />
+              <p className="text-xs text-muted-foreground mt-2">We&apos;ll text you if you haven&apos;t planned your tasks by then.</p>
             </div>
           </div>
         )}

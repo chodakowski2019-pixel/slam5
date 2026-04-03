@@ -26,14 +26,11 @@ export default function LandingPage() {
 
       {/* Hero */}
       <section className="max-w-3xl mx-auto text-center px-6 pt-28 pb-20">
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-indigo-500/20 bg-indigo-500/10 text-indigo-400 text-xs font-medium mb-8">
-          Built for brains that work differently
-        </div>
         <h1 className="text-5xl md:text-7xl font-heading font-bold tracking-tight leading-[1.1] mb-6">
-          You know what to do.
+          You know what to do
           <br />
           <span className="bg-gradient-to-r from-indigo-400 to-violet-400 bg-clip-text text-transparent">
-            You just can&apos;t start.
+            You just can&apos;t start
           </span>
         </h1>
         <p className="text-lg text-muted-foreground max-w-xl mx-auto mb-10 leading-relaxed">

@@ -1,24 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
-import fs from "fs";
-import path from "path";
+import { createClient } from "@supabase/supabase-js";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2026-03-25.dahlia",
 });
 
-const DATA_PATH = path.join(process.cwd(), "data.json");
-
-function readData() {
-  try {
-    return JSON.parse(fs.readFileSync(DATA_PATH, "utf-8"));
-  } catch {
-    return {};
-  }
-}
-
-function writeData(data: Record<string, unknown>) {
-  fs.writeFileSync(DATA_PATH, JSON.stringify(data, null, 2), "utf-8");
+function getSb() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
 }
 
 export async function POST(request: NextRequest) {
@@ -37,46 +29,46 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: `Webhook verification failed: ${message}` }, { status: 400 });
   }
 
-  const data = readData();
+  const sb = getSb();
 
   switch (event.type) {
     case "checkout.session.completed": {
       const session = event.data.object as Stripe.Checkout.Session;
-      data.subscription = {
-        status: "trialing",
-        stripeCustomerId: session.customer as string,
-        stripeSubscriptionId: session.subscription as string,
-        currentPeriodEnd: null,
-      };
+      const userId = session.metadata?.userId;
+      if (userId) {
+        await sb.from("profiles").update({
+          subscription_status: "trialing",
+          stripe_customer_id: session.customer as string,
+          stripe_subscription_id: session.subscription as string,
+        }).eq("id", userId);
+      }
       break;
     }
     case "customer.subscription.updated":
     case "customer.subscription.created": {
       const sub = event.data.object as Stripe.Subscription;
-      data.subscription = {
-        status: sub.status === "active" ? "active" : sub.status === "trialing" ? "trialing" : sub.status,
-        stripeCustomerId: sub.customer as string,
-        stripeSubscriptionId: sub.id,
-        currentPeriodEnd: null,
-      };
+      const status = sub.status === "active" ? "active" : sub.status === "trialing" ? "trialing" : sub.status;
+      await sb.from("profiles").update({
+        subscription_status: status,
+        stripe_subscription_id: sub.id,
+      }).eq("stripe_customer_id", sub.customer as string);
       break;
     }
     case "customer.subscription.deleted": {
-      data.subscription = {
-        ...data.subscription,
-        status: "cancelled",
-      };
+      const sub = event.data.object as Stripe.Subscription;
+      await sb.from("profiles").update({
+        subscription_status: "cancelled",
+      }).eq("stripe_customer_id", sub.customer as string);
       break;
     }
     case "invoice.payment_failed": {
-      data.subscription = {
-        ...data.subscription,
-        status: "past_due",
-      };
+      const invoice = event.data.object as Stripe.Invoice;
+      await sb.from("profiles").update({
+        subscription_status: "past_due",
+      }).eq("stripe_customer_id", invoice.customer as string);
       break;
     }
   }
 
-  writeData(data);
   return NextResponse.json({ received: true });
 }

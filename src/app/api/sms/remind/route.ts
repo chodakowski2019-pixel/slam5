@@ -1,11 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
-import fs from "fs";
-import path from "path";
+import { createClient } from "@supabase/supabase-js";
 
 const TWILIO_SID = process.env.TWILIO_ACCOUNT_SID!;
 const TWILIO_TOKEN = process.env.TWILIO_AUTH_TOKEN!;
 const TWILIO_FROM = process.env.TWILIO_PHONE_NUMBER!;
-const DATA_PATH = path.join(process.cwd(), "data.json");
+
+function getSb() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
+}
 
 async function sendSMS(to: string, message: string) {
   const url = `https://api.twilio.com/2010-04-01/Accounts/${TWILIO_SID}/Messages.json`;
@@ -27,58 +32,104 @@ function getTodayKey() {
   return new Date().toISOString().split("T")[0];
 }
 
+function getTomorrowKey() {
+  const d = new Date();
+  d.setDate(d.getDate() + 1);
+  return d.toISOString().split("T")[0];
+}
+
 export async function POST(request: NextRequest) {
-  // Simple auth — pass ?secret=YOUR_CRON_SECRET
   const secret = request.nextUrl.searchParams.get("secret");
   if (secret !== process.env.CRON_SECRET) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { type } = await request.json(); // "morning" or "evening"
+  const { type } = await request.json(); // "morning", "evening", or "no_plan"
+  const sb = getSb();
 
-  let data;
-  try {
-    data = JSON.parse(fs.readFileSync(DATA_PATH, "utf-8"));
-  } catch {
-    return NextResponse.json({ error: "No data" }, { status: 500 });
+  // Get all users with phone numbers
+  const { data: profiles } = await sb
+    .from("profiles")
+    .select("id, name, phone_number, plan_time, plan_hour")
+    .not("phone_number", "is", null)
+    .neq("phone_number", "");
+
+  if (!profiles || profiles.length === 0) {
+    return NextResponse.json({ ok: true, sent: 0 });
   }
 
-  const phone = data.phoneNumber;
-  if (!phone) {
-    return NextResponse.json({ error: "No phone number set" }, { status: 400 });
-  }
+  let sent = 0;
 
-  const today = getTodayKey();
-  const todayTasks = (data.tasks || []).filter(
-    (t: { createdAt: string }) => t.createdAt.startsWith(today)
-  );
+  for (const profile of profiles) {
+    const phone = profile.phone_number;
+    if (!phone) continue;
 
-  let message: string;
+    const today = getTodayKey();
+    const tomorrow = getTomorrowKey();
 
-  if (type === "morning") {
-    if (todayTasks.length === 0) {
-      message = "🥊 Slam5: No tasks yet. Open the app and pick your 5. Win today.";
-    } else {
-      const taskList = todayTasks
-        .map((t: { title: string; isFrog: boolean }, i: number) => `${i + 1}. ${t.isFrog ? "🐸 " : ""}${t.title}`)
-        .join("\n");
-      message = `🥊 Slam5 — Your ${todayTasks.length} tasks today:\n${taskList}\n\nSlam them. No excuses.`;
+    if (type === "morning") {
+      // Get today's tasks
+      const { data: tasks } = await sb
+        .from("tasks")
+        .select("title, is_frog")
+        .eq("user_id", profile.id)
+        .gte("created_at", today + "T00:00:00")
+        .lt("created_at", tomorrow + "T00:00:00");
+
+      let message: string;
+      if (!tasks || tasks.length === 0) {
+        message = `Hey ${profile.name || ""}! No tasks yet. Open Slam5 and pick your 5.`;
+      } else {
+        const list = tasks
+          .map((t, i) => `${i + 1}. ${t.is_frog ? "🐸 " : ""}${t.title}`)
+          .join("\n");
+        message = `Your ${tasks.length} tasks today:\n${list}\n\nSlam them.`;
+      }
+      await sendSMS(phone, message);
+      sent++;
+    } else if (type === "evening") {
+      // Get today's tasks for verdict
+      const { data: tasks } = await sb
+        .from("tasks")
+        .select("completed")
+        .eq("user_id", profile.id)
+        .gte("created_at", today + "T00:00:00")
+        .lt("created_at", tomorrow + "T00:00:00");
+
+      const total = tasks?.length || 0;
+      const completed = tasks?.filter((t) => t.completed).length || 0;
+      const won = total > 0 && completed === total;
+
+      let message: string;
+      if (total === 0) {
+        message = "You set 0 tasks today. That's an L. Show up tomorrow.";
+      } else if (won) {
+        message = `${completed}/${total} DONE. YOU WON TODAY. Keep going.`;
+      } else {
+        message = `${completed}/${total} done. Day lost. Come back harder tomorrow.`;
+      }
+      await sendSMS(phone, message);
+      sent++;
+    } else if (type === "no_plan") {
+      // Check if user has tasks for tomorrow — if not, remind them
+      const dayAfter = new Date();
+      dayAfter.setDate(dayAfter.getDate() + 2);
+      const dayAfterKey = dayAfter.toISOString().split("T")[0];
+
+      const { data: tomorrowTasks } = await sb
+        .from("tasks")
+        .select("id")
+        .eq("user_id", profile.id)
+        .gte("created_at", tomorrow + "T00:00:00")
+        .lt("created_at", dayAfterKey + "T00:00:00")
+        .limit(1);
+
+      if (!tomorrowTasks || tomorrowTasks.length === 0) {
+        await sendSMS(phone, `Hey ${profile.name || ""}! You haven't planned tomorrow yet. Open Slam5 and pick your 5.`);
+        sent++;
+      }
     }
-  } else if (type === "evening") {
-    const completed = todayTasks.filter((t: { completed: boolean }) => t.completed).length;
-    const total = todayTasks.length;
-    const won = total > 0 && completed === total;
-    if (total === 0) {
-      message = "🥊 Slam5: You set 0 tasks today. That's an automatic L. Tomorrow, show up.";
-    } else if (won) {
-      message = `🏆 Slam5: ${completed}/${total} DONE. YOU WON TODAY. Stack another W tomorrow.`;
-    } else {
-      message = `❌ Slam5: ${completed}/${total} done. You lost today. No sugar coating. Come back harder tomorrow.`;
-    }
-  } else {
-    return NextResponse.json({ error: "type must be 'morning' or 'evening'" }, { status: 400 });
   }
 
-  const result = await sendSMS(phone, message);
-  return NextResponse.json({ ok: true, message, sms: result });
+  return NextResponse.json({ ok: true, sent });
 }
