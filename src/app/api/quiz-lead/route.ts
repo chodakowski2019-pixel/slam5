@@ -41,8 +41,7 @@ export async function POST(request: NextRequest) {
 
   if (!contactRes.ok && contactRes.status !== 204) {
     const err = await contactRes.text();
-    console.error("Brevo contact error:", err);
-    return NextResponse.json({ error: "Failed to save contact" }, { status: 500 });
+    return NextResponse.json({ error: "Brevo contact error", detail: err, status: contactRes.status }, { status: 500 });
   }
 
   // Send transactional email
