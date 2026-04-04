@@ -53,8 +53,8 @@ export default function LandingPage() {
             <Link href="/login" className="inline-block px-7 py-3.5 rounded-full bg-gradient-to-r from-[#10b981] to-[#14b8a6] text-white text-sm font-medium transition-all duration-300 hover:scale-[1.03] active:scale-[0.97] shadow-lg shadow-emerald-500/20">
               Try it free — 3 days, no card
             </Link>
-            <Link href="#lead" className="inline-block px-7 py-3.5 rounded-full border border-white/[0.1] text-neutral-300 text-sm hover:border-white/[0.2] hover:text-white transition-all duration-300">
-              Get free PDF first →
+            <Link href="/quiz" className="inline-block px-7 py-3.5 rounded-full border border-white/[0.1] text-neutral-300 text-sm hover:border-white/[0.2] hover:text-white transition-all duration-300">
+              Find your blocker type →
             </Link>
           </div>
           <p className="text-xs text-neutral-500 mt-4">
