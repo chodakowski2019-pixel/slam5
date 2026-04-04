@@ -62,8 +62,7 @@ export async function POST(request: NextRequest) {
 
   if (!emailRes.ok) {
     const err = await emailRes.text();
-    console.error("Brevo email error:", err);
-    // Contact was saved — don't fail the whole request
+    return NextResponse.json({ ok: true, emailError: err, emailStatus: emailRes.status });
   }
 
   return NextResponse.json({ ok: true });
