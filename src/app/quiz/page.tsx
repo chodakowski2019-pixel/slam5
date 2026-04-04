@@ -144,9 +144,11 @@ export default function QuizPage() {
   async function handleEmailSubmit(e: React.FormEvent) {
     e.preventDefault();
     setSubmitting(true);
-    // TODO: connect to email provider (Brevo / ConvertKit / etc.)
-    // await fetch("/api/quiz-lead", { method: "POST", body: JSON.stringify({ email, result }) });
-    await new Promise((r) => setTimeout(r, 800)); // simulate
+    await fetch("/api/quiz-lead", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, result }),
+    });
     setSubmitting(false);
     setStep("result");
   }
