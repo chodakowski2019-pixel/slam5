@@ -17,7 +17,7 @@ import { useStore } from "@/lib/store-context";
 import { Goal } from "@/lib/store";
 
 const HORIZONS = [
-  { value: "6m" as const, label: "6 months", color: "#6366f1" },
+  { value: "6m" as const, label: "6 months", color: "#10b981" },
   { value: "1y" as const, label: "1 year", color: "#10b981" },
   { value: "3y" as const, label: "3 years", color: "#f59e0b" },
   { value: "5y" as const, label: "5 years", color: "#ec4899" },
@@ -67,8 +67,8 @@ function GoalCard({ goal }: { goal: Goal }) {
               <span
                 className="text-[10px] uppercase tracking-wider font-medium px-1.5 py-0.5 rounded"
                 style={{
-                  backgroundColor: (horizon?.color || "#6366f1") + "20",
-                  color: horizon?.color || "#6366f1",
+                  backgroundColor: (horizon?.color || "#10b981") + "20",
+                  color: horizon?.color || "#10b981",
                 }}
               >
                 {horizon?.label}
@@ -106,7 +106,7 @@ function GoalCard({ goal }: { goal: Goal }) {
                   className="h-full rounded-full transition-all duration-500"
                   style={{
                     width: `${goal.progress}%`,
-                    backgroundColor: horizon?.color || "#6366f1",
+                    backgroundColor: horizon?.color || "#10b981",
                   }}
                 />
               </div>
@@ -203,7 +203,7 @@ function GoalCard({ goal }: { goal: Goal }) {
               <button
                 onClick={handleAddMs}
                 disabled={!newMs.trim()}
-                className="px-2 h-8 rounded-xl bg-indigo-500 hover:bg-indigo-600 disabled:opacity-30 transition-colors"
+                className="px-2 h-8 rounded-xl bg-emerald-500 hover:bg-emerald-600 disabled:opacity-30 transition-colors"
               >
                 <Plus size={12} />
               </button>
@@ -248,7 +248,7 @@ export function GoalsView() {
         <h2 className="text-xl font-heading font-bold">Goals</h2>
         <button
           onClick={() => setShowForm(!showForm)}
-          className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-indigo-500 hover:bg-indigo-600 transition-colors text-sm"
+          className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 transition-colors text-sm"
         >
           <Plus size={14} />
           New goal
@@ -371,7 +371,7 @@ export function GoalsView() {
             <button
               onClick={handleAdd}
               disabled={!title.trim() || !deadline}
-              className="px-3 py-1.5 text-sm rounded-xl bg-indigo-500 hover:bg-indigo-600 disabled:opacity-30 transition-colors"
+              className="px-3 py-1.5 text-sm rounded-xl bg-emerald-500 hover:bg-emerald-600 disabled:opacity-30 transition-colors"
             >
               Create
             </button>

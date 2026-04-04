@@ -64,7 +64,7 @@ export function LeaderboardView() {
           />
           <button
             onClick={handleCopy}
-            className="px-4 py-2 rounded-xl bg-indigo-500 hover:bg-indigo-400 transition-all duration-200 text-xs flex items-center gap-1.5 font-medium hover:scale-[1.02] active:scale-[0.98]"
+            className="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 transition-all duration-200 text-xs flex items-center gap-1.5 font-medium hover:scale-[1.02] active:scale-[0.98]"
           >
             {copied ? <Check size={14} /> : <Copy size={14} />}
             {copied ? "Copied" : "Copy"}
@@ -79,7 +79,7 @@ export function LeaderboardView() {
             key={entry.id}
             className={`flex items-center gap-4 p-5 rounded-2xl border transition-all duration-200 ${
               entry.id === "me"
-                ? "border-indigo-500/20 bg-indigo-500/5"
+                ? "border-emerald-500/20 bg-emerald-500/5"
                 : "border-border bg-card"
             }`}
           >
@@ -116,7 +116,7 @@ export function LeaderboardView() {
             </div>
 
             <div className="text-right">
-              <span className="text-lg font-heading font-bold text-indigo-400">{entry.points}</span>
+              <span className="text-lg font-heading font-bold text-emerald-400">{entry.points}</span>
               <span className="text-xs text-muted-foreground ml-1">pts</span>
             </div>
           </div>

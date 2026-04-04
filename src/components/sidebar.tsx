@@ -24,10 +24,10 @@ interface SidebarProps {
 
 const NAV_ITEMS = [
   { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { id: "tasks", label: "Power List", icon: CheckSquare },
-  { id: "leaderboard", label: "Leaderboard", icon: Users },
   { id: "projects", label: "Projects", icon: FolderKanban },
+  { id: "tasks", label: "Power List", icon: CheckSquare },
   { id: "goals", label: "Goals", icon: Trophy },
+  { id: "leaderboard", label: "Leaderboard", icon: Users },
 ];
 
 export function Sidebar({ activeView, onViewChange }: SidebarProps) {
@@ -70,7 +70,7 @@ export function Sidebar({ activeView, onViewChange }: SidebarProps) {
       <div className="h-14 flex items-center px-4 border-b border-border">
         {!collapsed && (
           <h1 className="text-base font-heading font-bold tracking-tight">
-            Slam<span className="text-indigo-400">5</span>
+            Slam<span className="text-emerald-400">5</span>
           </h1>
         )}
         <button
@@ -96,16 +96,16 @@ export function Sidebar({ activeView, onViewChange }: SidebarProps) {
               className={cn(
                 "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all duration-200",
                 isActive
-                  ? "bg-indigo-500/15 text-indigo-400 font-medium"
+                  ? "bg-emerald-500/15 text-emerald-400 font-medium ring-1 ring-emerald-500/25"
                   : "text-muted-foreground hover:bg-accent hover:text-foreground"
               )}
             >
-              <Icon size={18} className={isActive ? "text-indigo-400" : ""} />
+              <Icon size={18} className={isActive ? "text-emerald-400" : ""} />
               {!collapsed && (
                 <>
                   <span className="truncate">{item.label}</span>
                   {item.id === "tasks" && activeTasks > 0 && (
-                    <span className="ml-auto text-[11px] bg-indigo-500/20 text-indigo-400 px-2 py-0.5 rounded-full font-medium">
+                    <span className="ml-auto text-[11px] bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded-full font-medium">
                       {activeTasks}
                     </span>
                   )}
@@ -118,20 +118,20 @@ export function Sidebar({ activeView, onViewChange }: SidebarProps) {
 
       {/* Running timer */}
       {runningTimer && (
-        <div className="mx-2 mb-2 px-3 py-2.5 rounded-xl bg-indigo-500/10 border border-indigo-500/20">
+        <div className="mx-2 mb-2 px-3 py-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
           {!collapsed ? (
             <div className="flex items-center gap-2 text-xs">
               <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75" />
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-indigo-500" />
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
               </span>
-              <span className="truncate text-indigo-300">{runningTimer.title}</span>
+              <span className="truncate text-emerald-300">{runningTimer.title}</span>
             </div>
           ) : (
             <div className="flex justify-center">
               <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75" />
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-indigo-500" />
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
               </span>
             </div>
           )}
@@ -152,7 +152,7 @@ export function Sidebar({ activeView, onViewChange }: SidebarProps) {
             <button
               onClick={handleUpgrade}
               disabled={upgrading}
-              className="w-full flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl text-sm font-medium bg-gradient-to-r from-indigo-500 to-violet-500 hover:from-indigo-400 hover:to-violet-400 transition-all duration-200 disabled:opacity-50 shadow-lg shadow-indigo-500/20 hover:scale-[1.02] active:scale-[0.98]"
+              className="w-full flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl text-sm font-medium bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 transition-all duration-200 disabled:opacity-50 shadow-lg shadow-emerald-500/20 hover:scale-[1.02] active:scale-[0.98]"
             >
               <Zap size={14} />
               {upgrading ? "Loading..." : "Go Pro"}
@@ -161,7 +161,7 @@ export function Sidebar({ activeView, onViewChange }: SidebarProps) {
             <button
               onClick={handleUpgrade}
               disabled={upgrading}
-              className="w-full flex justify-center p-2.5 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-500 hover:from-indigo-400 hover:to-violet-400 transition-all duration-200 disabled:opacity-50"
+              className="w-full flex justify-center p-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 transition-all duration-200 disabled:opacity-50"
             >
               <Zap size={14} />
             </button>
@@ -177,14 +177,14 @@ export function Sidebar({ activeView, onViewChange }: SidebarProps) {
           activeView === "settings" && "bg-accent"
         )}
       >
-        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-violet-500 flex items-center justify-center text-xs font-bold text-white flex-shrink-0">
+        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center text-xs font-bold text-white flex-shrink-0">
           {data.profile?.name?.[0]?.toUpperCase() || user?.email?.[0]?.toUpperCase() || "?"}
         </div>
         {!collapsed && (
           <>
             <div className="ml-3 flex-1 min-w-0 text-left">
               <span className="text-sm truncate block font-medium">{data.profile?.name || user?.email?.split("@")[0] || "User"}</span>
-              {isPro && <span className="text-[10px] text-indigo-400 font-medium">PRO</span>}
+              {isPro && <span className="text-[10px] text-emerald-400 font-medium">PRO</span>}
             </div>
             <Settings size={14} className="text-muted-foreground flex-shrink-0" />
           </>

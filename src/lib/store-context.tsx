@@ -25,6 +25,7 @@ interface StoreContextType {
   setFrog: (id: string) => void;
   reorderTasks: (fromId: string, toId: string) => void;
   addProject: (name: string, emoji: string, color: string, description: string) => void;
+  updateProject: (id: string, updates: Partial<{name: string; emoji: string; color: string; description: string}>) => void;
   deleteProject: (id: string) => void;
   addGoal: (goal: Omit<Goal, "id" | "createdAt" | "milestones" | "completed" | "progress">) => void;
   updateGoal: (id: string, updates: Partial<Goal>) => void;
@@ -205,6 +206,13 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     []
   );
 
+  const updateProject = useCallback((id: string, updates: Partial<{name: string; emoji: string; color: string; description: string}>) => {
+    setData((prev) => ({
+      ...prev,
+      projects: prev.projects.map((p) => p.id === id ? { ...p, ...updates } : p),
+    }));
+  }, []);
+
   const deleteProject = useCallback((id: string) => {
     setData((prev) => ({ ...prev, projects: prev.projects.filter((p) => p.id !== id) }));
   }, []);
@@ -339,7 +347,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     <StoreContext.Provider
       value={{
         data, addTask, toggleTask, deleteTask, updateTaskTimer, setFrog, reorderTasks,
-        addProject, deleteProject,
+        addProject, updateProject, deleteProject,
         addGoal, updateGoal, deleteGoal, addMilestone, toggleMilestone, deleteMilestone,
         addParkingLotItem, deleteParkingLotItem, clearParkingLot,
         updateProfile, getTodayRecord, getWeekWins, getMonthWins, getCurrentStreak,

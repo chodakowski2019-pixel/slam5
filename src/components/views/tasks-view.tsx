@@ -68,7 +68,7 @@ export function TasksView() {
             onClick={() => setShowParkingLot(!showParkingLot)}
             className={cn(
               "flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs transition-all duration-200",
-              showParkingLot ? "bg-indigo-500/15 text-indigo-400" : "text-muted-foreground hover:bg-accent"
+              showParkingLot ? "bg-emerald-500/15 text-emerald-400" : "text-muted-foreground hover:bg-accent"
             )}
           >
             <ParkingSquare size={14} />
@@ -103,7 +103,7 @@ export function TasksView() {
           <button
             onClick={handleAdd}
             disabled={!newTitle.trim() || atLimit}
-            className="px-3.5 py-2 rounded-xl bg-indigo-500 hover:bg-indigo-400 disabled:opacity-30 transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
+            className="px-3.5 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 disabled:opacity-30 transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
           >
             <Plus size={16} />
           </button>
@@ -171,7 +171,7 @@ export function TasksView() {
                 className={cn(
                   "group flex items-center gap-3 px-4 py-3.5 rounded-2xl border transition-all duration-200 cursor-grab active:cursor-grabbing",
                   task.timerRunning
-                    ? "border-indigo-500/20 bg-indigo-500/5"
+                    ? "border-emerald-500/20 bg-emerald-500/5"
                     : task.isFrog
                     ? "border-amber-500/15 bg-amber-500/5"
                     : "border-transparent hover:bg-card"
@@ -282,7 +282,7 @@ export function TasksView() {
             <button
               onClick={handleParkingAdd}
               disabled={!parkingInput.trim()}
-              className="px-3 py-2 rounded-xl bg-indigo-500 hover:bg-indigo-400 disabled:opacity-30 transition-all duration-200"
+              className="px-3 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 disabled:opacity-30 transition-all duration-200"
             >
               <Plus size={14} />
             </button>

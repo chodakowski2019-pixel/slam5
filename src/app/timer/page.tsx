@@ -55,8 +55,8 @@ export default function TimerPage() {
     ? "#71717a"
     : secondsLeft <= 60
     ? "#f87171"
-    : "#a5b4fc";
-  const barColor = secondsLeft <= 60 ? "#f87171" : "#6366f1";
+    : "#6ee7b7";
+  const barColor = secondsLeft <= 60 ? "#f87171" : "#10b981";
 
   return (
     <div
@@ -132,7 +132,7 @@ export default function TimerPage() {
         <button
           onClick={() => sendCommand("pause")}
           style={{
-            background: running ? "#27272a" : "#6366f1",
+            background: running ? "#27272a" : "#10b981",
             color: "#fafafa",
             border: "none",
             padding: "3px 10px",

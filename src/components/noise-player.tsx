@@ -1,22 +1,18 @@
 "use client";
 
 import { useState } from "react";
-import { Volume2, VolumeX, ChevronDown } from "lucide-react";
+import { Music, ChevronDown, ExternalLink } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-const TRACKS = [
-  { id: "brown", label: "Brown Noise", url: "https://www.youtube.com/embed/RqzGzwTY-6w?autoplay=1&loop=1&playlist=RqzGzwTY-6w" },
-  { id: "rain", label: "Rain", url: "https://www.youtube.com/embed/mPZkdNFkNps?autoplay=1&loop=1&playlist=mPZkdNFkNps" },
-  { id: "lofi", label: "Lo-fi", url: "https://www.youtube.com/embed/jfKfPfyJRdk?autoplay=1" },
-  { id: "white", label: "White Noise", url: "https://www.youtube.com/embed/nMfPqeZjc2c?autoplay=1&loop=1&playlist=nMfPqeZjc2c" },
-  { id: "forest", label: "Forest", url: "https://www.youtube.com/embed/xNN7iTA57jM?autoplay=1&loop=1&playlist=xNN7iTA57jM" },
+const PLAYLISTS = [
+  { id: "slam5", label: "Slam5 Focus", uri: "14KtkIpsvzDSCXR24EqHCL" },
 ];
 
 export function NoisePlayer() {
-  const [playing, setPlaying] = useState<string | null>(null);
+  const [activePlaylist, setActivePlaylist] = useState<string | null>(null);
   const [expanded, setExpanded] = useState(false);
 
-  const currentTrack = TRACKS.find((t) => t.id === playing);
+  const current = PLAYLISTS.find((p) => p.id === activePlaylist);
 
   return (
     <div className="relative">
@@ -25,14 +21,14 @@ export function NoisePlayer() {
         onClick={() => setExpanded(!expanded)}
         className={cn(
           "w-full flex items-center gap-2 px-3 py-2 rounded-md text-sm transition-colors",
-          playing
-            ? "text-indigo-400 bg-indigo-500/10"
+          activePlaylist
+            ? "text-emerald-400 bg-emerald-500/10"
             : "text-muted-foreground hover:bg-accent/50"
         )}
       >
-        {playing ? <Volume2 size={16} /> : <VolumeX size={16} />}
+        <Music size={16} />
         <span className="truncate text-xs">
-          {currentTrack ? currentTrack.label : "Focus sounds"}
+          {current ? current.label : "Spotify"}
         </span>
         <ChevronDown size={12} className={cn("ml-auto transition-transform", expanded && "rotate-180")} />
       </button>
@@ -40,30 +36,36 @@ export function NoisePlayer() {
       {/* Dropdown */}
       {expanded && (
         <div className="absolute bottom-full left-0 right-0 mb-1 bg-card border border-border rounded-lg shadow-xl overflow-hidden z-50">
-          {TRACKS.map((track) => (
+          {PLAYLISTS.map((playlist) => (
             <button
-              key={track.id}
+              key={playlist.id}
               onClick={() => {
-                if (playing === track.id) {
-                  setPlaying(null);
-                } else {
-                  setPlaying(track.id);
-                }
+                setActivePlaylist(activePlaylist === playlist.id ? null : playlist.id);
                 setExpanded(false);
               }}
               className={cn(
-                "w-full text-left px-3 py-2 text-xs transition-colors",
-                playing === track.id
-                  ? "bg-indigo-500/20 text-indigo-400"
+                "w-full text-left px-3 py-2 text-xs transition-colors flex items-center gap-2",
+                activePlaylist === playlist.id
+                  ? "bg-emerald-500/20 text-emerald-400"
                   : "text-muted-foreground hover:bg-accent/50"
               )}
             >
-              {playing === track.id ? "⏸ " : "▶ "}{track.label}
+              <span>{activePlaylist === playlist.id ? "⏸" : "▶"}</span>
+              <span className="flex-1">{playlist.label}</span>
+              <a
+                href={`https://open.spotify.com/playlist/${playlist.uri}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => e.stopPropagation()}
+                className="opacity-50 hover:opacity-100 transition-opacity"
+              >
+                <ExternalLink size={10} />
+              </a>
             </button>
           ))}
-          {playing && (
+          {activePlaylist && (
             <button
-              onClick={() => { setPlaying(null); setExpanded(false); }}
+              onClick={() => { setActivePlaylist(null); setExpanded(false); }}
               className="w-full text-left px-3 py-2 text-xs text-red-400 hover:bg-red-500/10 transition-colors"
             >
               ⏹ Stop
@@ -72,14 +74,20 @@ export function NoisePlayer() {
         </div>
       )}
 
-      {/* Hidden YouTube iframe for audio */}
-      {playing && currentTrack && (
-        <iframe
-          src={currentTrack.url}
-          className="hidden"
-          allow="autoplay"
-          title="Focus sound"
-        />
+      {/* Spotify embed */}
+      {activePlaylist && current && (
+        <div className="mt-2 rounded-lg overflow-hidden">
+          <iframe
+            src={`https://open.spotify.com/embed/playlist/${current.uri}?utm_source=generator&theme=0`}
+            width="100%"
+            height="80"
+            frameBorder="0"
+            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+            loading="lazy"
+            className="rounded-lg"
+            title={current.label}
+          />
+        </div>
       )}
     </div>
   );

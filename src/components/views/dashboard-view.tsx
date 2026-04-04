@@ -8,6 +8,8 @@ import {
   Trophy,
   Frown,
   Zap,
+  ArrowRight,
+  TrendingUp,
 } from "lucide-react";
 import { useStore } from "@/lib/store-context";
 import { TaskTimer } from "@/components/task-timer";
@@ -20,19 +22,24 @@ interface DashboardProps {
 
 function MiniBarChart({
   data,
-  color,
   height = 64,
 }: {
   data: number[];
-  color: string;
   height?: number;
 }) {
   const max = Math.max(...data, 1);
   const barWidth = 100 / data.length;
   return (
     <svg width="100%" height={height} viewBox={`0 0 100 ${height}`} preserveAspectRatio="none">
+      <defs>
+        <linearGradient id="barGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#34d399" />
+          <stop offset="100%" stopColor="#10b981" stopOpacity="0.6" />
+        </linearGradient>
+      </defs>
       {data.map((val, i) => {
         const barH = (val / max) * (height - 4);
+        const isLast = i === data.length - 1;
         return (
           <rect
             key={i}
@@ -41,13 +48,23 @@ function MiniBarChart({
             width={barWidth * 0.7}
             height={barH}
             rx={3}
-            fill={i === data.length - 1 ? color : color + "40"}
+            fill={isLast ? "url(#barGrad)" : "#34d39920"}
           />
         );
       })}
     </svg>
   );
 }
+
+const QUOTES = [
+  "Discipline is choosing between what you want now and what you want most.",
+  "The 5 you pick today define who you become tomorrow.",
+  "Win the morning, win the day.",
+  "Small daily improvements are the key to staggering long-term results.",
+  "You don't rise to the level of your goals. You fall to the level of your systems.",
+  "Hard choices, easy life. Easy choices, hard life.",
+  "Action cures fear. Inaction creates terror.",
+];
 
 export function DashboardView({ onNavigate }: DashboardProps) {
   const { data, toggleTask, getTodayRecord, getWeekWins, getCurrentStreak } = useStore();
@@ -109,30 +126,39 @@ export function DashboardView({ onNavigate }: DashboardProps) {
     return "Evening";
   })();
 
+  const quote = useMemo(() => {
+    const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 86400000);
+    return QUOTES[dayOfYear % QUOTES.length];
+  }, []);
+
+  const completionPct = totalToday > 0 ? Math.round((completedToday.length / totalToday) * 100) : 0;
+
   return (
     <div className="max-w-5xl mx-auto">
-      {/* Header */}
+      {/* Header with quote */}
       <div className="mb-8">
-        <h2 className="text-2xl font-heading font-bold tracking-tight">
+        <h2 className="text-3xl font-heading font-bold tracking-tight">
           {greeting}{data.profile?.name ? `, ${data.profile.name}` : ""}
         </h2>
         <p className="text-sm text-muted-foreground mt-1">{todayFormatted}</p>
+        <p className="text-xs text-muted-foreground/60 mt-3 italic max-w-lg">&ldquo;{quote}&rdquo;</p>
       </div>
 
-      {/* Running timer */}
+      {/* Running timer — hero card */}
       {runningTask && (
-        <div className="mb-6 p-5 rounded-2xl border border-indigo-500/20 bg-indigo-500/5">
-          <div className="flex items-center gap-2 mb-2">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75" />
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-indigo-500" />
+        <div className="mb-6 p-6 rounded-2xl border border-emerald-500/30 bg-gradient-to-r from-emerald-500/10 via-teal-500/5 to-transparent relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-full blur-3xl" />
+          <div className="flex items-center gap-2 mb-2 relative">
+            <span className="relative flex h-2.5 w-2.5">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500" />
             </span>
-            <span className="text-xs text-indigo-400 uppercase tracking-wider font-medium">
-              Timer running
+            <span className="text-xs text-emerald-400 uppercase tracking-wider font-medium">
+              Focus mode
             </span>
           </div>
-          <div className="flex items-center justify-between">
-            <span className="text-lg font-heading font-semibold">{runningTask.title}</span>
+          <div className="flex items-center justify-between relative">
+            <span className="text-xl font-heading font-semibold">{runningTask.title}</span>
             <TaskTimer task={runningTask} />
           </div>
         </div>
@@ -140,74 +166,109 @@ export function DashboardView({ onNavigate }: DashboardProps) {
 
       {/* Frog */}
       {frogTask && !runningTask && (
-        <div className="mb-6 p-5 rounded-2xl border border-amber-500/20 bg-amber-500/5">
+        <div className="mb-6 p-5 rounded-2xl border border-amber-500/20 bg-gradient-to-r from-amber-500/10 via-amber-500/5 to-transparent">
           <div className="flex items-center gap-2 mb-1">
             <span className="text-lg">🐸</span>
             <span className="text-xs text-amber-400 uppercase tracking-wider font-medium">
-              Do this first
+              Eat the frog
             </span>
           </div>
           <span className="text-lg font-heading font-semibold">{frogTask.title}</span>
         </div>
       )}
 
-      {/* Stats */}
+      {/* Stats row */}
       <div className="grid grid-cols-4 gap-3 mb-6">
         <button
           onClick={() => onNavigate("tasks")}
-          className="p-4 rounded-2xl border border-border bg-card hover:bg-accent/50 transition-all duration-200 text-left group"
+          className="group p-5 rounded-2xl border border-border bg-card hover:border-emerald-500/30 transition-all duration-300 text-left relative overflow-hidden"
         >
-          <div className="flex items-center gap-2 text-muted-foreground mb-3">
-            <CheckSquare size={14} />
-            <span className="text-xs">Active</span>
+          <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+          <div className="relative">
+            <div className="flex items-center gap-2 text-muted-foreground mb-3">
+              <CheckSquare size={14} className="text-emerald-400" />
+              <span className="text-xs font-medium">Active</span>
+            </div>
+            <span className="text-4xl font-heading font-bold tracking-tight">{activeTasks.length}</span>
+            <div className="mt-2 flex items-center gap-1 text-xs text-emerald-400 opacity-0 group-hover:opacity-100 transition-opacity">
+              <span>View tasks</span>
+              <ArrowRight size={10} />
+            </div>
           </div>
-          <span className="text-3xl font-heading font-bold">{activeTasks.length}</span>
         </button>
 
         <button
           onClick={() => onNavigate("tasks")}
-          className="p-4 rounded-2xl border border-border bg-card hover:bg-accent/50 transition-all duration-200 text-left"
+          className="group p-5 rounded-2xl border border-border bg-card hover:border-emerald-500/30 transition-all duration-300 text-left relative overflow-hidden"
         >
-          <div className="flex items-center gap-2 text-muted-foreground mb-3">
-            <Target size={14} />
-            <span className="text-xs">Done</span>
-          </div>
-          <div className="flex items-baseline gap-1">
-            <span className="text-3xl font-heading font-bold">{completedToday.length}</span>
-            <span className="text-sm text-muted-foreground">/ {totalToday}</span>
+          <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+          <div className="relative">
+            <div className="flex items-center gap-2 text-muted-foreground mb-3">
+              <Target size={14} className="text-emerald-400" />
+              <span className="text-xs font-medium">Completed</span>
+            </div>
+            <div className="flex items-baseline gap-1.5">
+              <span className="text-4xl font-heading font-bold tracking-tight">{completedToday.length}</span>
+              <span className="text-sm text-muted-foreground font-medium">/ {totalToday}</span>
+            </div>
+            {totalToday > 0 && (
+              <div className="mt-2 h-1 rounded-full bg-border overflow-hidden">
+                <div
+                  className="h-full rounded-full bg-emerald-400 transition-all duration-700"
+                  style={{ width: `${completionPct}%` }}
+                />
+              </div>
+            )}
           </div>
         </button>
 
-        <div className="p-4 rounded-2xl border border-border bg-card text-left">
-          <div className="flex items-center gap-2 text-muted-foreground mb-3">
-            <Flame size={14} className={streak > 0 ? "text-orange-400" : ""} />
-            <span className="text-xs">Streak</span>
-          </div>
-          <div className="flex items-baseline gap-1">
-            <span className="text-3xl font-heading font-bold">{streak}</span>
-            <span className="text-sm text-muted-foreground">d</span>
+        <div className="p-5 rounded-2xl border border-border bg-card text-left relative overflow-hidden">
+          <div className={`absolute inset-0 bg-gradient-to-br to-transparent transition-opacity duration-300 ${streak > 0 ? "from-orange-500/5 opacity-100" : "from-orange-500/5 opacity-0"}`} />
+          <div className="relative">
+            <div className="flex items-center gap-2 text-muted-foreground mb-3">
+              <Flame size={14} className={streak > 0 ? "text-orange-400" : ""} />
+              <span className="text-xs font-medium">Streak</span>
+            </div>
+            <div className="flex items-baseline gap-1">
+              <span className="text-4xl font-heading font-bold tracking-tight">{streak}</span>
+              <span className="text-sm text-muted-foreground font-medium">days</span>
+            </div>
+            {streak > 0 && (
+              <div className="mt-2 flex items-center gap-1 text-xs text-orange-400">
+                <TrendingUp size={10} />
+                <span>Keep going</span>
+              </div>
+            )}
           </div>
         </div>
 
-        <div className="p-4 rounded-2xl border border-border bg-card text-left">
-          <div className="flex items-center gap-2 text-muted-foreground mb-3">
-            <Zap size={14} className="text-indigo-400" />
-            <span className="text-xs">Points</span>
+        <div className="p-5 rounded-2xl border border-border bg-card text-left relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-teal-500/5 to-transparent" />
+          <div className="relative">
+            <div className="flex items-center gap-2 text-muted-foreground mb-3">
+              <Zap size={14} className="text-teal-400" />
+              <span className="text-xs font-medium">Points</span>
+            </div>
+            <span className="text-4xl font-heading font-bold tracking-tight">{data.totalPoints}</span>
+            {completedToday.length > 0 && (
+              <div className="mt-2 text-xs text-teal-400">
+                +{completedToday.length * 10} today
+              </div>
+            )}
           </div>
-          <span className="text-3xl font-heading font-bold">{data.totalPoints}</span>
         </div>
       </div>
 
       {/* Week + chart */}
       <div className="grid grid-cols-2 gap-3 mb-6">
         <div className="p-5 rounded-2xl border border-border bg-card">
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center justify-between mb-5">
             <h3 className="text-xs text-muted-foreground uppercase tracking-wider font-medium">
               This week
             </h3>
             <span className="text-xs font-medium">
               {weekWins >= 5 ? (
-                <span className="text-emerald-400">Week won</span>
+                <span className="text-emerald-400 flex items-center gap-1"><Trophy size={12} /> Week won</span>
               ) : (
                 <span className="text-muted-foreground">{weekWins}/7 wins</span>
               )}
@@ -215,14 +276,14 @@ export function DashboardView({ onNavigate }: DashboardProps) {
           </div>
           <div className="flex gap-2 justify-between">
             {weekHistory.map((h, i) => (
-              <div key={i} className="flex flex-col items-center gap-1.5">
+              <div key={i} className="flex flex-col items-center gap-2">
                 <div
-                  className={`w-9 h-9 rounded-xl flex items-center justify-center text-xs font-bold transition-colors ${
+                  className={`w-10 h-10 rounded-xl flex items-center justify-center text-xs font-bold transition-all duration-300 ${
                     h.won === true
-                      ? "bg-emerald-500/15 text-emerald-400"
+                      ? "bg-emerald-500/15 text-emerald-400 ring-1 ring-emerald-500/20"
                       : h.won === false
-                      ? "bg-red-500/15 text-red-400"
-                      : "bg-accent text-muted-foreground"
+                      ? "bg-red-500/15 text-red-400 ring-1 ring-red-500/20"
+                      : "bg-accent/50 text-muted-foreground/50"
                   }`}
                 >
                   {h.won === true ? "W" : h.won === false ? "L" : "-"}
@@ -234,10 +295,10 @@ export function DashboardView({ onNavigate }: DashboardProps) {
         </div>
 
         <div className="p-5 rounded-2xl border border-border bg-card">
-          <h3 className="text-xs text-muted-foreground uppercase tracking-wider font-medium mb-4">
-            Last 7 days
+          <h3 className="text-xs text-muted-foreground uppercase tracking-wider font-medium mb-5">
+            Activity
           </h3>
-          <MiniBarChart data={weeklyData} color="#818cf8" height={56} />
+          <MiniBarChart data={weeklyData} height={56} />
           <div className="flex justify-between mt-2">
             {weekLabels.map((d, i) => (
               <span key={i} className="text-[10px] text-muted-foreground">{d}</span>
@@ -248,24 +309,24 @@ export function DashboardView({ onNavigate }: DashboardProps) {
 
       {/* Verdict */}
       {totalToday > 0 && activeTasks.length === 0 && (
-        <div className={`mb-6 p-6 rounded-2xl border text-center ${
+        <div className={`mb-6 p-8 rounded-2xl border text-center relative overflow-hidden ${
           todayWon
-            ? "border-emerald-500/20 bg-emerald-500/5"
-            : "border-red-500/20 bg-red-500/5"
+            ? "border-emerald-500/20 bg-gradient-to-br from-emerald-500/10 via-emerald-500/5 to-transparent"
+            : "border-red-500/20 bg-gradient-to-br from-red-500/10 via-red-500/5 to-transparent"
         }`}>
           {todayWon ? (
             <>
-              <Trophy size={32} className="text-emerald-400 mx-auto mb-3" />
-              <h3 className="text-xl font-heading font-bold text-emerald-400">YOU WON TODAY</h3>
-              <p className="text-sm text-muted-foreground mt-1">
-                {completedToday.length}/{totalToday} done. +{completedToday.length * 10} pts
+              <Trophy size={36} className="text-emerald-400 mx-auto mb-3" />
+              <h3 className="text-2xl font-heading font-bold text-emerald-400">YOU WON TODAY</h3>
+              <p className="text-sm text-muted-foreground mt-2">
+                {completedToday.length}/{totalToday} crushed. +{completedToday.length * 10} pts earned.
               </p>
             </>
           ) : (
             <>
-              <Frown size={32} className="text-red-400 mx-auto mb-3" />
-              <h3 className="text-xl font-heading font-bold text-red-400">DAY LOST</h3>
-              <p className="text-sm text-muted-foreground mt-1">
+              <Frown size={36} className="text-red-400 mx-auto mb-3" />
+              <h3 className="text-2xl font-heading font-bold text-red-400">DAY LOST</h3>
+              <p className="text-sm text-muted-foreground mt-2">
                 {completedToday.length}/{totalToday} done. Tomorrow is a new fight.
               </p>
             </>
@@ -275,22 +336,26 @@ export function DashboardView({ onNavigate }: DashboardProps) {
 
       {/* Today's tasks */}
       <div>
-        <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center justify-between mb-4">
           <h3 className="text-xs text-muted-foreground uppercase tracking-wider font-medium">
-            Today&apos;s list
+            Today&apos;s battles
           </h3>
           <button
             onClick={() => onNavigate("tasks")}
-            className="text-xs text-indigo-400 hover:text-indigo-300 transition-colors"
+            className="text-xs text-emerald-400 hover:text-emerald-300 transition-colors flex items-center gap-1"
           >
-            View all
+            View all <ArrowRight size={10} />
           </button>
         </div>
         <div className="space-y-1">
           {todayTasks.length === 0 && (
-            <p className="text-sm text-muted-foreground py-8 text-center">
-              No tasks yet. Add your 5 wins.
-            </p>
+            <button
+              onClick={() => onNavigate("tasks")}
+              className="w-full text-center py-12 text-muted-foreground hover:text-foreground transition-colors rounded-2xl border border-dashed border-border hover:border-emerald-500/30 group"
+            >
+              <div className="text-3xl mb-3">+</div>
+              <p className="text-sm">Add your 5 wins for today</p>
+            </button>
           )}
           {todayTasks
             .sort((a, b) => {
@@ -304,7 +369,7 @@ export function DashboardView({ onNavigate }: DashboardProps) {
               return (
                 <div
                   key={task.id}
-                  className={`flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-accent/30 transition-all duration-200 ${
+                  className={`flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-accent/30 transition-all duration-200 ${
                     task.completed ? "opacity-40" : ""
                   }`}
                 >
@@ -319,10 +384,13 @@ export function DashboardView({ onNavigate }: DashboardProps) {
                     {task.title}
                   </span>
                   {project && (
-                    <span
-                      className="w-2 h-2 rounded-full flex-shrink-0"
-                      style={{ backgroundColor: project.color }}
-                    />
+                    <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                      <span
+                        className="w-2 h-2 rounded-full flex-shrink-0"
+                        style={{ backgroundColor: project.color }}
+                      />
+                      {project.name}
+                    </span>
                   )}
                   {!task.completed && <TaskTimer task={task} compact />}
                   {task.completed && (
@@ -334,11 +402,30 @@ export function DashboardView({ onNavigate }: DashboardProps) {
         </div>
       </div>
 
+      {/* Spotify */}
+      <div className="mt-8">
+        <h3 className="text-xs text-muted-foreground uppercase tracking-wider font-medium mb-3">
+          Focus music
+        </h3>
+        <div className="rounded-2xl overflow-hidden border border-border">
+          <iframe
+            src="https://open.spotify.com/embed/playlist/14KtkIpsvzDSCXR24EqHCL?utm_source=generator&theme=0"
+            width="100%"
+            height="352"
+            frameBorder="0"
+            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+            loading="lazy"
+            title="Focus playlist"
+            className="rounded-2xl"
+          />
+        </div>
+      </div>
+
       {/* Parking Lot */}
       {data.parkingLot.length > 0 && (
         <div className="mt-8">
           <h3 className="text-xs text-muted-foreground uppercase tracking-wider font-medium mb-2">
-            Parking Lot
+            Parking lot
           </h3>
           <div className="space-y-1">
             {data.parkingLot.map((item) => (

@@ -51,11 +51,11 @@ export function SettingsView() {
           <div>
             <label className="text-sm font-medium mb-1.5 block">Plan</label>
             <div className="flex items-center gap-2">
-              <span className={`text-sm font-medium ${isPro ? "text-indigo-400" : "text-muted-foreground"}`}>
+              <span className={`text-sm font-medium ${isPro ? "text-emerald-400" : "text-muted-foreground"}`}>
                 {isPro ? "Pro" : "Free"}
               </span>
               {isPro && data.subscription?.status === "trialing" && (
-                <span className="text-xs bg-indigo-500/15 text-indigo-400 px-2 py-0.5 rounded-full">Trial</span>
+                <span className="text-xs bg-emerald-500/15 text-emerald-400 px-2 py-0.5 rounded-full">Trial</span>
               )}
             </div>
           </div>
@@ -107,7 +107,7 @@ export function SettingsView() {
               <button
                 onClick={() => { setPlanTime("morning"); setPlanHour("08:00"); }}
                 className={`flex-1 p-3 rounded-xl border text-center text-sm transition-all duration-200 ${
-                  planTime === "morning" ? "border-indigo-500/30 bg-indigo-500/10" : "border-border hover:bg-accent/50"
+                  planTime === "morning" ? "border-emerald-500/30 bg-emerald-500/10" : "border-border hover:bg-accent/50"
                 }`}
               >
                 🌅 Morning
@@ -115,7 +115,7 @@ export function SettingsView() {
               <button
                 onClick={() => { setPlanTime("evening"); setPlanHour("21:00"); }}
                 className={`flex-1 p-3 rounded-xl border text-center text-sm transition-all duration-200 ${
-                  planTime === "evening" ? "border-indigo-500/30 bg-indigo-500/10" : "border-border hover:bg-accent/50"
+                  planTime === "evening" ? "border-emerald-500/30 bg-emerald-500/10" : "border-border hover:bg-accent/50"
                 }`}
               >
                 🌙 Evening
@@ -138,7 +138,7 @@ export function SettingsView() {
       <div className="flex items-center gap-4 mb-8">
         <button
           onClick={handleSave}
-          className="px-6 py-2.5 rounded-xl bg-indigo-500 hover:bg-indigo-400 text-sm font-medium transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
+          className="px-6 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-sm font-medium transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
         >
           {saved ? "Saved!" : "Save"}
         </button>

@@ -42,39 +42,39 @@ export function FloatingTimer() {
     const pct = total > 0 ? seconds / total : 0;
 
     // Background
-    ctx.fillStyle = "#1a1a2e";
+    ctx.fillStyle = "#0a0a0a";
     ctx.fillRect(0, 0, 400, 200);
 
     // Progress bar background
-    ctx.fillStyle = "#2a2a4a";
+    ctx.fillStyle = "#1a1a1a";
     ctx.beginPath();
     ctx.roundRect(20, 150, 360, 12, 6);
     ctx.fill();
 
     // Progress bar fill
     const gradient = ctx.createLinearGradient(20, 0, 380, 0);
-    gradient.addColorStop(0, "#818cf8");
-    gradient.addColorStop(1, "#a78bfa");
+    gradient.addColorStop(0, "#10b981");
+    gradient.addColorStop(1, "#14b8a6");
     ctx.fillStyle = gradient;
     ctx.beginPath();
     ctx.roundRect(20, 150, 360 * pct, 12, 6);
     ctx.fill();
 
     // Time
-    ctx.fillStyle = running ? "#818cf8" : "#60607a";
+    ctx.fillStyle = running ? "#34d399" : "#60607a";
     ctx.font = "bold 64px monospace";
     ctx.textAlign = "center";
     ctx.fillText(timeStr, 200, 85);
 
     // Title
-    ctx.fillStyle = "#a0a0c0";
+    ctx.fillStyle = "#a3a3a3";
     ctx.font = "20px sans-serif";
     const displayTitle = title.length > 28 ? title.slice(0, 28) + "..." : title;
     ctx.fillText(displayTitle, 200, 130);
 
     // Status dot
     if (running) {
-      ctx.fillStyle = "#818cf8";
+      ctx.fillStyle = "#10b981";
       ctx.beginPath();
       ctx.arc(20, 20, 6, 0, Math.PI * 2);
       ctx.fill();
@@ -175,7 +175,7 @@ export function FloatingTimer() {
           ) : (
             <button
               onClick={enterPiP}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-indigo-500 hover:bg-indigo-400 shadow-lg shadow-indigo-500/20 transition-all duration-200 text-sm text-white hover:scale-[1.02] active:scale-[0.98]"
+              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 shadow-lg shadow-emerald-500/20 transition-all duration-200 text-sm text-white hover:scale-[1.02] active:scale-[0.98]"
             >
               <MonitorUp size={14} />
               Float timer

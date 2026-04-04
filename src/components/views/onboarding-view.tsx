@@ -51,7 +51,7 @@ export function OnboardingView({ onComplete }: OnboardingProps) {
             <div
               key={i}
               className={`h-1 flex-1 rounded-full transition-all duration-300 ${
-                i < step ? "bg-indigo-500" : "bg-border"
+                i < step ? "bg-emerald-500" : "bg-border"
               }`}
             />
           ))}
@@ -242,7 +242,7 @@ export function OnboardingView({ onComplete }: OnboardingProps) {
           <button
             onClick={step === STEPS ? handleFinish : next}
             disabled={!canNext()}
-            className="flex-1 px-5 py-3 rounded-xl bg-indigo-500 hover:bg-indigo-400 disabled:opacity-30 text-sm font-medium transition-all duration-200 hover:scale-[1.01] active:scale-[0.99]"
+            className="flex-1 px-5 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 disabled:opacity-30 text-sm font-medium transition-all duration-200 hover:scale-[1.01] active:scale-[0.99]"
           >
             {step === STEPS ? "Let's go" : "Next"}
           </button>

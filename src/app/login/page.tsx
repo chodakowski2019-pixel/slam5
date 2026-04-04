@@ -66,7 +66,7 @@ export default function LoginPage() {
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
           <Link href="/" className="text-2xl font-heading font-bold tracking-tight mb-2 block">
-            Slam<span className="text-indigo-400">5</span>
+            Slam<span className="text-emerald-400">5</span>
           </Link>
           <p className="text-sm text-muted-foreground">
             5 tasks. Win the day.
@@ -102,7 +102,7 @@ export default function LoginPage() {
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full px-4 py-3 rounded-xl border border-border bg-card text-sm outline-none focus:border-indigo-500 transition-colors"
+            className="w-full px-4 py-3 rounded-xl border border-border bg-card text-sm outline-none focus:border-emerald-500 transition-colors"
             required
           />
           <input
@@ -110,14 +110,14 @@ export default function LoginPage() {
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full px-4 py-3 rounded-xl border border-border bg-card text-sm outline-none focus:border-indigo-500 transition-colors"
+            className="w-full px-4 py-3 rounded-xl border border-border bg-card text-sm outline-none focus:border-emerald-500 transition-colors"
             minLength={6}
             required
           />
           <button
             type="submit"
             disabled={loading}
-            className="w-full px-4 py-3 rounded-xl bg-indigo-500 hover:bg-indigo-400 transition-all duration-200 text-sm font-medium disabled:opacity-50"
+            className="w-full px-4 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 transition-all duration-200 text-sm font-medium disabled:opacity-50"
           >
             {loading ? "..." : mode === "login" ? "Log in" : "Create account"}
           </button>
@@ -128,14 +128,14 @@ export default function LoginPage() {
           {mode === "login" ? (
             <>
               No account?{" "}
-              <button onClick={() => { setMode("signup"); setError(null); setMessage(null); }} className="text-indigo-400 hover:text-indigo-300">
+              <button onClick={() => { setMode("signup"); setError(null); setMessage(null); }} className="text-emerald-400 hover:text-emerald-300">
                 Sign up
               </button>
             </>
           ) : (
             <>
               Already have an account?{" "}
-              <button onClick={() => { setMode("login"); setError(null); setMessage(null); }} className="text-indigo-400 hover:text-indigo-300">
+              <button onClick={() => { setMode("login"); setError(null); setMessage(null); }} className="text-emerald-400 hover:text-emerald-300">
                 Log in
               </button>
             </>

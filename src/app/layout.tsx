@@ -25,7 +25,7 @@ export const metadata: Metadata = {
   title: "Slam5 — Slam your 5. Win the day.",
   description: "Gamified task management for brains that work differently. 5 wins a day. Every day.",
   manifest: "/manifest.json",
-  themeColor: "#6366f1",
+  themeColor: "#10b981",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",

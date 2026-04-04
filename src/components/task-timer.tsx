@@ -81,7 +81,7 @@ export function TaskTimer({ task, compact = false }: TaskTimerProps) {
         <span
           className={cn(
             "text-xs font-mono tabular-nums",
-            timerDone ? "text-emerald-400" : isRunning ? "text-indigo-400" : "text-muted-foreground"
+            timerDone ? "text-emerald-400" : isRunning ? "text-emerald-400" : "text-muted-foreground"
           )}
         >
           {formatTime(secondsLeft)}
@@ -127,7 +127,7 @@ export function TaskTimer({ task, compact = false }: TaskTimerProps) {
             strokeLinecap="round"
             className={cn(
               "transition-all duration-1000",
-              timerDone ? "text-emerald-400" : "text-indigo-500"
+              timerDone ? "text-emerald-400" : "text-emerald-500"
             )}
           />
         </svg>
@@ -135,7 +135,7 @@ export function TaskTimer({ task, compact = false }: TaskTimerProps) {
           <span
             className={cn(
               "text-[10px] font-mono tabular-nums font-medium",
-              timerDone ? "text-emerald-400" : isRunning ? "text-indigo-400" : "text-muted-foreground"
+              timerDone ? "text-emerald-400" : isRunning ? "text-emerald-400" : "text-muted-foreground"
             )}
           >
             {formatTime(secondsLeft)}
@@ -159,7 +159,7 @@ export function TaskTimer({ task, compact = false }: TaskTimerProps) {
               className={cn(
                 "p-1.5 rounded-md transition-colors",
                 isRunning
-                  ? "bg-indigo-500/20 text-indigo-400 hover:bg-indigo-500/30"
+                  ? "bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30"
                   : "hover:bg-accent text-muted-foreground hover:text-foreground"
               )}
             >
