@@ -35,7 +35,6 @@ export async function POST(request: NextRequest) {
         BLOCKER_LABEL: blockerLabels[result] ?? result,
         SOURCE: "slam5-quiz",
       },
-      listIds: [2], // default list — change if needed
       updateEnabled: true,
     }),
   });
