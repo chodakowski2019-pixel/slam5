@@ -55,7 +55,7 @@ export async function POST(request: NextRequest) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      sender: { name: "Slam5", email: "hello@slam5.com" },
+      sender: { name: "Slam5", email: "kuba@slam5.com" },
       to: [{ email }],
       subject: `Your blocker type: ${label}`,
       htmlContent: buildEmail(result, label),
