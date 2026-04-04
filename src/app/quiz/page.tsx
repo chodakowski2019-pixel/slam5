@@ -297,7 +297,7 @@ export default function QuizPage() {
 
           {/* CTA */}
           <Link
-            href="/login"
+            href="/"
             className="block w-full py-4 rounded-2xl bg-gradient-to-r from-[#10b981] to-[#14b8a6] text-white font-semibold text-base transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-emerald-500/20 mb-4"
           >
             Try Slam5 free — 3 days, no card
