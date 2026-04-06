@@ -26,6 +26,7 @@ function AppContent() {
   const [cmdOpen, setCmdOpen] = useState(false);
   const [toastMsg, setToastMsg] = useState<string | null>(null);
   const [checkoutLoading, setCheckoutLoading] = useState(false);
+  const [checkoutError, setCheckoutError] = useState<string | null>(null);
   const [showCheckoutGate, setShowCheckoutGate] = useState(false);
   const { data, updateProfile, addGoal } = useStore();
   const { user } = useAuth();
@@ -49,8 +50,12 @@ function AppContent() {
   }, []);
 
   const startCheckout = async () => {
-    if (!user) return;
+    if (!user) {
+      setCheckoutError("Not logged in. Please refresh and try again.");
+      return;
+    }
     setCheckoutLoading(true);
+    setCheckoutError(null);
     try {
       const res = await fetch("/api/stripe/checkout", {
         method: "POST",
@@ -61,11 +66,12 @@ function AppContent() {
       if (url) {
         window.location.href = url;
       } else {
-        console.error(error);
+        setCheckoutError(error || "Something went wrong. Try again.");
         setCheckoutLoading(false);
         setShowCheckoutGate(true);
       }
-    } catch {
+    } catch (e) {
+      setCheckoutError(e instanceof Error ? e.message : "Network error. Try again.");
       setCheckoutLoading(false);
       setShowCheckoutGate(true);
     }
@@ -178,6 +184,9 @@ function AppContent() {
             <li className="flex items-center gap-2"><span className="text-emerald-400">✓</span> Streaks & points keep you moving</li>
             <li className="flex items-center gap-2"><span className="text-emerald-400">✓</span> Built for ADHD brains that overthink</li>
           </ul>
+          {checkoutError && (
+            <p className="text-xs text-red-400 text-center">{checkoutError}</p>
+          )}
           <button
             onClick={startCheckout}
             disabled={checkoutLoading}
