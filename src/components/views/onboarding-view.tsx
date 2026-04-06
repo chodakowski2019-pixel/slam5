@@ -78,7 +78,7 @@ export function OnboardingView({ onComplete }: OnboardingProps) {
               />
               <div>
                 <Input
-                  placeholder="+1 555 123 4567"
+                  placeholder="Phone number (optional)"
                   type="tel"
                   value={phoneNumber}
                   onChange={(e) => setPhoneNumber(e.target.value)}
