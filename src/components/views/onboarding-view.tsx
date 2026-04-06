@@ -85,7 +85,7 @@ export function OnboardingView({ onComplete }: OnboardingProps) {
                   onKeyDown={(e) => e.key === "Enter" && canNext() && next()}
                   className="text-lg py-6 bg-card"
                 />
-                <p className="text-xs text-muted-foreground mt-2">Optional. For text reminders.</p>
+                <p className="text-xs text-muted-foreground mt-2">We&apos;ll text you when it&apos;s time to start. The nudge that actually works.</p>
               </div>
             </div>
           </div>
@@ -166,23 +166,42 @@ export function OnboardingView({ onComplete }: OnboardingProps) {
             <div>
               <h2 className="text-2xl font-heading font-bold">When do you plan?</h2>
               <p className="text-sm text-muted-foreground mt-1">
-                We&apos;ll remind you.
+                We&apos;ll text you if you haven&apos;t started by then.
               </p>
             </div>
-            <div>
-              <label className="text-sm font-medium mb-2 block">Pick your planning time</label>
-              <Input
-                type="time"
-                value={planHour}
-                onChange={(e) => {
-                  setPlanHour(e.target.value);
-                  const h = parseInt(e.target.value.split(":")[0]);
-                  setPlanTime(h < 15 ? "morning" : "evening");
-                }}
-                className="text-2xl py-8 bg-card w-48 text-center font-mono"
-                autoFocus
-              />
-              <p className="text-xs text-muted-foreground mt-2">We&apos;ll text you if you haven&apos;t planned your tasks by then.</p>
+            <div className="space-y-3">
+              <p className="text-sm font-medium">Morning</p>
+              <div className="grid grid-cols-4 gap-2">
+                {["06:00","07:00","08:00","09:00","10:00","11:00"].map((h) => (
+                  <button
+                    key={h}
+                    onClick={() => { setPlanHour(h); setPlanTime("morning"); }}
+                    className={`py-3 rounded-xl text-sm font-medium border transition-all duration-150 ${
+                      planHour === h
+                        ? "bg-emerald-500 border-emerald-500 text-white"
+                        : "bg-card border-border text-muted-foreground hover:border-emerald-500/50"
+                    }`}
+                  >
+                    {parseInt(h) <= 12 ? `${parseInt(h)}am` : `${parseInt(h)-12}pm`}
+                  </button>
+                ))}
+              </div>
+              <p className="text-sm font-medium pt-1">Afternoon</p>
+              <div className="grid grid-cols-4 gap-2">
+                {["12:00","13:00","14:00","15:00","16:00","17:00"].map((h) => (
+                  <button
+                    key={h}
+                    onClick={() => { setPlanHour(h); setPlanTime("evening"); }}
+                    className={`py-3 rounded-xl text-sm font-medium border transition-all duration-150 ${
+                      planHour === h
+                        ? "bg-emerald-500 border-emerald-500 text-white"
+                        : "bg-card border-border text-muted-foreground hover:border-emerald-500/50"
+                    }`}
+                  >
+                    {parseInt(h) <= 12 ? `${parseInt(h)}am` : `${parseInt(h)-12}pm`}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         )}

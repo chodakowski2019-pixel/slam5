@@ -19,6 +19,7 @@ import { WinToast } from "@/components/win-toast";
 import { useStore } from "@/lib/store-context";
 import { celebrate, celebrateWin } from "@/lib/celebrate";
 import { getTodayKey } from "@/lib/store";
+import { supabase } from "@/lib/supabase";
 
 function AppContent() {
   const [view, setView] = useState("dashboard");
@@ -28,8 +29,8 @@ function AppContent() {
   const prevCompletedRef = useRef<number>(0);
   const needsOnboarding = !data.profile?.onboardingCompleted;
 
-  const handleOnboardingComplete = (onboardingData: OnboardingData) => {
-    updateProfile({
+  const handleOnboardingComplete = async (onboardingData: OnboardingData) => {
+    const profile = {
       name: onboardingData.name,
       phoneNumber: onboardingData.phoneNumber,
       bodyGoal: onboardingData.bodyGoal,
@@ -38,7 +39,18 @@ function AppContent() {
       planTime: onboardingData.planTime,
       planHour: onboardingData.planHour,
       onboardingCompleted: true,
-    });
+    };
+    updateProfile(profile);
+    // Immediately persist onboardingCompleted so it survives page reloads
+    const { data: sessionData } = await supabase.auth.getSession();
+    const token = sessionData.session?.access_token;
+    if (token) {
+      await fetch("/api/data", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ profile, tasks: [], projects: [], goals: [], parkingLot: [], dayRecords: [], totalPoints: 0 }),
+      });
+    }
   };
 
   // Watch for task completions to fire celebrations
