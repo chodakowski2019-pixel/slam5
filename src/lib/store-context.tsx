@@ -58,6 +58,7 @@ async function getAuthHeaders(): Promise<Record<string, string>> {
 export function StoreProvider({ children }: { children: React.ReactNode }) {
   const [data, setData] = useState<StoreData>(EMPTY);
   const [loaded, setLoaded] = useState(false);
+  const loadedOk = useRef(false);
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
@@ -65,7 +66,9 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       try {
         const headers = await getAuthHeaders();
         const r = await fetch("/api/data", { headers });
+        if (!r.ok) throw new Error("Load failed");
         const d = await r.json();
+        if (d.error) throw new Error(d.error);
         setData({
           tasks: d.tasks || [],
           projects: d.projects || [],
@@ -76,13 +79,17 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
           profile: d.profile,
           subscription: d.subscription,
         });
-      } catch {}
+        loadedOk.current = true;
+      } catch {
+        // Load failed — do NOT allow saving to prevent wiping data
+        loadedOk.current = false;
+      }
       setLoaded(true);
     })();
   }, []);
 
   useEffect(() => {
-    if (!loaded) return;
+    if (!loaded || !loadedOk.current) return;
     if (saveTimer.current) clearTimeout(saveTimer.current);
     const hasRunningTimer = data.tasks.some((t) => t.timerRunning);
     const delay = hasRunningTimer ? 2000 : 300;
