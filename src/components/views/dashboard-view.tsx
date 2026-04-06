@@ -315,7 +315,7 @@ export function DashboardView({ onNavigate }: DashboardProps) {
       )}
 
       {/* Verdict */}
-      {totalToday >= 5 && activeTasks.length === 0 && (
+      {completedToday.length >= 5 && (
         <div className={`mb-6 p-8 rounded-2xl border text-center relative overflow-hidden ${
           todayWon
             ? "border-emerald-500/20 bg-gradient-to-br from-emerald-500/10 via-emerald-500/5 to-transparent"
