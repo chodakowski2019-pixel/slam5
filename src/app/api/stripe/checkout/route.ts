@@ -20,17 +20,7 @@ export async function POST(request: NextRequest) {
       },
       line_items: [
         {
-          price_data: {
-            currency: "usd",
-            product_data: {
-              name: "Slam5 Pro",
-              description: "Unlimited access. Win every day.",
-            },
-            unit_amount: 999, // $9.99
-            recurring: {
-              interval: "month",
-            },
-          },
+          price: process.env.STRIPE_PRICE_ID!,
           quantity: 1,
         },
       ],
