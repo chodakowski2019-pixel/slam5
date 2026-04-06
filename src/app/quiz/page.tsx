@@ -123,6 +123,7 @@ export default function QuizPage() {
   const [answers, setAnswers] = useState<string[]>([]);
   const [selected, setSelected] = useState<string | null>(null);
   const [email, setEmail] = useState("");
+  const [privacyChecked, setPrivacyChecked] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [result, setResult] = useState<ResultKey | null>(null);
 
@@ -252,9 +253,25 @@ export default function QuizPage() {
               placeholder="your@email.com"
               className="w-full px-5 py-4 rounded-2xl bg-white/[0.05] border border-white/[0.1] text-white placeholder:text-neutral-600 focus:outline-none focus:border-emerald-500/50 transition-colors text-sm"
             />
+            <label className="flex items-start gap-3 text-left cursor-pointer">
+              <input
+                type="checkbox"
+                required
+                checked={privacyChecked}
+                onChange={(e) => setPrivacyChecked(e.target.checked)}
+                className="mt-0.5 w-4 h-4 rounded border border-white/20 bg-white/5 accent-emerald-500 flex-shrink-0"
+              />
+              <span className="text-xs text-neutral-500 leading-relaxed">
+                I agree to the{" "}
+                <Link href="/privacy" className="text-neutral-400 underline hover:text-white transition-colors">
+                  Privacy Policy
+                </Link>
+                {" "}and consent to receiving emails from Slam5.
+              </span>
+            </label>
             <button
               type="submit"
-              disabled={submitting}
+              disabled={submitting || !privacyChecked}
               className="w-full py-4 rounded-2xl bg-gradient-to-r from-[#10b981] to-[#14b8a6] text-white font-semibold text-base transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-emerald-500/20 disabled:opacity-60 disabled:scale-100"
             >
               {submitting ? "Loading..." : "Show my result →"}
