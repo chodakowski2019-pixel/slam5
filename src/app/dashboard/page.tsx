@@ -29,7 +29,7 @@ function AppContent() {
   const [showCheckoutGate, setShowCheckoutGate] = useState(false);
   const { data, updateProfile, addGoal } = useStore();
   const { user } = useAuth();
-  const prevCompletedRef = useRef<number>(0);
+  const prevCompletedRef = useRef<number>(-1);
   const localDone = typeof window !== "undefined" && user?.id
     ? localStorage.getItem(`onboardingCompleted_${user.id}`) === "true"
     : false;
