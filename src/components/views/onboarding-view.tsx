@@ -186,9 +186,9 @@ export function OnboardingView({ onComplete }: OnboardingProps) {
                   </button>
                 ))}
               </div>
-              <p className="text-sm font-medium pt-1">Afternoon</p>
+              <p className="text-sm font-medium pt-1">Evening</p>
               <div className="grid grid-cols-4 gap-2">
-                {["12:00","13:00","14:00","15:00","16:00","17:00"].map((h) => (
+                {["17:00","18:00","19:00","20:00","21:00","22:00"].map((h) => (
                   <button
                     key={h}
                     onClick={() => { setPlanHour(h); setPlanTime("evening"); }}
@@ -261,7 +261,7 @@ export function OnboardingView({ onComplete }: OnboardingProps) {
           <button
             onClick={step === STEPS ? handleFinish : next}
             disabled={!canNext()}
-            className="flex-1 px-5 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 disabled:opacity-30 text-sm font-medium transition-all duration-200 hover:scale-[1.01] active:scale-[0.99]"
+            className="px-10 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 disabled:opacity-30 text-sm font-medium transition-all duration-200 hover:scale-[1.01] active:scale-[0.99]"
           >
             {step === STEPS ? "Let's go" : "Next"}
           </button>
