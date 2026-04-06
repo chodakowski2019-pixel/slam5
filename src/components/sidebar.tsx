@@ -137,29 +137,6 @@ export function Sidebar({ activeView, onViewChange }: SidebarProps) {
       )}
 
 
-      {/* Upgrade */}
-      {!isPro && (
-        <div className="px-2 py-2">
-          {!collapsed ? (
-            <button
-              onClick={handleUpgrade}
-              disabled={upgrading}
-              className="w-full flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl text-sm font-medium bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 transition-all duration-200 disabled:opacity-50 shadow-lg shadow-emerald-500/20 hover:scale-[1.02] active:scale-[0.98]"
-            >
-              <Zap size={14} />
-              {upgrading ? "Loading..." : "Go Pro"}
-            </button>
-          ) : (
-            <button
-              onClick={handleUpgrade}
-              disabled={upgrading}
-              className="w-full flex justify-center p-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 transition-all duration-200 disabled:opacity-50"
-            >
-              <Zap size={14} />
-            </button>
-          )}
-        </div>
-      )}
 
       {/* User + Settings */}
       <button
