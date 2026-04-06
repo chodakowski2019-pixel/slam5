@@ -22,37 +22,38 @@ interface DashboardProps {
 
 function MiniBarChart({
   data,
+  labels,
   height = 64,
 }: {
   data: number[];
+  labels: string[];
   height?: number;
 }) {
   const max = Math.max(...data, 1);
-  const barWidth = 100 / data.length;
   return (
-    <svg width="100%" height={height} viewBox={`0 0 100 ${height}`} preserveAspectRatio="none">
-      <defs>
-        <linearGradient id="barGrad" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#34d399" />
-          <stop offset="100%" stopColor="#10b981" stopOpacity="0.6" />
-        </linearGradient>
-      </defs>
+    <div className="flex items-end gap-1 w-full">
       {data.map((val, i) => {
-        const barH = (val / max) * (height - 4);
         const isLast = i === data.length - 1;
+        const barH = Math.max((val / max) * height, val > 0 ? 4 : 0);
         return (
-          <rect
-            key={i}
-            x={i * barWidth + barWidth * 0.15}
-            y={height - barH}
-            width={barWidth * 0.7}
-            height={barH}
-            rx={3}
-            fill={isLast ? "url(#barGrad)" : "#34d39920"}
-          />
+          <div key={i} className="flex-1 flex flex-col items-center gap-1.5">
+            <div className="w-full flex items-end justify-center" style={{ height }}>
+              <div
+                style={{
+                  height: barH,
+                  width: "55%",
+                  borderRadius: 4,
+                  background: isLast
+                    ? "linear-gradient(to bottom, #34d399, #10b981aa)"
+                    : "#34d39920",
+                }}
+              />
+            </div>
+            <span className="text-[10px] text-muted-foreground">{labels[i]}</span>
+          </div>
         );
       })}
-    </svg>
+    </div>
   );
 }
 
@@ -295,15 +296,10 @@ export function DashboardView({ onNavigate }: DashboardProps) {
         </div>
 
         <div className="p-5 rounded-2xl border border-border bg-card">
-          <h3 className="text-xs text-muted-foreground uppercase tracking-wider font-medium mb-5">
+          <h3 className="text-xs text-muted-foreground uppercase tracking-wider font-medium mb-4">
             Activity
           </h3>
-          <MiniBarChart data={weeklyData} height={56} />
-          <div className="flex justify-around mt-2">
-            {weekLabels.map((d, i) => (
-              <span key={i} className="text-[10px] text-muted-foreground">{d}</span>
-            ))}
-          </div>
+          <MiniBarChart data={weeklyData} labels={weekLabels} height={56} />
         </div>
       </div>
 
