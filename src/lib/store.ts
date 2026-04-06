@@ -87,6 +87,11 @@ export interface StoreData {
   subscription?: Subscription;
   profile?: UserProfile;
   phoneNumber?: string; // legacy, use profile.phoneNumber
+  // Track deleted IDs so server can remove them without delete-all
+  deletedTaskIds?: string[];
+  deletedProjectIds?: string[];
+  deletedGoalIds?: string[];
+  deletedParkingIds?: string[];
 }
 
 const STORE_KEY = "slam5-data";

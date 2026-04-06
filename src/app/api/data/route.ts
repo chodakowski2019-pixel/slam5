@@ -150,8 +150,7 @@ export async function POST(request: NextRequest) {
     });
   }
 
-  // Sync tasks — delete all and re-insert (simple approach)
-  await sb.from("tasks").delete().eq("user_id", userId);
+  // Upsert tasks individually — never delete all first
   if (data.tasks?.length > 0) {
     const rows = data.tasks.map((t: Record<string, unknown>) => ({
       id: t.id,
@@ -168,11 +167,14 @@ export async function POST(request: NextRequest) {
       created_at: t.createdAt,
       completed_at: t.completedAt,
     }));
-    await sb.from("tasks").insert(rows);
+    await sb.from("tasks").upsert(rows, { onConflict: "id" });
+  }
+  // Delete tasks that were removed by user
+  if (data.deletedTaskIds?.length > 0) {
+    await sb.from("tasks").delete().eq("user_id", userId).in("id", data.deletedTaskIds);
   }
 
-  // Sync projects
-  await sb.from("projects").delete().eq("user_id", userId);
+  // Upsert projects
   if (data.projects?.length > 0) {
     const rows = data.projects.map((p: Record<string, unknown>) => ({
       id: p.id,
@@ -183,11 +185,13 @@ export async function POST(request: NextRequest) {
       description: p.description,
       created_at: p.createdAt,
     }));
-    await sb.from("projects").insert(rows);
+    await sb.from("projects").upsert(rows, { onConflict: "id" });
+  }
+  if (data.deletedProjectIds?.length > 0) {
+    await sb.from("projects").delete().eq("user_id", userId).in("id", data.deletedProjectIds);
   }
 
-  // Sync goals
-  await sb.from("goals").delete().eq("user_id", userId);
+  // Upsert goals
   if (data.goals?.length > 0) {
     const rows = data.goals.map((g: Record<string, unknown>) => ({
       id: g.id,
@@ -202,11 +206,13 @@ export async function POST(request: NextRequest) {
       completed: g.completed,
       created_at: g.createdAt,
     }));
-    await sb.from("goals").insert(rows);
+    await sb.from("goals").upsert(rows, { onConflict: "id" });
+  }
+  if (data.deletedGoalIds?.length > 0) {
+    await sb.from("goals").delete().eq("user_id", userId).in("id", data.deletedGoalIds);
   }
 
-  // Sync parking lot
-  await sb.from("parking_lot").delete().eq("user_id", userId);
+  // Upsert parking lot
   if (data.parkingLot?.length > 0) {
     const rows = data.parkingLot.map((p: Record<string, unknown>) => ({
       id: p.id,
@@ -214,7 +220,10 @@ export async function POST(request: NextRequest) {
       text: p.text,
       created_at: p.createdAt,
     }));
-    await sb.from("parking_lot").insert(rows);
+    await sb.from("parking_lot").upsert(rows, { onConflict: "id" });
+  }
+  if (data.deletedParkingIds?.length > 0) {
+    await sb.from("parking_lot").delete().eq("user_id", userId).in("id", data.deletedParkingIds);
   }
 
   // Sync day records — upsert by (user_id, date)

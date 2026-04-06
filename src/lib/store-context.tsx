@@ -78,6 +78,10 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
           totalPoints: d.totalPoints || 0,
           profile: d.profile,
           subscription: d.subscription,
+          deletedTaskIds: [],
+          deletedProjectIds: [],
+          deletedGoalIds: [],
+          deletedParkingIds: [],
         });
         loadedOk.current = true;
       } catch {
@@ -196,7 +200,11 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const deleteTask = useCallback((id: string) => {
-    setData((prev) => ({ ...prev, tasks: prev.tasks.filter((t) => t.id !== id) }));
+    setData((prev) => ({
+      ...prev,
+      tasks: prev.tasks.filter((t) => t.id !== id),
+      deletedTaskIds: [...(prev.deletedTaskIds || []), id],
+    }));
   }, []);
 
   const updateTaskTimer = useCallback(
@@ -246,7 +254,11 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const deleteProject = useCallback((id: string) => {
-    setData((prev) => ({ ...prev, projects: prev.projects.filter((p) => p.id !== id) }));
+    setData((prev) => ({
+      ...prev,
+      projects: prev.projects.filter((p) => p.id !== id),
+      deletedProjectIds: [...(prev.deletedProjectIds || []), id],
+    }));
   }, []);
 
   const addGoal = useCallback(
@@ -262,7 +274,11 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const deleteGoal = useCallback((id: string) => {
-    setData((prev) => ({ ...prev, goals: prev.goals.filter((g) => g.id !== id) }));
+    setData((prev) => ({
+      ...prev,
+      goals: prev.goals.filter((g) => g.id !== id),
+      deletedGoalIds: [...(prev.deletedGoalIds || []), id],
+    }));
   }, []);
 
   const addMilestone = useCallback((goalId: string, title: string) => {
@@ -305,7 +321,11 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const deleteParkingLotItem = useCallback((id: string) => {
-    setData((prev) => ({ ...prev, parkingLot: prev.parkingLot.filter((i) => i.id !== id) }));
+    setData((prev) => ({
+      ...prev,
+      parkingLot: prev.parkingLot.filter((i) => i.id !== id),
+      deletedParkingIds: [...(prev.deletedParkingIds || []), id],
+    }));
   }, []);
 
   const clearParkingLot = useCallback(() => {
