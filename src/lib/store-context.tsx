@@ -165,7 +165,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       const existing = prev.dayRecords.find((r) => r.date === today);
       // Win requires min 5 tasks all completed. Once won with 5+, stays won even if more tasks added.
       const alreadyWon = (existing?.won ?? false) && (existing?.tasksTotal ?? 0) >= 5;
-      const won = total >= 5 && (alreadyWon || completed === total);
+      const won = alreadyWon || completed >= 5;
       const record: DayRecord = {
         date: today,
         tasksTotal: total,
