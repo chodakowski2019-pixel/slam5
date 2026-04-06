@@ -170,10 +170,10 @@ export function TasksView() {
                 onDragStart={(e) => {
                   dragId.current = task.id;
                   const ghost = document.createElement("div");
-                  ghost.textContent = task.title;
-                  ghost.style.cssText = "position:fixed;top:-100px;background:#1a1a1a;color:white;padding:8px 14px;border-radius:10px;font-size:13px;white-space:nowrap;";
+                  ghost.innerHTML = `${task.isFrog ? "🐸 " : ""}${task.title}`;
+                  ghost.style.cssText = "position:fixed;top:-200px;left:0;background:#1a1a1a;color:white;padding:14px 18px;border-radius:16px;font-size:14px;border:1px solid rgba(255,255,255,0.1);box-shadow:0 8px 32px rgba(0,0,0,0.5);max-width:360px;word-break:break-word;";
                   document.body.appendChild(ghost);
-                  e.dataTransfer.setDragImage(ghost, 0, 0);
+                  e.dataTransfer.setDragImage(ghost, ghost.offsetWidth / 2, 24);
                   setTimeout(() => document.body.removeChild(ghost), 0);
                 }}
                 onDragOver={(e) => { e.preventDefault(); }}
@@ -199,7 +199,7 @@ export function TasksView() {
                   className="border-muted-foreground/40"
                 />
                 {task.isFrog && <span className="text-sm">🐸</span>}
-                <span className="flex-1 text-sm">{task.title}</span>
+                <span className="flex-1 text-sm break-words min-w-0">{task.title}</span>
                 {project && (
                   <Badge
                     variant="secondary"
