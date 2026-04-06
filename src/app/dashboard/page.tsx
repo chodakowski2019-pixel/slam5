@@ -30,7 +30,9 @@ function AppContent() {
   const { data, updateProfile, addGoal } = useStore();
   const { user } = useAuth();
   const prevCompletedRef = useRef<number>(0);
-  const localDone = typeof window !== "undefined" && localStorage.getItem("onboardingCompleted") === "true";
+  const localDone = typeof window !== "undefined" && user?.id
+    ? localStorage.getItem(`onboardingCompleted_${user.id}`) === "true"
+    : false;
   const needsOnboarding = !localDone && !data.profile?.onboardingCompleted;
   const isPro = data.subscription?.status === "active" || data.subscription?.status === "trialing";
 
@@ -78,7 +80,7 @@ function AppContent() {
       planHour: onboardingData.planHour,
       onboardingCompleted: true,
     };
-    localStorage.setItem("onboardingCompleted", "true");
+    if (user?.id) localStorage.setItem(`onboardingCompleted_${user.id}`, "true");
     updateProfile(profile);
     // Create goals from onboarding answers
     const goalMap = [
