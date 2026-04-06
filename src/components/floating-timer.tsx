@@ -198,25 +198,46 @@ export function FloatingTimer() {
     );
   }, []);
 
+  const seconds = activeTask?.timerSecondsLeft ?? 0;
+  const mins = Math.floor(seconds / 60);
+  const secs = seconds % 60;
+  const timeStr = `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
+
   return (
     <>
       {activeTask && (
-        <div className="fixed bottom-4 right-4 z-50">
+        <div className="fixed bottom-4 right-4 z-50 flex items-center gap-2">
+          {/* Sticky mini timer — always visible */}
+          <div className={`flex items-center gap-3 px-4 py-2.5 rounded-xl border shadow-lg text-sm ${
+            runningTask
+              ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400"
+              : "bg-card border-border text-muted-foreground"
+          }`}>
+            {runningTask && (
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+              </span>
+            )}
+            <span className="font-mono font-semibold tracking-wider">{timeStr}</span>
+            <span className="text-xs truncate max-w-[120px] opacity-70">{activeTask.title}</span>
+          </div>
+
+          {/* PiP button */}
           {pipActive ? (
             <button
               onClick={exitPiP}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-card border border-border shadow-lg hover:bg-accent transition-all duration-200 text-sm"
+              className="flex items-center gap-2 px-3 py-2.5 rounded-xl bg-card border border-border shadow-lg hover:bg-accent transition-all duration-200 text-sm"
             >
               <X size={14} />
-              Close PiP
             </button>
           ) : (
             <button
               onClick={enterPiP}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 shadow-lg shadow-emerald-500/20 transition-all duration-200 text-sm text-white hover:scale-[1.02] active:scale-[0.98]"
+              className="flex items-center gap-2 px-3 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 shadow-lg shadow-emerald-500/20 transition-all duration-200 text-sm text-white hover:scale-[1.02] active:scale-[0.98]"
+              title="Float timer"
             >
               <MonitorUp size={14} />
-              Float timer
             </button>
           )}
         </div>
