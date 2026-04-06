@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useStore } from "@/lib/store-context";
 import { useAuth } from "@/lib/auth-context";
+import { supabase } from "@/lib/supabase";
 
 const MORNING_HOURS = ["06:00","07:00","08:00","09:00","10:00","11:00"];
 const EVENING_HOURS = ["19:00","20:00","21:00","22:00","23:00","00:00"];
@@ -23,6 +24,8 @@ export function SettingsView() {
   const [planTime, setPlanTime] = useState(profile?.planTime || "morning");
   const [planHour, setPlanHour] = useState(profile?.planHour || "08:00");
   const [saved, setSaved] = useState(false);
+  const [portalLoading, setPortalLoading] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
 
   const isPro = data.subscription?.status === "active" || data.subscription?.status === "trialing";
 
@@ -30,6 +33,43 @@ export function SettingsView() {
     updateProfile({ planTime, planHour, onboardingCompleted: true });
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
+  };
+
+  const handleManageSubscription = async () => {
+    setPortalLoading(true);
+    const { data: session } = await supabase.auth.getSession();
+    const token = session.session?.access_token;
+    if (!token) { setPortalLoading(false); return; }
+    const res = await fetch("/api/stripe/portal", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const { url, error } = await res.json();
+    if (url) {
+      window.location.href = url;
+    } else {
+      console.error(error);
+      setPortalLoading(false);
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    if (!confirm("Are you sure? This deletes everything. Can't be undone.")) return;
+    setDeleteLoading(true);
+    const { data: session } = await supabase.auth.getSession();
+    const token = session.session?.access_token;
+    if (!token) { setDeleteLoading(false); return; }
+    const res = await fetch("/api/delete-account", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (res.ok) {
+      await supabase.auth.signOut();
+      window.location.href = "/login?deleted=true";
+    } else {
+      alert("Something went wrong. Please try again.");
+      setDeleteLoading(false);
+    }
   };
 
   return (
@@ -114,12 +154,19 @@ export function SettingsView() {
       {/* Support */}
       <section className="mb-8">
         <h3 className="text-xs text-muted-foreground uppercase tracking-wider font-medium mb-4">Support</h3>
-        <div className="p-5 rounded-2xl border border-border bg-card">
+        <div className="p-5 rounded-2xl border border-border bg-card space-y-3">
           <a
             href="mailto:support@slam5.app"
             className="flex items-center gap-3 text-sm text-muted-foreground hover:text-foreground transition-colors"
           >
             💬 Contact support
+          </a>
+          <a
+            href="/privacy"
+            target="_blank"
+            className="flex items-center gap-3 text-sm text-muted-foreground hover:text-foreground transition-colors"
+          >
+            📄 Privacy Policy
           </a>
         </div>
       </section>
@@ -128,6 +175,15 @@ export function SettingsView() {
       <section>
         <h3 className="text-xs text-muted-foreground uppercase tracking-wider font-medium mb-4">Account</h3>
         <div className="space-y-3">
+          {isPro && (
+            <button
+              onClick={handleManageSubscription}
+              disabled={portalLoading}
+              className="w-full flex items-center gap-3 px-5 py-4 rounded-2xl border border-border bg-card text-sm text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-all duration-200 disabled:opacity-50"
+            >
+              💳 {portalLoading ? "Loading..." : "Manage subscription"}
+            </button>
+          )}
           <button
             onClick={signOut}
             className="w-full flex items-center gap-3 px-5 py-4 rounded-2xl border border-border bg-card text-sm text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-all duration-200"
@@ -135,14 +191,11 @@ export function SettingsView() {
             🚪 Sign out
           </button>
           <button
-            onClick={() => {
-              if (confirm("Are you sure? This deletes everything. Can't be undone.")) {
-                alert("Email support@slam5.app to confirm.");
-              }
-            }}
-            className="w-full flex items-center gap-3 px-5 py-4 rounded-2xl border border-red-500/20 bg-card text-sm text-red-400 hover:text-red-300 hover:bg-red-500/5 transition-all duration-200"
+            onClick={handleDeleteAccount}
+            disabled={deleteLoading}
+            className="w-full flex items-center gap-3 px-5 py-4 rounded-2xl border border-red-500/20 bg-card text-sm text-red-400 hover:text-red-300 hover:bg-red-500/5 transition-all duration-200 disabled:opacity-50"
           >
-            🗑️ Delete account
+            🗑️ {deleteLoading ? "Deleting..." : "Delete account"}
           </button>
         </div>
       </section>
