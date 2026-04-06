@@ -6,12 +6,9 @@ import {
   Trash2,
   Trophy,
   Calendar,
-  ChevronDown,
-  ChevronRight,
   Check,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
 import { useStore } from "@/lib/store-context";
 import { Goal } from "@/lib/store";
@@ -24,193 +21,81 @@ const HORIZONS = [
 ];
 
 function GoalCard({ goal }: { goal: Goal }) {
-  const { updateGoal, deleteGoal, addMilestone, toggleMilestone, deleteMilestone, data } =
-    useStore();
-  const [expanded, setExpanded] = useState(false);
-  const [newMs, setNewMs] = useState("");
+  const { updateGoal, deleteGoal } = useStore();
 
   const horizon = HORIZONS.find((h) => h.value === goal.horizon);
-  const project = goal.projectId ? data.projects.find((p) => p.id === goal.projectId) : null;
 
-  const daysLeft = Math.max(
-    0,
-    Math.ceil(
-      (new Date(goal.deadline).getTime() - Date.now()) / (1000 * 60 * 60 * 24)
-    )
-  );
-
-  const handleAddMs = () => {
-    if (!newMs.trim()) return;
-    addMilestone(goal.id, newMs.trim());
-    setNewMs("");
-  };
+  const daysLeft = goal.deadline
+    ? Math.max(0, Math.ceil((new Date(goal.deadline).getTime() - Date.now()) / (1000 * 60 * 60 * 24)))
+    : null;
 
   return (
     <div
       className={cn(
-        "rounded-2xl border bg-card transition-all",
+        "rounded-2xl border bg-card transition-all p-4",
         goal.completed ? "border-emerald-500/30 opacity-60" : "border-border"
       )}
     >
-      {/* Header */}
-      <div className="p-4">
-        <div className="flex items-start gap-3">
-          <button
-            onClick={() => setExpanded(!expanded)}
-            className="mt-1 p-0.5 rounded hover:bg-accent transition-colors text-muted-foreground"
-          >
-            {expanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
-          </button>
-
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 mb-1">
-              <span
-                className="text-[10px] uppercase tracking-wider font-medium px-1.5 py-0.5 rounded"
-                style={{
-                  backgroundColor: (horizon?.color || "#10b981") + "20",
-                  color: horizon?.color || "#10b981",
-                }}
-              >
-                {horizon?.label}
+      <div className="flex items-start gap-3">
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 mb-1">
+            <span
+              className="text-[10px] uppercase tracking-wider font-medium px-1.5 py-0.5 rounded"
+              style={{
+                backgroundColor: (horizon?.color || "#10b981") + "20",
+                color: horizon?.color || "#10b981",
+              }}
+            >
+              {horizon?.label}
+            </span>
+            {goal.completed && (
+              <span className="text-[10px] text-emerald-400 flex items-center gap-1">
+                <Check size={10} /> Completed
               </span>
-              {project && (
-                <span
-                  className="text-[10px] px-1.5 py-0.5 rounded"
-                  style={{
-                    backgroundColor: project.color + "20",
-                    color: project.color,
-                  }}
-                >
-                  {project.emoji} {project.name}
-                </span>
-              )}
-              {goal.completed && (
-                <span className="text-[10px] text-emerald-400 flex items-center gap-1">
-                  <Check size={10} /> Completed
-                </span>
-              )}
-            </div>
-
-            <h3 className="font-heading font-semibold text-base">{goal.title}</h3>
-
-            {goal.description && (
-              <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
-                {goal.description}
-              </p>
             )}
+          </div>
 
-            {/* Progress bar */}
-            <div className="mt-3 flex items-center gap-3">
-              <div className="flex-1 h-2 rounded-full bg-border overflow-hidden">
-                <div
-                  className="h-full rounded-full transition-all duration-500"
-                  style={{
-                    width: `${goal.progress}%`,
-                    backgroundColor: horizon?.color || "#10b981",
-                  }}
-                />
-              </div>
-              <span className="text-xs font-mono tabular-nums text-muted-foreground w-10 text-right">
-                {goal.progress}%
+          <h3 className="font-heading font-semibold text-base">{goal.title}</h3>
+
+          {goal.description && (
+            <p className="text-sm text-muted-foreground mt-1">{goal.description}</p>
+          )}
+
+          {daysLeft !== null && !goal.completed && (
+            <div className="flex items-center gap-1 mt-2 text-xs text-muted-foreground">
+              <Calendar size={11} />
+              <span>
+                {new Date(goal.deadline).toLocaleDateString("en-US", {
+                  month: "short",
+                  day: "numeric",
+                  year: "numeric",
+                })}
               </span>
-            </div>
-
-            {/* Meta */}
-            <div className="flex items-center gap-4 mt-2 text-xs text-muted-foreground">
-              <div className="flex items-center gap-1">
-                <Calendar size={11} />
-                <span>
-                  {new Date(goal.deadline).toLocaleDateString("en-US", {
-                    month: "short",
-                    day: "numeric",
-                    year: "numeric",
-                  })}
-                </span>
-              </div>
-              <span
-                className={cn(
-                  daysLeft <= 30 && !goal.completed ? "text-amber-400" : ""
-                )}
-              >
+              <span className={cn("ml-2", daysLeft <= 30 ? "text-amber-400" : "")}>
                 {daysLeft} days left
               </span>
-              <span>
-                {goal.milestones.filter((m) => m.completed).length}/{goal.milestones.length} milestones
-              </span>
             </div>
-          </div>
+          )}
+        </div>
 
-          <div className="flex items-center gap-1">
-            {!goal.completed && (
-              <button
-                onClick={() => updateGoal(goal.id, { completed: true, progress: 100 })}
-                className="p-1.5 rounded-xl hover:bg-emerald-500/20 hover:text-emerald-400 transition-colors text-muted-foreground"
-                title="Mark complete"
-              >
-                <Trophy size={14} />
-              </button>
-            )}
+        <div className="flex items-center gap-1">
+          {!goal.completed && (
             <button
-              onClick={() => deleteGoal(goal.id)}
-              className="p-1.5 rounded-xl hover:bg-destructive/20 hover:text-destructive transition-colors text-muted-foreground"
+              onClick={() => updateGoal(goal.id, { completed: true, progress: 100 })}
+              className="p-1.5 rounded-xl hover:bg-emerald-500/20 hover:text-emerald-400 transition-colors text-muted-foreground"
+              title="Mark complete"
             >
-              <Trash2 size={14} />
+              <Trophy size={14} />
             </button>
-          </div>
+          )}
+          <button
+            onClick={() => deleteGoal(goal.id)}
+            className="p-1.5 rounded-xl hover:bg-destructive/20 hover:text-destructive transition-colors text-muted-foreground"
+          >
+            <Trash2 size={14} />
+          </button>
         </div>
       </div>
-
-      {/* Milestones (expanded) */}
-      {expanded && (
-        <div className="px-4 pb-4 pt-0 border-t border-border mt-0">
-          <div className="pt-3 space-y-1.5">
-            {goal.milestones.map((ms) => (
-              <div
-                key={ms.id}
-                className="group flex items-center gap-2.5 px-2 py-1.5 rounded-xl hover:bg-accent/30 transition-colors"
-              >
-                <Checkbox
-                  checked={ms.completed}
-                  onCheckedChange={() => toggleMilestone(goal.id, ms.id)}
-                  className="border-muted-foreground/40"
-                />
-                <span
-                  className={cn(
-                    "flex-1 text-sm",
-                    ms.completed && "line-through text-muted-foreground"
-                  )}
-                >
-                  {ms.title}
-                </span>
-                <button
-                  onClick={() => deleteMilestone(goal.id, ms.id)}
-                  className="opacity-0 group-hover:opacity-100 p-0.5 rounded hover:text-destructive transition-all"
-                >
-                  <Trash2 size={12} />
-                </button>
-              </div>
-            ))}
-
-            {/* Add milestone */}
-            <div className="flex gap-2 mt-2">
-              <Input
-                placeholder="Add milestone..."
-                value={newMs}
-                onChange={(e) => setNewMs(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && handleAddMs()}
-                className="flex-1 h-8 text-xs bg-background"
-              />
-              <button
-                onClick={handleAddMs}
-                disabled={!newMs.trim()}
-                className="px-2 h-8 rounded-xl bg-emerald-500 hover:bg-emerald-600 disabled:opacity-30 transition-colors"
-              >
-                <Plus size={12} />
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
@@ -222,12 +107,11 @@ export function GoalsView() {
   const [description, setDescription] = useState("");
   const [horizon, setHorizon] = useState<"6m" | "1y" | "3y" | "5y">("1y");
   const [deadline, setDeadline] = useState("");
-  const [projectId, setProjectId] = useState<string | null>(null);
   const [filter, setFilter] = useState<string>("all");
 
   const handleAdd = () => {
-    if (!title.trim() || !deadline) return;
-    addGoal({ title: title.trim(), description: description.trim(), deadline, horizon, projectId });
+    if (!title.trim()) return;
+    addGoal({ title: title.trim(), description: description.trim(), deadline, horizon, projectId: null });
     setTitle("");
     setDescription("");
     setDeadline("");
@@ -238,9 +122,7 @@ export function GoalsView() {
   const completedGoals = data.goals.filter((g) => g.completed);
 
   const filteredActive =
-    filter === "all"
-      ? activeGoals
-      : activeGoals.filter((g) => g.horizon === filter);
+    filter === "all" ? activeGoals : activeGoals.filter((g) => g.horizon === filter);
 
   return (
     <div className="max-w-3xl mx-auto">
@@ -261,9 +143,7 @@ export function GoalsView() {
           onClick={() => setFilter("all")}
           className={cn(
             "px-3 py-1 rounded-xl text-xs transition-colors",
-            filter === "all"
-              ? "bg-accent text-accent-foreground"
-              : "text-muted-foreground hover:text-foreground"
+            filter === "all" ? "bg-accent text-accent-foreground" : "text-muted-foreground hover:text-foreground"
           )}
         >
           All ({activeGoals.length})
@@ -276,15 +156,9 @@ export function GoalsView() {
               onClick={() => setFilter(h.value)}
               className={cn(
                 "px-3 py-1 rounded-xl text-xs transition-colors",
-                filter === h.value
-                  ? "text-white"
-                  : "text-muted-foreground hover:text-foreground"
+                filter === h.value ? "text-white" : "text-muted-foreground hover:text-foreground"
               )}
-              style={
-                filter === h.value
-                  ? { backgroundColor: h.color + "30", color: h.color }
-                  : {}
-              }
+              style={filter === h.value ? { backgroundColor: h.color + "30", color: h.color } : {}}
             >
               {h.label} ({count})
             </button>
@@ -300,6 +174,7 @@ export function GoalsView() {
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             className="bg-background font-medium"
+            autoFocus
           />
           <Input
             placeholder="Description (optional)"
@@ -307,25 +182,16 @@ export function GoalsView() {
             onChange={(e) => setDescription(e.target.value)}
             className="bg-background"
           />
-          <div className="flex gap-2">
+          <div className="flex gap-2 items-end">
             <div className="flex-1">
-              <label className="text-[10px] text-muted-foreground uppercase tracking-wider mb-1 block">
-                Horizon
-              </label>
+              <label className="text-[10px] text-muted-foreground uppercase tracking-wider mb-1 block">Horizon</label>
               <div className="flex gap-1">
                 {HORIZONS.map((h) => (
                   <button
                     key={h.value}
                     onClick={() => setHorizon(h.value)}
-                    className={cn(
-                      "px-2.5 py-1 rounded-xl text-xs transition-colors",
-                      horizon === h.value ? "text-white" : "text-muted-foreground"
-                    )}
-                    style={
-                      horizon === h.value
-                        ? { backgroundColor: h.color, color: "white" }
-                        : {}
-                    }
+                    className="px-2.5 py-1 rounded-xl text-xs transition-colors"
+                    style={horizon === h.value ? { backgroundColor: h.color, color: "white" } : { color: "#71717a" }}
                   >
                     {h.label}
                   </button>
@@ -333,32 +199,13 @@ export function GoalsView() {
               </div>
             </div>
             <div>
-              <label className="text-[10px] text-muted-foreground uppercase tracking-wider mb-1 block">
-                Deadline
-              </label>
+              <label className="text-[10px] text-muted-foreground uppercase tracking-wider mb-1 block">Deadline</label>
               <input
                 type="date"
                 value={deadline}
                 onChange={(e) => setDeadline(e.target.value)}
                 className="bg-background border border-border rounded-xl px-2 py-1 text-sm outline-none"
               />
-            </div>
-            <div>
-              <label className="text-[10px] text-muted-foreground uppercase tracking-wider mb-1 block">
-                Project
-              </label>
-              <select
-                value={projectId || ""}
-                onChange={(e) => setProjectId(e.target.value || null)}
-                className="bg-background border border-border rounded-xl px-2 py-1 text-sm outline-none h-[34px]"
-              >
-                <option value="">None</option>
-                {data.projects.map((p) => (
-                  <option key={p.id} value={p.id}>
-                    {p.emoji} {p.name}
-                  </option>
-                ))}
-              </select>
             </div>
           </div>
           <div className="flex gap-2 justify-end">
@@ -370,7 +217,7 @@ export function GoalsView() {
             </button>
             <button
               onClick={handleAdd}
-              disabled={!title.trim() || !deadline}
+              disabled={!title.trim()}
               className="px-3 py-1.5 text-sm rounded-xl bg-emerald-500 hover:bg-emerald-600 disabled:opacity-30 transition-colors"
             >
               Create
