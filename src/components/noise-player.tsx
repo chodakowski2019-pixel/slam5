@@ -74,18 +74,18 @@ export function NoisePlayer() {
         </div>
       )}
 
-      {/* Spotify embed */}
+      {/* YouTube embed */}
       {activePlaylist && current && (
         <div className="mt-2 rounded-lg overflow-hidden">
           <iframe
-            src={`https://open.spotify.com/embed/playlist/${current.uri}?utm_source=generator&theme=0`}
             width="100%"
             height="80"
+            src="https://www.youtube.com/embed/J-BKM2ig744?si=ja01uNlFfgl4XXbT"
+            title="Focus music"
             frameBorder="0"
-            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-            loading="eager"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowFullScreen
             className="rounded-lg"
-            title={current.label}
           />
         </div>
       )}

@@ -407,13 +407,13 @@ export function DashboardView({ onNavigate }: DashboardProps) {
         </h3>
         <div className="rounded-2xl overflow-hidden border border-border">
           <iframe
-            src="https://open.spotify.com/embed/playlist/14KtkIpsvzDSCXR24EqHCL?utm_source=generator&theme=0"
             width="100%"
             height="352"
+            src="https://www.youtube.com/embed/J-BKM2ig744?si=ja01uNlFfgl4XXbT&autoplay=0"
+            title="Focus music"
             frameBorder="0"
-            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-            loading="lazy"
-            title="Focus playlist"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowFullScreen
             className="rounded-2xl"
           />
         </div>
