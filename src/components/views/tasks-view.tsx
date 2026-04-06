@@ -153,7 +153,6 @@ export function TasksView() {
         {activeTasks
           .map((task) => {
             const project = getProject(task.projectId);
-            const catEmoji = task.category === "body" ? "🏋️" : task.category === "mind" ? "🧠" : "💰";
             return (
               <div
                 key={task.id}
@@ -182,7 +181,6 @@ export function TasksView() {
                   className="border-muted-foreground/40"
                 />
                 {task.isFrog && <span className="text-sm">🐸</span>}
-                <span className="text-xs">{catEmoji}</span>
                 <span className="flex-1 text-sm">{task.title}</span>
                 {project && (
                   <Badge
