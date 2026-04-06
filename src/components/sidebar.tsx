@@ -137,12 +137,6 @@ export function Sidebar({ activeView, onViewChange }: SidebarProps) {
         </div>
       )}
 
-      {/* Noise player */}
-      {!collapsed && (
-        <div className="px-2 py-2">
-          <NoisePlayer />
-        </div>
-      )}
 
       {/* Upgrade */}
       {!isPro && (
