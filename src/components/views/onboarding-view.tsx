@@ -182,13 +182,13 @@ export function OnboardingView({ onComplete }: OnboardingProps) {
                         : "bg-card border-border text-muted-foreground hover:border-emerald-500/50"
                     }`}
                   >
-                    {parseInt(h) <= 12 ? `${parseInt(h)}am` : `${parseInt(h)-12}pm`}
+                    {parseInt(h) === 0 ? "12am" : parseInt(h) < 12 ? `${parseInt(h)}am` : parseInt(h) === 12 ? "12pm" : `${parseInt(h)-12}pm`}
                   </button>
                 ))}
               </div>
               <p className="text-sm font-medium pt-1">Evening</p>
               <div className="grid grid-cols-4 gap-2">
-                {["17:00","18:00","19:00","20:00","21:00","22:00","23:00","00:00"].map((h) => (
+                {["19:00","20:00","21:00","22:00","23:00","00:00"].map((h) => (
                   <button
                     key={h}
                     onClick={() => { setPlanHour(h); setPlanTime("evening"); }}
@@ -198,7 +198,7 @@ export function OnboardingView({ onComplete }: OnboardingProps) {
                         : "bg-card border-border text-muted-foreground hover:border-emerald-500/50"
                     }`}
                   >
-                    {parseInt(h) <= 12 ? `${parseInt(h)}am` : `${parseInt(h)-12}pm`}
+                    {parseInt(h) === 0 ? "12am" : parseInt(h) < 12 ? `${parseInt(h)}am` : parseInt(h) === 12 ? "12pm" : `${parseInt(h)-12}pm`}
                   </button>
                 ))}
               </div>
