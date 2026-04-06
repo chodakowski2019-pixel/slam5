@@ -88,23 +88,45 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     })();
   }, []);
 
+  const doSave = useCallback(async (payload: StoreData) => {
+    try {
+      const headers = await getAuthHeaders();
+      await fetch("/api/data", {
+        method: "POST",
+        headers,
+        body: JSON.stringify(payload),
+      });
+    } catch {}
+  }, []);
+
+  // Save on every data change (debounced)
+  const dataRef = useRef<StoreData>(data);
+  dataRef.current = data;
+
   useEffect(() => {
     if (!loaded || !loadedOk.current) return;
     if (saveTimer.current) clearTimeout(saveTimer.current);
     const hasRunningTimer = data.tasks.some((t) => t.timerRunning);
-    const delay = hasRunningTimer ? 2000 : 300;
-    saveTimer.current = setTimeout(async () => {
-      try {
-        const headers = await getAuthHeaders();
-        await fetch("/api/data", {
-          method: "POST",
-          headers,
-          body: JSON.stringify(data),
-        });
-      } catch {}
-    }, delay);
-    return () => { if (saveTimer.current) clearTimeout(saveTimer.current); };
-  }, [data, loaded]);
+    const delay = hasRunningTimer ? 2000 : 100;
+    saveTimer.current = setTimeout(() => doSave(data), delay);
+    // NOTE: no cleanup cancel here — let the save complete even on unmount
+  }, [data, loaded, doSave]);
+
+  // Save immediately on page unload (tab close, refresh, logout)
+  useEffect(() => {
+    if (!loaded || !loadedOk.current) return;
+    const handleUnload = () => {
+      if (saveTimer.current) clearTimeout(saveTimer.current);
+      supabase.auth.getSession().then(({ data: s }) => {
+        const token = s.session?.access_token;
+        if (!token) return;
+        const payload = JSON.stringify({ ...dataRef.current, _token: token });
+        navigator.sendBeacon("/api/data-beacon", payload);
+      });
+    };
+    window.addEventListener("beforeunload", handleUnload);
+    return () => window.removeEventListener("beforeunload", handleUnload);
+  }, [loaded]);
 
   // Update day record when tasks change
   useEffect(() => {
@@ -117,9 +139,9 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
 
     setData((prev) => {
       const existing = prev.dayRecords.find((r) => r.date === today);
-      // Once won, always won — adding tasks later can't un-win the day
-      const alreadyWon = existing?.won ?? false;
-      const won = alreadyWon || (total >= 5 && completed === total);
+      // Win requires min 5 tasks all completed. Once won with 5+, stays won even if more tasks added.
+      const alreadyWon = (existing?.won ?? false) && (existing?.tasksTotal ?? 0) >= 5;
+      const won = total >= 5 && (alreadyWon || completed === total);
       const record: DayRecord = {
         date: today,
         tasksTotal: total,
