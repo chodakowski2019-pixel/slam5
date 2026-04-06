@@ -401,16 +401,14 @@ export function DashboardView({ onNavigate }: DashboardProps) {
         <h3 className="text-xs text-muted-foreground uppercase tracking-wider font-medium mb-3">
           Focus music
         </h3>
-        <div className="rounded-2xl overflow-hidden border border-border">
+        <div className="rounded-2xl overflow-hidden border border-border relative w-full" style={{ paddingBottom: "56.25%" }}>
           <iframe
-            width="100%"
-            height="352"
             src="https://www.youtube.com/embed/J-BKM2ig744?si=ja01uNlFfgl4XXbT&autoplay=0"
             title="Focus music"
             frameBorder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
             allowFullScreen
-            className="rounded-2xl"
+            className="absolute inset-0 w-full h-full"
           />
         </div>
       </div>
