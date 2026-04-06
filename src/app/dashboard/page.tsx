@@ -174,9 +174,9 @@ function AppContent() {
             </p>
           </div>
           <ul className="text-sm text-left space-y-2 text-muted-foreground">
-            <li className="flex items-center gap-2"><span className="text-emerald-400">✓</span> Full access to Power List</li>
-            <li className="flex items-center gap-2"><span className="text-emerald-400">✓</span> Goals, streaks & scoring</li>
-            <li className="flex items-center gap-2"><span className="text-emerald-400">✓</span> No charge for 3 days</li>
+            <li className="flex items-center gap-2"><span className="text-emerald-400">✓</span> Pick 5 tasks. Do them. Win the day.</li>
+            <li className="flex items-center gap-2"><span className="text-emerald-400">✓</span> Streaks & points keep you moving</li>
+            <li className="flex items-center gap-2"><span className="text-emerald-400">✓</span> Built for ADHD brains that overthink</li>
           </ul>
           <button
             onClick={startCheckout}
