@@ -18,14 +18,14 @@ import { FloatingTimer } from "@/components/floating-timer";
 import { WinToast } from "@/components/win-toast";
 import { useStore } from "@/lib/store-context";
 import { celebrate, celebrateWin } from "@/lib/celebrate";
-import { getTodayKey } from "@/lib/store";
+import { getTodayKey, generateId } from "@/lib/store";
 import { supabase } from "@/lib/supabase";
 
 function AppContent() {
   const [view, setView] = useState("dashboard");
   const [cmdOpen, setCmdOpen] = useState(false);
   const [toastMsg, setToastMsg] = useState<string | null>(null);
-  const { data, updateProfile } = useStore();
+  const { data, updateProfile, addGoal } = useStore();
   const prevCompletedRef = useRef<number>(0);
   const needsOnboarding = !data.profile?.onboardingCompleted;
 
@@ -41,6 +41,17 @@ function AppContent() {
       onboardingCompleted: true,
     };
     updateProfile(profile);
+    // Create goals from onboarding answers
+    const goalMap = [
+      { text: onboardingData.bodyGoal, emoji: "🏋️", label: "Body" },
+      { text: onboardingData.mindGoal, emoji: "🧠", label: "Mind" },
+      { text: onboardingData.moneyGoal, emoji: "💰", label: "Money" },
+    ];
+    goalMap.forEach(({ text, emoji, label }) => {
+      if (text?.trim()) {
+        addGoal({ title: `${emoji} ${text.trim()}`, description: label, horizon: "1y", deadline: "", projectId: null });
+      }
+    });
     // Immediately persist onboardingCompleted so it survives page reloads
     const { data: sessionData } = await supabase.auth.getSession();
     const token = sessionData.session?.access_token;
@@ -101,7 +112,6 @@ function AppContent() {
       <main className="flex-1 overflow-y-auto p-8">
         {view === "dashboard" && <DashboardView onNavigate={navigate} />}
         {view === "tasks" && <TasksView />}
-        {view === "projects" && <ProjectsView />}
         {view === "goals" && <GoalsView />}
         {view === "leaderboard" && <LeaderboardView />}
         {view === "settings" && <SettingsView />}

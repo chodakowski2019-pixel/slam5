@@ -9,7 +9,7 @@ const PLAYLISTS = [
 ];
 
 export function NoisePlayer() {
-  const [activePlaylist, setActivePlaylist] = useState<string | null>(null);
+  const [activePlaylist, setActivePlaylist] = useState<string | null>("slam5");
   const [expanded, setExpanded] = useState(false);
 
   const current = PLAYLISTS.find((p) => p.id === activePlaylist);
