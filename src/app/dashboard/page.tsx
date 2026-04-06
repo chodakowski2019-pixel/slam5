@@ -180,9 +180,9 @@ function AppContent() {
             </p>
           </div>
           <ul className="text-sm text-left space-y-2 text-muted-foreground">
-            <li className="flex items-center gap-2"><span className="text-emerald-400">✓</span> Pick 5 tasks. Do them. Win the day.</li>
-            <li className="flex items-center gap-2"><span className="text-emerald-400">✓</span> Streaks & points keep you moving</li>
-            <li className="flex items-center gap-2"><span className="text-emerald-400">✓</span> Built for ADHD brains that overthink</li>
+            <li className="flex items-center gap-2"><span className="text-emerald-400">✓</span> Finally finish what you start</li>
+            <li className="flex items-center gap-2"><span className="text-emerald-400">✓</span> Feel in control — even on hard days</li>
+            <li className="flex items-center gap-2"><span className="text-emerald-400">✓</span> Stop carrying unfinished days to bed</li>
           </ul>
           {checkoutError && (
             <p className="text-xs text-red-400 text-center">{checkoutError}</p>

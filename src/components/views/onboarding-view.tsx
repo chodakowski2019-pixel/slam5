@@ -242,7 +242,7 @@ export function OnboardingView({ onComplete }: OnboardingProps) {
                 Ready, {name}?
               </h2>
               <p className="text-muted-foreground mt-3">
-                3 days free. No card. Just show up and win.
+                3 days free. No charge yet. Just show up and win.
               </p>
             </div>
           </div>

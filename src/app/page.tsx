@@ -51,7 +51,7 @@ export default function LandingPage() {
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link href="/login" className="inline-block px-7 py-3.5 rounded-full bg-gradient-to-r from-[#10b981] to-[#14b8a6] text-white text-sm font-medium transition-all duration-300 hover:scale-[1.03] active:scale-[0.97] shadow-lg shadow-emerald-500/20">
-              Try it free — 3 days, no card
+              Try it free — 3 days on us
             </Link>
             <Link href="#lead" className="inline-block px-7 py-3.5 rounded-full border border-white/[0.1] text-neutral-300 text-sm hover:border-white/[0.2] hover:text-white transition-all duration-300">
               Get free PDF first →
@@ -228,7 +228,7 @@ export default function LandingPage() {
               { q: "Is this for people with ADHD?", a: "Yes — but you don't need a diagnosis. If you struggle to start, stay focused, or feel like you're never doing enough, this is for you." },
               { q: "What if I only do 4 out of 5 tasks?", a: "You lose the day. No partial credit. It sounds harsh, but that's the point — the binary win/lose is what makes your brain take it seriously." },
               { q: "How is this different from a regular to-do app?", a: "Regular to-do apps let you add 47 tasks and feel busy doing nothing. Slam5 forces you to pick 5, gives you a timer, and tells you at midnight if you won or lost. It's a game, not a list." },
-              { q: "Do I need a credit card to try it?", a: "No. 3 days free, no card needed. After that it's $9.99/month. Cancel anytime in one click." },
+              { q: "Do I need a credit card to try it?", a: "Yes — but you won't be charged for 3 days. Cancel before then and you pay nothing. After that it's $9.99/month." },
               { q: "What if I miss a day?", a: "Your streak resets. That's it. No punishment, no lecture. Just start again tomorrow. The app won't guilt-trip you — life does enough of that." },
             ].map((item, i) => (
               <div key={i} className="p-5 rounded-2xl border border-white/[0.06] bg-white/[0.02]">
@@ -249,7 +249,7 @@ export default function LandingPage() {
             Stop thinking.<br />Start winning.
           </h2>
           <p className="text-neutral-400 mb-10 max-w-md mx-auto">
-            3 days free. No credit card. If it doesn&apos;t work in 3 days, you lost nothing.
+            3 days free. Card required, no charge yet. If it doesn&apos;t work in 3 days, you lost nothing.
           </p>
           <Link href="/login" className="inline-block px-8 py-4 rounded-full bg-gradient-to-r from-[#10b981] to-[#14b8a6] text-white font-medium transition-all duration-300 hover:scale-[1.03] active:scale-[0.97] shadow-lg shadow-emerald-500/20 text-base">
             Start winning today — it&apos;s free
