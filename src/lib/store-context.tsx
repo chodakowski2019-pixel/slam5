@@ -95,13 +95,19 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   const doSave = useCallback(async (payload: StoreData) => {
     try {
       const headers = await getAuthHeaders();
-      await fetch("/api/data", {
+      const res = await fetch("/api/data", {
         method: "POST",
         headers,
         body: JSON.stringify(payload),
-        keepalive: true, // browser completes request even if page unloads
+        keepalive: true,
       });
-    } catch {}
+      if (!res.ok) {
+        const body = await res.text();
+        console.error("[slam5] save failed", res.status, body);
+      }
+    } catch (e) {
+      console.error("[slam5] save error", e);
+    }
   }, []);
 
   // Keep token cached for synchronous beacon use
