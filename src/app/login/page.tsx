@@ -149,9 +149,6 @@ export default function LoginPage() {
           <p className="text-sm text-emerald-400 mt-4 text-center">{message}</p>
         )}
 
-        <p className="text-xs text-muted-foreground mt-6 text-center">
-          3 days free. No credit card needed.
-        </p>
       </div>
     </div>
   );

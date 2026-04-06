@@ -145,15 +145,15 @@ export function FloatingTimer() {
     };
   }, []);
 
-  // Start drawing when PiP is active or task is running
+  // Always draw when there's an active task (canvas needs content before PiP opens)
   useEffect(() => {
-    if (activeTask && pipActive) {
+    if (activeTask) {
       animFrameRef.current = requestAnimationFrame(drawTimer);
     }
     return () => {
       if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
     };
-  }, [activeTask, pipActive, drawTimer]);
+  }, [activeTask, drawTimer]);
 
   const enterPiP = useCallback(async () => {
     const video = videoRef.current;
