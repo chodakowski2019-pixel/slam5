@@ -38,9 +38,7 @@ export function TasksView() {
 
   const handleAdd = () => {
     if (!newTitle.trim() || atLimit) return;
-    // First 3 tasks auto-get frog
-    const autoFrog = todayTasks.length < 3 ? true : newIsFrog;
-    addTask(newTitle.trim(), newProjectId, newMinutes, newCategory, autoFrog);
+    addTask(newTitle.trim(), newProjectId, newMinutes, newCategory, newIsFrog);
     setNewTitle("");
     setNewMinutes(25);
     setNewProjectId(null);
@@ -140,7 +138,7 @@ export function TasksView() {
                 : "text-muted-foreground hover:bg-accent"
             )}
           >
-            🐸 Frog
+            🐸 Heavy task
           </button>
         </div>
       </div>
@@ -195,15 +193,6 @@ export function TasksView() {
                     {project.emoji} {project.name}
                   </Badge>
                 )}
-                <button
-                  onClick={() => setFrog(task.id)}
-                  className={cn(
-                    "text-xs px-1.5 py-0.5 rounded-lg transition-all duration-200",
-                    task.isFrog ? "text-amber-400" : "opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-amber-400"
-                  )}
-                >
-                  🐸
-                </button>
                 <TaskTimer task={task} />
                 <button
                   onClick={() => deleteTask(task.id)}
