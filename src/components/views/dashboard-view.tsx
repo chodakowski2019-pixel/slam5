@@ -303,8 +303,19 @@ export function DashboardView({ onNavigate }: DashboardProps) {
         </div>
       </div>
 
+      {/* Not enough tasks warning */}
+      {totalToday > 0 && totalToday < 5 && activeTasks.length === 0 && !todayWon && (
+        <div className="mb-6 p-6 rounded-2xl border border-amber-500/20 bg-amber-500/5 text-center">
+          <p className="text-2xl mb-2">⚡</p>
+          <h3 className="text-lg font-heading font-bold text-amber-400">Not enough tasks</h3>
+          <p className="text-sm text-muted-foreground mt-1">
+            You need at least <span className="text-foreground font-medium">5 tasks</span> to win the day. Add more.
+          </p>
+        </div>
+      )}
+
       {/* Verdict */}
-      {totalToday > 0 && activeTasks.length === 0 && (
+      {totalToday >= 5 && activeTasks.length === 0 && (
         <div className={`mb-6 p-8 rounded-2xl border text-center relative overflow-hidden ${
           todayWon
             ? "border-emerald-500/20 bg-gradient-to-br from-emerald-500/10 via-emerald-500/5 to-transparent"

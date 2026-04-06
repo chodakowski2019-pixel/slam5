@@ -110,11 +110,14 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
 
     setData((prev) => {
       const existing = prev.dayRecords.find((r) => r.date === today);
+      // Once won, always won — adding tasks later can't un-win the day
+      const alreadyWon = existing?.won ?? false;
+      const won = alreadyWon || (total >= 5 && completed === total);
       const record: DayRecord = {
         date: today,
         tasksTotal: total,
         tasksCompleted: completed,
-        won: total > 0 && completed === total,
+        won,
         points: completed * 10,
       };
       const dayRecords = existing
