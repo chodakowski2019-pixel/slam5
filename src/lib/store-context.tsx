@@ -99,6 +99,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
         method: "POST",
         headers,
         body: JSON.stringify(payload),
+        keepalive: true, // browser completes request even if page unloads
       });
     } catch {}
   }, []);
