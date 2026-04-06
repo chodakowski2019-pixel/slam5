@@ -63,9 +63,11 @@ function AppContent() {
       } else {
         console.error(error);
         setCheckoutLoading(false);
+        setShowCheckoutGate(true);
       }
     } catch {
       setCheckoutLoading(false);
+      setShowCheckoutGate(true);
     }
   };
 
