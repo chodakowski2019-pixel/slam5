@@ -20,10 +20,9 @@ export async function POST(request: NextRequest) {
     const userId = userData.user?.id;
     if (!userId) return NextResponse.json({ ok: false });
 
-    // Save tasks only (most critical data)
-    await sb.from("tasks").delete().eq("user_id", userId);
+    // Save tasks only (most critical data) — upsert, never delete
     if (data.tasks?.length > 0) {
-      await sb.from("tasks").insert(
+      await sb.from("tasks").upsert(
         data.tasks.map((t: Record<string, unknown>) => ({
           id: t.id,
           user_id: userId,
@@ -38,8 +37,13 @@ export async function POST(request: NextRequest) {
           points: t.points,
           created_at: t.createdAt,
           completed_at: t.completedAt,
-        }))
+        })),
+        { onConflict: "id" }
       );
+    }
+    // Delete tasks removed by user
+    if (data.deletedTaskIds?.length > 0) {
+      await sb.from("tasks").delete().eq("user_id", userId).in("id", data.deletedTaskIds);
     }
 
     return NextResponse.json({ ok: true });
