@@ -83,7 +83,7 @@ export function NoisePlayer() {
             height="80"
             frameBorder="0"
             allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-            loading="lazy"
+            loading="eager"
             className="rounded-lg"
             title={current.label}
           />

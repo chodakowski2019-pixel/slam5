@@ -85,7 +85,7 @@ export function OnboardingView({ onComplete }: OnboardingProps) {
                   onKeyDown={(e) => e.key === "Enter" && canNext() && next()}
                   className="text-lg py-6 bg-card"
                 />
-                <p className="text-xs text-muted-foreground mt-2">We&apos;ll text you when it&apos;s time to start. The nudge that actually works.</p>
+                <p className="text-xs text-muted-foreground mt-2">We&apos;ll remind you of your tasks. That&apos;s how habits are built.</p>
               </div>
             </div>
           </div>
@@ -188,7 +188,7 @@ export function OnboardingView({ onComplete }: OnboardingProps) {
               </div>
               <p className="text-sm font-medium pt-1">Evening</p>
               <div className="grid grid-cols-4 gap-2">
-                {["17:00","18:00","19:00","20:00","21:00","22:00"].map((h) => (
+                {["17:00","18:00","19:00","20:00","21:00","22:00","23:00","00:00"].map((h) => (
                   <button
                     key={h}
                     onClick={() => { setPlanHour(h); setPlanTime("evening"); }}
@@ -249,8 +249,8 @@ export function OnboardingView({ onComplete }: OnboardingProps) {
         )}
 
         {/* Nav */}
-        <div className="flex gap-3 mt-10">
-          {step > 1 && (
+        <div className={`flex gap-3 mt-10 ${step === STEPS ? "justify-center" : "justify-end"}`}>
+          {step > 1 && step < STEPS && (
             <button
               onClick={prev}
               className="px-5 py-3 rounded-xl border border-border text-sm hover:bg-accent transition-all duration-200"
