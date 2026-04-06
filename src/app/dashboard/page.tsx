@@ -27,7 +27,8 @@ function AppContent() {
   const [toastMsg, setToastMsg] = useState<string | null>(null);
   const { data, updateProfile, addGoal } = useStore();
   const prevCompletedRef = useRef<number>(0);
-  const needsOnboarding = !data.profile?.onboardingCompleted;
+  const localDone = typeof window !== "undefined" && localStorage.getItem("onboardingCompleted") === "true";
+  const needsOnboarding = !localDone && !data.profile?.onboardingCompleted;
 
   const handleOnboardingComplete = async (onboardingData: OnboardingData) => {
     const profile = {
@@ -40,6 +41,7 @@ function AppContent() {
       planHour: onboardingData.planHour,
       onboardingCompleted: true,
     };
+    localStorage.setItem("onboardingCompleted", "true");
     updateProfile(profile);
     // Create goals from onboarding answers
     const goalMap = [
