@@ -82,7 +82,6 @@ export function TasksView() {
           <li>⚡ Must be <span className="text-foreground font-medium">leverage</span> — 5% of actions = 95% of results</li>
           <li>🔥 Must be <span className="text-foreground font-medium">uncomfortable</span> — easy tasks don't count</li>
           <li>⏱ Max <span className="text-foreground font-medium">2–4 hours</span> total per day</li>
-          <li>🏆 <span className="text-foreground font-medium">30+ tasks in a week</span> = won week</li>
         </ul>
       </div>
 
