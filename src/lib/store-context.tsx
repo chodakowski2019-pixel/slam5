@@ -293,13 +293,14 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   }, [data.dayRecords]);
 
   const getWeekWins = useCallback(() => {
+    // Returns total tasks completed this week (Mon–Sun). 30+ = won week (Mazur Power List).
     const now = new Date();
     const weekAgo = new Date(now);
-    weekAgo.setDate(weekAgo.getDate() - 7);
-    return data.dayRecords.filter((r) => {
-      const d = new Date(r.date);
-      return d >= weekAgo && d <= now && r.won;
-    }).length;
+    weekAgo.setDate(weekAgo.getDate() - 6);
+    weekAgo.setHours(0, 0, 0, 0);
+    return data.dayRecords
+      .filter((r) => { const d = new Date(r.date); return d >= weekAgo && d <= now; })
+      .reduce((sum, r) => sum + r.tasksCompleted, 0);
   }, [data.dayRecords]);
 
   const getMonthWins = useCallback(() => {

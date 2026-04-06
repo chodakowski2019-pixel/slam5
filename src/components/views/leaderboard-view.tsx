@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Copy, Check, Trophy, Flame, Crown } from "lucide-react";
 import { useStore } from "@/lib/store-context";
+import { useAuth } from "@/lib/auth-context";
 import { Input } from "@/components/ui/input";
 
 interface LeaderboardEntry {
@@ -32,10 +33,11 @@ function useMockLeaderboard(): LeaderboardEntry[] {
 
 export function LeaderboardView() {
   const entries = useMockLeaderboard();
+  const { user } = useAuth();
   const [copied, setCopied] = useState(false);
 
-  const inviteLink = typeof window !== "undefined"
-    ? `${window.location.origin}/invite/demo`
+  const inviteLink = typeof window !== "undefined" && user?.id
+    ? `${window.location.origin}/invite/${user.id}`
     : "";
 
   const handleCopy = () => {

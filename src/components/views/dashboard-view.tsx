@@ -267,10 +267,10 @@ export function DashboardView({ onNavigate }: DashboardProps) {
               This week
             </h3>
             <span className="text-xs font-medium">
-              {weekWins >= 5 ? (
-                <span className="text-emerald-400 flex items-center gap-1"><Trophy size={12} /> Week won</span>
+              {weekWins >= 30 ? (
+                <span className="text-emerald-400 flex items-center gap-1"><Trophy size={12} /> Week won!</span>
               ) : (
-                <span className="text-muted-foreground">{weekWins}/7 wins</span>
+                <span className="text-muted-foreground">{weekWins}/35 tasks</span>
               )}
             </span>
           </div>

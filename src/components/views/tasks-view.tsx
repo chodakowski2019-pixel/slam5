@@ -75,6 +75,17 @@ export function TasksView() {
         </div>
       </div>
 
+      {/* Power List rules */}
+      <div className="mb-6 p-4 rounded-2xl border border-amber-500/20 bg-amber-500/5">
+        <p className="text-xs font-medium text-amber-400 uppercase tracking-wider mb-2">Power List Rules</p>
+        <ul className="space-y-1 text-xs text-muted-foreground">
+          <li>⚡ Must be <span className="text-foreground font-medium">leverage</span> — 5% of actions = 95% of results</li>
+          <li>🔥 Must be <span className="text-foreground font-medium">uncomfortable</span> — easy tasks don't count</li>
+          <li>⏱ Max <span className="text-foreground font-medium">2–4 hours</span> total per day</li>
+          <li>🏆 <span className="text-foreground font-medium">30+ tasks in a week</span> = won week</li>
+        </ul>
+      </div>
+
       {/* Add task */}
       <div className="space-y-2 mb-8">
         <div className="flex gap-2">
