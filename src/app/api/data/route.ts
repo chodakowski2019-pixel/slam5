@@ -125,6 +125,7 @@ export async function POST(request: NextRequest) {
   if (!userId) return NextResponse.json({ error: "Invalid token" }, { status: 401 });
 
   const data = await request.json();
+  console.log("[slam5] POST /api/data tasks count:", data.tasks?.length ?? 0);
   const sb = createClient(supabaseUrl, supabaseServiceKey);
 
   // Update profile
@@ -167,7 +168,8 @@ export async function POST(request: NextRequest) {
       created_at: t.createdAt,
       completed_at: t.completedAt,
     }));
-    await sb.from("tasks").upsert(rows, { onConflict: "id" });
+    const { error: tasksError } = await sb.from("tasks").upsert(rows, { onConflict: "id" });
+    if (tasksError) console.error("[slam5] tasks upsert error:", JSON.stringify(tasksError));
   }
   // Delete tasks that were removed by user
   if (data.deletedTaskIds?.length > 0) {
