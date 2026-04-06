@@ -25,10 +25,47 @@ function AppContent() {
   const [view, setView] = useState("dashboard");
   const [cmdOpen, setCmdOpen] = useState(false);
   const [toastMsg, setToastMsg] = useState<string | null>(null);
+  const [checkoutLoading, setCheckoutLoading] = useState(false);
+  const [showCheckoutGate, setShowCheckoutGate] = useState(false);
   const { data, updateProfile, addGoal } = useStore();
+  const { user } = useAuth();
   const prevCompletedRef = useRef<number>(0);
   const localDone = typeof window !== "undefined" && localStorage.getItem("onboardingCompleted") === "true";
   const needsOnboarding = !localDone && !data.profile?.onboardingCompleted;
+  const isPro = data.subscription?.status === "active" || data.subscription?.status === "trialing";
+
+  // Check URL params on mount — handle payment=cancelled
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("payment") === "cancelled") {
+      setShowCheckoutGate(true);
+      window.history.replaceState({}, "", "/dashboard");
+    } else if (params.get("payment") === "success") {
+      window.history.replaceState({}, "", "/dashboard");
+    }
+  }, []);
+
+  const startCheckout = async () => {
+    if (!user) return;
+    setCheckoutLoading(true);
+    try {
+      const res = await fetch("/api/stripe/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId: user.id, email: user.email }),
+      });
+      const { url, error } = await res.json();
+      if (url) {
+        window.location.href = url;
+      } else {
+        console.error(error);
+        setCheckoutLoading(false);
+      }
+    } catch {
+      setCheckoutLoading(false);
+    }
+  };
 
   const handleOnboardingComplete = async (onboardingData: OnboardingData) => {
     const profile = {
@@ -54,7 +91,7 @@ function AppContent() {
         addGoal({ title: `${emoji} ${text.trim()}`, description: label, horizon: "1y", deadline: "", projectId: null });
       }
     });
-    // Immediately persist onboardingCompleted so it survives page reloads
+    // Persist onboardingCompleted
     const { data: sessionData } = await supabase.auth.getSession();
     const token = sessionData.session?.access_token;
     if (token) {
@@ -64,6 +101,8 @@ function AppContent() {
         body: JSON.stringify({ profile, tasks: [], projects: [], goals: [], parkingLot: [], dayRecords: [], totalPoints: 0 }),
       });
     }
+    // Redirect to Stripe checkout
+    await startCheckout();
   };
 
   // Watch for task completions to fire celebrations
@@ -106,6 +145,48 @@ function AppContent() {
 
   if (needsOnboarding) {
     return <OnboardingView onComplete={handleOnboardingComplete} />;
+  }
+
+  if (checkoutLoading) {
+    return (
+      <div className="h-screen w-screen flex flex-col items-center justify-center bg-background gap-4">
+        <div className="w-8 h-8 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" />
+        <p className="text-sm text-muted-foreground">Setting up your free trial...</p>
+      </div>
+    );
+  }
+
+  if (showCheckoutGate && !isPro) {
+    return (
+      <div className="h-screen w-screen flex items-center justify-center bg-background p-6">
+        <div className="max-w-sm w-full text-center space-y-6">
+          <div className="w-16 h-16 rounded-2xl bg-emerald-500/15 flex items-center justify-center mx-auto text-3xl">
+            🏆
+          </div>
+          <div>
+            <h1 className="text-2xl font-heading font-bold mb-2">Start your free trial</h1>
+            <p className="text-muted-foreground text-sm">
+              3 days free, then $9.99/month.<br />Cancel anytime.
+            </p>
+          </div>
+          <ul className="text-sm text-left space-y-2 text-muted-foreground">
+            <li className="flex items-center gap-2"><span className="text-emerald-400">✓</span> Full access to Power List</li>
+            <li className="flex items-center gap-2"><span className="text-emerald-400">✓</span> Goals, streaks & scoring</li>
+            <li className="flex items-center gap-2"><span className="text-emerald-400">✓</span> No charge for 3 days</li>
+          </ul>
+          <button
+            onClick={startCheckout}
+            disabled={checkoutLoading}
+            className="w-full py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 font-medium transition-all duration-200 disabled:opacity-50 hover:scale-[1.02] active:scale-[0.98]"
+          >
+            {checkoutLoading ? "Loading..." : "Start free trial →"}
+          </button>
+          <p className="text-xs text-muted-foreground">
+            You won&apos;t be charged until {new Date(Date.now() + 3 * 86400000).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
+          </p>
+        </div>
+      </div>
+    );
   }
 
   return (
