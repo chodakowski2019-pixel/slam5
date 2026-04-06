@@ -299,7 +299,7 @@ export function DashboardView({ onNavigate }: DashboardProps) {
             Activity
           </h3>
           <MiniBarChart data={weeklyData} height={56} />
-          <div className="flex justify-between mt-2">
+          <div className="flex justify-around mt-2">
             {weekLabels.map((d, i) => (
               <span key={i} className="text-[10px] text-muted-foreground">{d}</span>
             ))}
@@ -365,7 +365,6 @@ export function DashboardView({ onNavigate }: DashboardProps) {
             })
             .map((task) => {
               const project = data.projects.find((p) => p.id === task.projectId);
-              const categoryEmoji = task.category === "body" ? "🏋️" : task.category === "mind" ? "🧠" : "💰";
               return (
                 <div
                   key={task.id}
@@ -379,7 +378,6 @@ export function DashboardView({ onNavigate }: DashboardProps) {
                     className="border-muted-foreground/40"
                   />
                   {task.isFrog && <span className="text-sm">🐸</span>}
-                  <span className="text-xs">{categoryEmoji}</span>
                   <span className={`flex-1 text-sm truncate ${task.completed ? "line-through" : ""}`}>
                     {task.title}
                   </span>
