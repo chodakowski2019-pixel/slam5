@@ -103,7 +103,18 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     } catch {}
   }, []);
 
-  // Save on every data change (debounced)
+  // Keep token cached for synchronous beacon use
+  const tokenRef = useRef<string | null>(null);
+  useEffect(() => {
+    const refresh = async () => {
+      const { data: s } = await supabase.auth.getSession();
+      tokenRef.current = s.session?.access_token ?? null;
+    };
+    refresh();
+    const { data: listener } = supabase.auth.onAuthStateChange(() => { refresh(); });
+    return () => listener.subscription.unsubscribe();
+  }, []);
+
   const dataRef = useRef<StoreData>(data);
   dataRef.current = data;
 
@@ -111,22 +122,24 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     if (!loaded || !loadedOk.current) return;
     if (saveTimer.current) clearTimeout(saveTimer.current);
     const hasRunningTimer = data.tasks.some((t) => t.timerRunning);
-    const delay = hasRunningTimer ? 2000 : 100;
-    saveTimer.current = setTimeout(() => doSave(data), delay);
-    // NOTE: no cleanup cancel here — let the save complete even on unmount
+    // Immediate save for task changes, debounce only for timer ticks
+    const delay = hasRunningTimer ? 1500 : 0;
+    if (delay === 0) {
+      doSave(data);
+    } else {
+      saveTimer.current = setTimeout(() => doSave(data), delay);
+    }
   }, [data, loaded, doSave]);
 
-  // Save immediately on page unload (tab close, refresh, logout)
+  // Beacon on page unload — uses pre-cached token (synchronous)
   useEffect(() => {
     if (!loaded || !loadedOk.current) return;
     const handleUnload = () => {
       if (saveTimer.current) clearTimeout(saveTimer.current);
-      supabase.auth.getSession().then(({ data: s }) => {
-        const token = s.session?.access_token;
-        if (!token) return;
-        const payload = JSON.stringify({ ...dataRef.current, _token: token });
-        navigator.sendBeacon("/api/data-beacon", payload);
-      });
+      const token = tokenRef.current;
+      if (!token) return;
+      const payload = JSON.stringify({ ...dataRef.current, _token: token });
+      navigator.sendBeacon("/api/data-beacon", payload);
     };
     window.addEventListener("beforeunload", handleUnload);
     return () => window.removeEventListener("beforeunload", handleUnload);

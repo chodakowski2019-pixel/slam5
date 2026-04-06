@@ -115,8 +115,8 @@ function AppContent() {
     const total = todayTasks.length;
 
     if (completed > prevCompletedRef.current && prevCompletedRef.current >= 0) {
-      if (total > 0 && completed === total) {
-        // All tasks done — big celebration
+      if (total >= 5 && completed === total) {
+        // All tasks done with minimum 5 — big celebration
         celebrateWin();
         setToastMsg("ALL TASKS SLAMMED! YOU WON TODAY! 🏆");
       } else {
