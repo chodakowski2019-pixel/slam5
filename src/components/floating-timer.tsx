@@ -20,6 +20,44 @@ export function FloatingTimer() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const animFrameRef = useRef<number>(0);
+  const channelRef = useRef<BroadcastChannel | null>(null);
+
+  // BroadcastChannel — sync timer state to popup window
+  useEffect(() => {
+    const channel = new BroadcastChannel("cc-timer");
+    channelRef.current = channel;
+    channel.onmessage = (e) => {
+      if (e.data.type === "request-sync") {
+        const task = data.tasks.find((t) => t.timerRunning) ||
+          data.tasks.find((t) => t.timerSecondsLeft !== null && t.timerSecondsLeft > 0 && !t.timerRunning && !t.completed);
+        channel.postMessage({
+          type: "sync",
+          timer: {
+            title: task?.title || "",
+            secondsLeft: task?.timerSecondsLeft ?? 0,
+            totalSeconds: (task?.timerMinutes ?? 0) * 60,
+            running: !!data.tasks.find((t) => t.timerRunning),
+          },
+        });
+      }
+    };
+    return () => channel.close();
+  }, [data.tasks]);
+
+  // Broadcast on every timer tick
+  useEffect(() => {
+    const task = data.tasks.find((t) => t.timerRunning) ||
+      data.tasks.find((t) => t.timerSecondsLeft !== null && t.timerSecondsLeft > 0 && !t.timerRunning && !t.completed);
+    channelRef.current?.postMessage({
+      type: "sync",
+      timer: {
+        title: task?.title || "",
+        secondsLeft: task?.timerSecondsLeft ?? 0,
+        totalSeconds: (task?.timerMinutes ?? 0) * 60,
+        running: !!data.tasks.find((t) => t.timerRunning),
+      },
+    });
+  }, [data.tasks]);
 
   // Draw timer on canvas
   const drawTimer = useCallback(() => {

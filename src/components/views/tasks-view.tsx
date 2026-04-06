@@ -157,7 +157,15 @@ export function TasksView() {
               <div
                 key={task.id}
                 draggable
-                onDragStart={() => { dragId.current = task.id; }}
+                onDragStart={(e) => {
+                  dragId.current = task.id;
+                  const ghost = document.createElement("div");
+                  ghost.textContent = task.title;
+                  ghost.style.cssText = "position:fixed;top:-100px;background:#1a1a1a;color:white;padding:8px 14px;border-radius:10px;font-size:13px;white-space:nowrap;";
+                  document.body.appendChild(ghost);
+                  e.dataTransfer.setDragImage(ghost, 0, 0);
+                  setTimeout(() => document.body.removeChild(ghost), 0);
+                }}
                 onDragOver={(e) => { e.preventDefault(); }}
                 onDrop={() => {
                   if (dragId.current && dragId.current !== task.id) {
@@ -215,14 +223,12 @@ export function TasksView() {
           {showCompleted && (
             <div className="space-y-1">
               {completedTasks.map((task) => {
-                const catEmoji = task.category === "body" ? "🏋️" : task.category === "mind" ? "🧠" : "💰";
                 return (
                   <div
                     key={task.id}
                     className="group flex items-center gap-3 px-4 py-2.5 rounded-2xl opacity-40"
                   >
                     <Checkbox checked={true} onCheckedChange={() => toggleTask(task.id)} />
-                    <span className="text-xs">{catEmoji}</span>
                     <span className="flex-1 text-sm line-through text-muted-foreground">
                       {task.title}
                     </span>
