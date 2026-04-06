@@ -26,7 +26,6 @@ const NAV_ITEMS = [
   { id: "tasks", label: "Power List", icon: CheckSquare },
   { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
   { id: "goals", label: "Goals", icon: Trophy },
-  { id: "leaderboard", label: "Leaderboard", icon: Users },
 ];
 
 export function Sidebar({ activeView, onViewChange }: SidebarProps) {
