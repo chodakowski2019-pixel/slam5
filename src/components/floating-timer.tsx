@@ -210,7 +210,7 @@ export function FloatingTimer() {
           {/* Sticky mini timer — always visible */}
           <div className={`flex items-center gap-3 px-4 py-2.5 rounded-xl border shadow-lg text-sm ${
             runningTask
-              ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400"
+              ? "bg-[#0d1f17] border-emerald-500/40 text-emerald-400"
               : "bg-card border-border text-muted-foreground"
           }`}>
             {runningTask && (
