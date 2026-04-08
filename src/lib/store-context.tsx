@@ -21,6 +21,7 @@ interface StoreContextType {
   addTask: (title: string, projectId: string | null, timerMinutes: number, category: TaskCategory, isFrog: boolean) => void;
   toggleTask: (id: string) => void;
   deleteTask: (id: string) => void;
+  updateTask: (id: string, title: string) => void;
   updateTaskTimer: (id: string, secondsLeft: number | null, running: boolean) => void;
   setFrog: (id: string) => void;
   reorderTasks: (fromId: string, toId: string) => void;
@@ -227,6 +228,13 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     }));
   }, []);
 
+  const updateTask = useCallback((id: string, title: string) => {
+    setData((prev) => ({
+      ...prev,
+      tasks: prev.tasks.map((t) => t.id === id ? { ...t, title } : t),
+    }));
+  }, []);
+
   const updateTaskTimer = useCallback(
     (id: string, secondsLeft: number | null, running: boolean) => {
       setData((prev) => ({
@@ -419,7 +427,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   return (
     <StoreContext.Provider
       value={{
-        data, addTask, toggleTask, deleteTask, updateTaskTimer, setFrog, reorderTasks,
+        data, addTask, toggleTask, deleteTask, updateTask, updateTaskTimer, setFrog, reorderTasks,
         addProject, updateProject, deleteProject,
         addGoal, updateGoal, deleteGoal, addMilestone, toggleMilestone, deleteMilestone,
         addParkingLotItem, deleteParkingLotItem, clearParkingLot,

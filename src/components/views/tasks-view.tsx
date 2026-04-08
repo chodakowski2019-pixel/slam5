@@ -19,7 +19,7 @@ const CATEGORY_OPTIONS: { value: TaskCategory; label: string; emoji: string }[] 
 const MAX_DAILY_TASKS = 7;
 
 export function TasksView() {
-  const { data, addTask, toggleTask, deleteTask, setFrog, reorderTasks, addParkingLotItem, deleteParkingLotItem, clearParkingLot } = useStore();
+  const { data, addTask, toggleTask, deleteTask, updateTask, setFrog, reorderTasks, addParkingLotItem, deleteParkingLotItem, clearParkingLot } = useStore();
   const dragId = useRef<string | null>(null);
   const [newTitle, setNewTitle] = useState("");
   const [newMinutes, setNewMinutes] = useState(25);
@@ -29,6 +29,8 @@ export function TasksView() {
   const [showCompleted, setShowCompleted] = useState(false);
   const [parkingInput, setParkingInput] = useState("");
   const [showParkingLot, setShowParkingLot] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editingTitle, setEditingTitle] = useState("");
 
   const today = getTodayKey();
   const todayTasks = data.tasks.filter((t) => t.createdAt.startsWith(today));
@@ -203,7 +205,24 @@ export function TasksView() {
                   className="border-muted-foreground/40"
                 />
                 {task.isFrog && <span className="text-sm">🐸</span>}
-                <span className="flex-1 text-sm break-words min-w-0">{task.title}</span>
+                {editingId === task.id ? (
+                  <input
+                    autoFocus
+                    value={editingTitle}
+                    onChange={(e) => setEditingTitle(e.target.value)}
+                    onBlur={() => { if (editingTitle.trim()) updateTask(task.id, editingTitle.trim()); setEditingId(null); }}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") { if (editingTitle.trim()) updateTask(task.id, editingTitle.trim()); setEditingId(null); }
+                      if (e.key === "Escape") setEditingId(null);
+                    }}
+                    className="flex-1 text-sm bg-transparent outline-none border-b border-emerald-500/50 min-w-0"
+                  />
+                ) : (
+                  <span
+                    className="flex-1 text-sm break-words min-w-0 cursor-text"
+                    onDoubleClick={() => { setEditingId(task.id); setEditingTitle(task.title); }}
+                  >{task.title}</span>
+                )}
                 {project && (
                   <Badge
                     variant="secondary"
