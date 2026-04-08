@@ -106,7 +106,11 @@ export function TasksView() {
               onChange={(e) => setNewMinutes(Number(e.target.value))}
               className="w-10 bg-transparent text-sm text-center outline-none"
             />
-            <span className="text-xs text-muted-foreground">min</span>
+            <span className="text-xs text-muted-foreground">
+              {newMinutes >= 60
+                ? `${Math.floor(newMinutes / 60)}h${newMinutes % 60 > 0 ? ` ${newMinutes % 60}m` : ""}`
+                : "min"}
+            </span>
           </div>
           <button
             onClick={handleAdd}

@@ -21,9 +21,14 @@ export function TaskTimer({ task, compact = false }: TaskTimerProps) {
   const isRunning = task.timerRunning;
 
   const formatTime = (secs: number) => {
-    const m = Math.floor(secs / 60);
+    const totalMinutes = Math.floor(secs / 60);
     const s = secs % 60;
-    return `${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
+    if (totalMinutes >= 60) {
+      const h = Math.floor(totalMinutes / 60);
+      const m = totalMinutes % 60;
+      return `${h}:${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
+    }
+    return `${totalMinutes.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
   };
 
   const progress = totalSeconds > 0 ? ((totalSeconds - secondsLeft) / totalSeconds) * 100 : 0;
