@@ -76,6 +76,7 @@ export interface UserProfile {
   planTime: "morning" | "evening";
   planHour: string;
   onboardingCompleted: boolean;
+  timezone?: string;
 }
 
 export interface StoreData {

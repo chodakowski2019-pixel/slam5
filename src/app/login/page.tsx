@@ -18,6 +18,9 @@ export default function LoginPage() {
       if (params.get("deleted") === "true") {
         setMessage("Your account has been deleted. Sorry to see you go.");
       }
+      if (params.get("mode") === "signup") {
+        setMode("signup");
+      }
     }
   }, []);
 

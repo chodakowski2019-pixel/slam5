@@ -13,7 +13,7 @@ export default function LandingPage() {
             <Link href="/login" className="text-xs text-neutral-300 hover:text-white transition-colors duration-300">
               Log in
             </Link>
-            <Link href="/login" className="text-xs px-5 py-2 rounded-full bg-gradient-to-r from-[#10b981] to-[#14b8a6] text-white font-medium transition-all duration-300 hover:scale-[1.03] active:scale-[0.97] shadow-lg shadow-emerald-500/20">
+            <Link href="/login?mode=signup" className="text-xs px-5 py-2 rounded-full bg-gradient-to-r from-[#10b981] to-[#14b8a6] text-white font-medium transition-all duration-300 hover:scale-[1.03] active:scale-[0.97] shadow-lg shadow-emerald-500/20">
               Start free
             </Link>
           </div>
@@ -34,7 +34,7 @@ export default function LandingPage() {
                 <img key={i} src={`https://i.pravatar.cc/40?img=${n}`} alt="user" className="w-6 h-6 rounded-full border border-emerald-500/30 object-cover" />
               ))}
             </div>
-            <span className="text-xs text-neutral-300">1,247 people won yesterday</span>
+            <span className="text-xs text-neutral-300">1,247 people won this month</span>
           </div>
 
           <p className="text-sm text-neutral-500 mb-3 tracking-wide uppercase">
@@ -50,7 +50,7 @@ export default function LandingPage() {
             Pick 5 tasks. Do them. Win the day. That&apos;s it.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-            <Link href="/login" className="inline-block px-7 py-3.5 rounded-full bg-gradient-to-r from-[#10b981] to-[#14b8a6] text-white text-sm font-medium transition-all duration-300 hover:scale-[1.03] active:scale-[0.97] shadow-lg shadow-emerald-500/20">
+            <Link href="/login?mode=signup" className="inline-block px-7 py-3.5 rounded-full bg-gradient-to-r from-[#10b981] to-[#14b8a6] text-white text-sm font-medium transition-all duration-300 hover:scale-[1.03] active:scale-[0.97] shadow-lg shadow-emerald-500/20">
               Try it free, 3 days trial
             </Link>
           </div>
@@ -60,8 +60,8 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Pain — M7: Pokaż problem */}
-      <section className="py-20 px-6">
+      {/* Pain */}
+      <section className="py-12 px-6">
         <div className="max-w-3xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-center mb-4">
             You&apos;re not lazy
@@ -92,8 +92,8 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Benefits — FAB (Feature → Advantage → Benefit) */}
-      <section className="py-20 px-6 bg-white/[0.015]">
+      {/* Benefits */}
+      <section className="py-12 px-6 bg-white/[0.015]">
         <div className="max-w-3xl mx-auto">
           <div className="flex items-center gap-4 mb-4">
             <div className="h-px flex-1 bg-gradient-to-r from-transparent to-emerald-900/30" />
@@ -105,14 +105,14 @@ export default function LandingPage() {
           </h2>
           <div className="grid md:grid-cols-2 gap-4">
             {[
-              { icon: "🐸", title: "Start with the hardest thing", desc: "Tackle your scariest task first — before your brain has time to say no. The rest of the day feels easy." },
-              { icon: "⏱", title: "Know exactly when you'll be done", desc: "Set a timer per task. Watch it count down. Your brain stays locked in because the end is visible." },
-              { icon: "🅿️", title: "Never lose a thought mid-focus", desc: "Random idea? Park it in one click. Don't break your flow. Come back to it later." },
-              { icon: "🏆", title: "A clear win or loss every day", desc: "No more 'I was kind of productive.' All 5 done = you won. Less than 5 = you lost. Simple score, real progress." },
-              { icon: "🔥", title: "Build a streak you're afraid to break", desc: "Stack wins day after day. Your streak becomes your identity. You stop wanting to quit." },
-              { icon: "🎵", title: "Zone in with one click", desc: "Brown noise, rain, lo-fi — built right in. No ads, no searching. Just music that keeps your brain on task." },
-              { icon: "👥", title: "Win against your friends", desc: "Invite your crew. See who's winning today. The leaderboard makes accountability fun, not shameful." },
-              { icon: "📱", title: "We remind you so you don't forget", desc: "Morning text: your 5 tasks. Evening text: your score. Your phone becomes your accountability partner." },
+              { icon: "🐸", title: "Start with the hardest thing", desc: "Tackle your scariest task first. Before your brain has time to say no." },
+              { icon: "⏱", title: "Know when you'll be done", desc: "Set a timer per task. Watch it count down. The end is always visible." },
+              { icon: "🅿️", title: "Never lose a thought mid-focus", desc: "Random idea? Park it in one click. Come back after you're done." },
+              { icon: "🏆", title: "Win or lose. Every day.", desc: "5 done = you won. Less than 5 = you lost. No in-between." },
+              { icon: "🔥", title: "Build a streak you fear breaking", desc: "Stack wins daily. Your streak becomes your identity." },
+              { icon: "🎵", title: "Zone in with one click", desc: "Brown noise, rain, lo-fi. Built right in. No ads, no searching." },
+              { icon: "👥", title: "Win against your friends", desc: "Invite your crew. See who's winning today. Accountability without shame." },
+              { icon: "📱", title: "We remind you so you don't forget", desc: "Morning text: your 5 tasks. Evening text: your score." },
             ].map((f, i) => (
               <div key={i} className="flex items-start gap-4 p-5 rounded-2xl border border-emerald-500/10 bg-emerald-500/[0.03] hover:bg-emerald-500/[0.06] transition-colors duration-300">
                 <span className="text-2xl">{f.icon}</span>
@@ -127,7 +127,7 @@ export default function LandingPage() {
       </section>
 
       {/* How it works */}
-      <section className="py-20 px-6 relative">
+      <section className="py-12 px-6 relative">
         <div className="max-w-3xl mx-auto">
           <div className="flex items-center gap-4 mb-4">
             <div className="h-px flex-1 bg-gradient-to-r from-transparent to-neutral-800" />
@@ -139,7 +139,7 @@ export default function LandingPage() {
           </h2>
           <div className="grid md:grid-cols-3 gap-6">
             {[
-              { step: "01", title: "Pick 5 tasks", desc: "Body. Mind. Money. Pick what matters today." },
+              { step: "01", title: "Pick 5 tasks", desc: "Pick the 5 tasks that matter most today." },
               { step: "02", title: "Slam them", desc: "Set a timer. Focus. Get it done. One by one." },
               { step: "03", title: "Win or lose", desc: "All 5 done = you won. Miss one = you lost. Simple." },
             ].map((item) => (
@@ -153,13 +153,13 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Social proof / credibility */}
-      <section className="py-20 px-6 bg-white/[0.015]">
+      {/* Social proof */}
+      <section className="py-12 px-6 bg-white/[0.015]">
         <div className="max-w-3xl mx-auto text-center">
           <div className="grid grid-cols-3 gap-4 mb-16">
             <div className="p-5 rounded-2xl border border-white/[0.06] bg-white/[0.02]">
               <span className="text-3xl font-heading font-bold bg-gradient-to-r from-[#34d399] to-[#2dd4bf] bg-clip-text text-transparent block">1,247</span>
-              <span className="text-xs text-neutral-500">people won yesterday</span>
+              <span className="text-xs text-neutral-500">people won this month</span>
             </div>
             <div className="p-5 rounded-2xl border border-white/[0.06] bg-white/[0.02]">
               <span className="text-3xl font-heading font-bold bg-gradient-to-r from-[#34d399] to-[#2dd4bf] bg-clip-text text-transparent block">83%</span>
@@ -171,7 +171,6 @@ export default function LandingPage() {
             </div>
           </div>
 
-          {/* Testimonials */}
           <div className="grid md:grid-cols-3 gap-4">
             {[
               { text: "I've tried every productivity app. This is the only one I actually use every day. The win/lose thing is addictive.", name: "Marcus T.", tag: "ADHD diagnosed" },
@@ -190,30 +189,30 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Lead magnet — secondary CTA */}
-      <section id="lead" className="py-20 px-6">
+      {/* Quiz CTA */}
+      <section id="lead" className="py-12 px-6">
         <div className="max-w-2xl mx-auto">
           <div className="p-8 rounded-3xl border border-emerald-500/20 bg-emerald-500/[0.04] text-center relative overflow-hidden">
             <div className="absolute top-0 right-0 w-48 h-48 bg-emerald-500/10 rounded-full blur-[80px]" />
             <div className="relative">
               <span className="text-4xl mb-4 block">🧠</span>
               <h2 className="text-2xl md:text-3xl font-bold tracking-tight mb-3">
-                Brain says NO right now?
+                What&apos;s your ADHD blocker type?
               </h2>
               <p className="text-neutral-400 mb-6 max-w-md mx-auto text-sm leading-relaxed">
-                Get our free PDF: <span className="text-white font-medium">"15 hacks for when your brain refuses to start"</span> — used by 3,000+ people with ADHD, anxiety, and burnout.
+                Take the free 2-minute quiz. Find out why you can&apos;t start — and what to do about it.
               </p>
-              <Link href="/login" className="inline-block px-7 py-3.5 rounded-full bg-gradient-to-r from-[#10b981] to-[#14b8a6] text-white text-sm font-medium transition-all duration-300 hover:scale-[1.03] active:scale-[0.97] shadow-lg shadow-emerald-500/20">
-                Get the free PDF
+              <Link href="/quiz" className="inline-block px-7 py-3.5 rounded-full bg-gradient-to-r from-[#10b981] to-[#14b8a6] text-white text-sm font-medium transition-all duration-300 hover:scale-[1.03] active:scale-[0.97] shadow-lg shadow-emerald-500/20">
+                Take the free quiz
               </Link>
-              <p className="text-xs text-neutral-500 mt-3">No spam. Unsubscribe anytime.</p>
+              <p className="text-xs text-neutral-500 mt-3">Free. No email required to start.</p>
             </div>
           </div>
         </div>
       </section>
 
       {/* FAQ */}
-      <section className="py-20 px-6 bg-white/[0.015]">
+      <section className="py-12 px-6 bg-white/[0.015]">
         <div className="max-w-2xl mx-auto">
           <div className="flex items-center gap-4 mb-10">
             <div className="h-px flex-1 bg-gradient-to-r from-transparent to-neutral-800" />
@@ -222,11 +221,11 @@ export default function LandingPage() {
           </div>
           <div className="space-y-4">
             {[
-              { q: "Is this for people with ADHD?", a: "Yes — but you don't need a diagnosis. If you struggle to start, stay focused, or feel like you're never doing enough, this is for you." },
-              { q: "What if I only do 4 out of 5 tasks?", a: "You lose the day. No partial credit. It sounds harsh, but that's the point — the binary win/lose is what makes your brain take it seriously." },
+              { q: "Is this for people with ADHD?", a: "Yes. But you don't need a diagnosis. If you struggle to start, stay focused, or feel like you're never doing enough, this is for you." },
+              { q: "What if I only do 4 out of 5 tasks?", a: "You lose the day. No partial credit. It sounds harsh, but that's the point. The binary win/lose is what makes your brain take it seriously." },
               { q: "How is this different from a regular to-do app?", a: "Regular to-do apps let you add 47 tasks and feel busy doing nothing. Slam5 forces you to pick 5, gives you a timer, and tells you at midnight if you won or lost. It's a game, not a list." },
-              { q: "Do I need a credit card to try it?", a: "Yes — but you won't be charged for 3 days. Cancel before then and you pay nothing. After that it's $9.99/month." },
-              { q: "What if I miss a day?", a: "Your streak resets. That's it. No punishment, no lecture. Just start again tomorrow. The app won't guilt-trip you — life does enough of that." },
+              { q: "Do I need a credit card to try it?", a: "Yes. But you won't be charged for 3 days. Cancel before then and you pay nothing. After that it's $9.99/month." },
+              { q: "What if I miss a day?", a: "Your streak resets. That's it. No punishment, no lecture. Just start again tomorrow. The app won't guilt-trip you." },
             ].map((item, i) => (
               <div key={i} className="p-5 rounded-2xl border border-white/[0.06] bg-white/[0.02]">
                 <h3 className="font-medium text-neutral-200 mb-2">{item.q}</h3>
@@ -237,19 +236,19 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Final CTA with urgency */}
-      <section className="py-24 px-6 text-center relative overflow-hidden">
+      {/* Final CTA */}
+      <section className="py-16 px-6 text-center relative overflow-hidden">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-emerald-500/[0.06] rounded-full blur-[150px]" />
         <div className="max-w-3xl mx-auto relative">
           <p className="text-sm text-emerald-400 uppercase tracking-widest font-mono mb-4">Your streak starts today</p>
           <h2 className="text-4xl md:text-5xl font-bold tracking-tighter mb-6 bg-gradient-to-b from-white to-neutral-400 bg-clip-text text-transparent">
-            Stop thinking.<br />Start winning.
+            Stop thinking<br />Start winning
           </h2>
           <p className="text-neutral-400 mb-10 max-w-md mx-auto">
             3 days free. Card required, no charge yet. If it doesn&apos;t work in 3 days, you lost nothing.
           </p>
-          <Link href="/login" className="inline-block px-8 py-4 rounded-full bg-gradient-to-r from-[#10b981] to-[#14b8a6] text-white font-medium transition-all duration-300 hover:scale-[1.03] active:scale-[0.97] shadow-lg shadow-emerald-500/20 text-base">
-            Start winning today — it&apos;s free
+          <Link href="/login?mode=signup" className="inline-block px-8 py-4 rounded-full bg-gradient-to-r from-[#10b981] to-[#14b8a6] text-white font-medium transition-all duration-300 hover:scale-[1.03] active:scale-[0.97] shadow-lg shadow-emerald-500/20 text-base">
+            Start winning today, it&apos;s free
           </Link>
           <p className="text-xs text-neutral-500 mt-4">Then $9.99/mo. Cancel anytime.</p>
         </div>

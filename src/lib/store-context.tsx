@@ -85,6 +85,16 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
           deletedParkingIds: [],
         });
         loadedOk.current = true;
+        // Auto-detect and save timezone if not set
+        if (!d.profile?.timezone) {
+          const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+          if (tz) {
+            setData((prev) => ({
+              ...prev,
+              profile: { ...prev.profile, timezone: tz } as typeof prev.profile,
+            }));
+          }
+        }
       } catch {
         // Load failed — do NOT allow saving to prevent wiping data
         loadedOk.current = false;

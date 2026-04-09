@@ -26,14 +26,57 @@ async function sendSMS(to: string, message: string) {
   return res.json();
 }
 
-function getTodayKey() {
-  return new Date().toISOString().split("T")[0];
+function getLocalHourStr(timezone: string): string {
+  try {
+    const parts = new Intl.DateTimeFormat("en-US", {
+      timeZone: timezone,
+      hour: "2-digit",
+      hour12: false,
+    }).formatToParts(new Date());
+    const hour = parts.find((p) => p.type === "hour")?.value ?? "00";
+    return `${hour.padStart(2, "0")}:00`;
+  } catch {
+    // fallback to UTC
+    return `${new Date().getUTCHours().toString().padStart(2, "0")}:00`;
+  }
 }
 
-function getTomorrowKey() {
-  const d = new Date();
-  d.setDate(d.getDate() + 1);
-  return d.toISOString().split("T")[0];
+function getLocalDateKey(timezone: string): string {
+  try {
+    const parts = new Intl.DateTimeFormat("en-CA", {
+      timeZone: timezone,
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    }).formatToParts(new Date());
+    const y = parts.find((p) => p.type === "year")?.value;
+    const m = parts.find((p) => p.type === "month")?.value;
+    const d = parts.find((p) => p.type === "day")?.value;
+    return `${y}-${m}-${d}`;
+  } catch {
+    return new Date().toISOString().split("T")[0];
+  }
+}
+
+function getLocalTomorrowKey(timezone: string): string {
+  try {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const parts = new Intl.DateTimeFormat("en-CA", {
+      timeZone: timezone,
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    }).formatToParts(tomorrow);
+    const y = parts.find((p) => p.type === "year")?.value;
+    const m = parts.find((p) => p.type === "month")?.value;
+    const d = parts.find((p) => p.type === "day")?.value;
+    return `${y}-${m}-${d}`;
+  } catch {
+    const d = new Date();
+    d.setDate(d.getDate() + 1);
+    return d.toISOString().split("T")[0];
+  }
 }
 
 // Called by Vercel Cron every hour
@@ -62,8 +105,10 @@ export async function GET(request: NextRequest) {
   }
 
   let sent = 0;
-  const today = getTodayKey();
-  const tomorrow = getTomorrowKey();
+  const today = new Date().toISOString().split("T")[0];
+  const tomorrowDate = new Date();
+  tomorrowDate.setDate(tomorrowDate.getDate() + 1);
+  const tomorrow = tomorrowDate.toISOString().split("T")[0];
 
   for (const profile of profiles) {
     const phone = profile.phone_number;

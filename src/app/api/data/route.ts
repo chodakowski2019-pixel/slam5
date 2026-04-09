@@ -107,6 +107,7 @@ export async function GET(request: NextRequest) {
       planTime: profile.plan_time,
       planHour: profile.plan_hour,
       onboardingCompleted: profile.onboarding_completed,
+      timezone: profile.timezone ?? undefined,
     } : undefined,
     subscription: profile ? {
       status: profile.subscription_status || "none",
@@ -141,6 +142,7 @@ export async function POST(request: NextRequest) {
       plan_time: data.profile.planTime,
       plan_hour: data.profile.planHour,
       onboarding_completed: data.profile.onboardingCompleted,
+      timezone: data.profile.timezone ?? null,
       total_points: data.totalPoints || 0,
       updated_at: new Date().toISOString(),
     });

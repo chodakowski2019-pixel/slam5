@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
 import { Open_Sans, Space_Grotesk } from "next/font/google";
 import { Geist_Mono } from "next/font/google";
-import { TooltipProvider } from "@/components/ui/tooltip";
 import { PwaRegister } from "@/components/pwa-register";
-import { AuthProvider } from "@/lib/auth-context";
+import { Providers } from "./providers";
 import "./globals.css";
 
 const openSans = Open_Sans({
@@ -50,9 +49,7 @@ export default function RootLayout({
       className={`${openSans.variable} ${spaceGrotesk.variable} ${geistMono.variable} h-full antialiased dark`}
     >
       <body className="min-h-full flex flex-col bg-background text-foreground">
-        <AuthProvider>
-          <TooltipProvider>{children}</TooltipProvider>
-        </AuthProvider>
+        <Providers>{children}</Providers>
         <PwaRegister />
       </body>
     </html>
