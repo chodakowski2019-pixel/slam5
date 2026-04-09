@@ -5,7 +5,7 @@ import { MonitorUp, X } from "lucide-react";
 import { useStore } from "@/lib/store-context";
 
 export function FloatingTimer() {
-  const { data } = useStore();
+  const { data, updateTaskTimer } = useStore();
   const runningTask = data.tasks.find((t) => t.timerRunning);
   const pausedTask = data.tasks.find(
     (t) =>
@@ -21,6 +21,10 @@ export function FloatingTimer() {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const animFrameRef = useRef<number>(0);
   const channelRef = useRef<BroadcastChannel | null>(null);
+  const dataRef = useRef(data);
+  const updateTaskTimerRef = useRef(updateTaskTimer);
+  dataRef.current = data;
+  updateTaskTimerRef.current = updateTaskTimer;
 
   // BroadcastChannel — sync timer state to popup window
   useEffect(() => {
@@ -28,17 +32,32 @@ export function FloatingTimer() {
     channelRef.current = channel;
     channel.onmessage = (e) => {
       if (e.data.type === "request-sync") {
-        const task = data.tasks.find((t) => t.timerRunning) ||
-          data.tasks.find((t) => t.timerSecondsLeft !== null && t.timerSecondsLeft > 0 && !t.timerRunning && !t.completed);
+        const tasks = dataRef.current.tasks;
+        const task = tasks.find((t) => t.timerRunning) ||
+          tasks.find((t) => t.timerSecondsLeft !== null && t.timerSecondsLeft > 0 && !t.timerRunning && !t.completed);
         channel.postMessage({
           type: "sync",
           timer: {
             title: task?.title || "",
             secondsLeft: task?.timerSecondsLeft ?? 0,
             totalSeconds: (task?.timerMinutes ?? 0) * 60,
-            running: !!data.tasks.find((t) => t.timerRunning),
+            running: !!tasks.find((t) => t.timerRunning),
           },
         });
+      } else if (e.data.type === "pause") {
+        const tasks = dataRef.current.tasks;
+        const task = tasks.find((t) => t.timerRunning) ||
+          tasks.find((t) => t.timerSecondsLeft !== null && t.timerSecondsLeft > 0 && !t.timerRunning && !t.completed);
+        if (task) {
+          updateTaskTimerRef.current(task.id, task.timerSecondsLeft, !task.timerRunning);
+        }
+      } else if (e.data.type === "stop") {
+        const tasks = dataRef.current.tasks;
+        const task = tasks.find((t) => t.timerRunning) ||
+          tasks.find((t) => t.timerSecondsLeft !== null && t.timerSecondsLeft > 0 && !t.timerRunning && !t.completed);
+        if (task) {
+          updateTaskTimerRef.current(task.id, null, false);
+        }
       }
     };
     return () => channel.close();
@@ -155,26 +174,9 @@ export function FloatingTimer() {
     };
   }, [activeTask, drawTimer]);
 
-  const enterPiP = useCallback(async () => {
-    const video = videoRef.current;
-    if (!video) return;
-
-    try {
-      await video.play();
-      if (video.requestPictureInPicture) {
-        await video.requestPictureInPicture();
-        setPipActive(true);
-
-        video.addEventListener("leavepictureinpicture", () => {
-          setPipActive(false);
-        }, { once: true });
-      }
-    } catch (err) {
-      console.error("PiP failed:", err);
-      // Fallback — open popup window
-      openPopup();
-    }
-  }, []);
+  const enterPiP = useCallback(() => {
+    openPopup();
+  }, [openPopup]);
 
   const exitPiP = useCallback(async () => {
     try {

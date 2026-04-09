@@ -52,6 +52,7 @@ export async function GET(request: NextRequest) {
     points: t.points,
     createdAt: t.created_at,
     completedAt: t.completed_at,
+    scheduledFor: t.scheduled_for ?? undefined,
   }));
 
   const projects = (projectsRes.data || []).map((p) => ({
@@ -167,6 +168,7 @@ export async function POST(request: NextRequest) {
       points: t.points,
       created_at: t.createdAt,
       completed_at: t.completedAt,
+      scheduled_for: (t as Record<string, unknown>).scheduledFor ?? null,
     }));
     const { error: tasksError } = await sb.from("tasks").upsert(rows, { onConflict: "id" });
     if (tasksError) console.error("[slam5] tasks upsert error:", JSON.stringify(tasksError));

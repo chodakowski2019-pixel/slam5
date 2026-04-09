@@ -15,6 +15,7 @@ export interface Task {
   createdAt: string;
   completedAt: string | null;
   points: number; // +10 per completion
+  scheduledFor?: string; // YYYY-MM-DD — if set, task appears on this date instead of createdAt date
 }
 
 export interface Project {

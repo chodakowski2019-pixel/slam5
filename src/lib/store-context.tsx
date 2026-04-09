@@ -18,7 +18,7 @@ import {
 
 interface StoreContextType {
   data: StoreData;
-  addTask: (title: string, projectId: string | null, timerMinutes: number, category: TaskCategory, isFrog: boolean) => void;
+  addTask: (title: string, projectId: string | null, timerMinutes: number, category: TaskCategory, isFrog: boolean, scheduledFor?: string) => void;
   toggleTask: (id: string) => void;
   deleteTask: (id: string) => void;
   updateTask: (id: string, title: string) => void;
@@ -157,7 +157,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (!loaded) return;
     const today = getTodayKey();
-    const todayTasks = data.tasks.filter((t) => t.createdAt.startsWith(today));
+    const todayTasks = data.tasks.filter((t) => (t.scheduledFor ?? t.createdAt.slice(0, 10)) === today);
     const completed = todayTasks.filter((t) => t.completed).length;
     const total = todayTasks.length;
     if (total === 0) return;
@@ -182,7 +182,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   }, [data.tasks, loaded]);
 
   const addTask = useCallback(
-    (title: string, projectId: string | null, timerMinutes: number, category: TaskCategory, isFrog: boolean) => {
+    (title: string, projectId: string | null, timerMinutes: number, category: TaskCategory, isFrog: boolean, scheduledFor?: string) => {
       const task: Task = {
         id: generateId(),
         title,
@@ -196,6 +196,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
         createdAt: new Date().toISOString(),
         completedAt: null,
         points: 0,
+        scheduledFor,
       };
       setData((prev) => ({ ...prev, tasks: [task, ...prev.tasks] }));
     },

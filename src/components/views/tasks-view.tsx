@@ -33,7 +33,7 @@ export function TasksView() {
   const [editingTitle, setEditingTitle] = useState("");
 
   const today = getTodayKey();
-  const todayTasks = data.tasks.filter((t) => t.createdAt.startsWith(today));
+  const todayTasks = data.tasks.filter((t) => (t.scheduledFor ?? t.createdAt.slice(0, 10)) === today);
   const activeTasks = todayTasks.filter((t) => !t.completed);
   const completedTasks = todayTasks.filter((t) => t.completed);
   const atLimit = todayTasks.length >= MAX_DAILY_TASKS;

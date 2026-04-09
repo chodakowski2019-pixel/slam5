@@ -11,6 +11,7 @@ import { ProjectsView } from "@/components/views/projects-view";
 import { GoalsView } from "@/components/views/goals-view";
 import { LeaderboardView } from "@/components/views/leaderboard-view";
 import { SettingsView } from "@/components/views/settings-view";
+import { CalendarView } from "@/components/views/calendar-view";
 import { OnboardingView } from "@/components/views/onboarding-view";
 import type { OnboardingData } from "@/components/views/onboarding-view";
 import { CommandPalette } from "@/components/command-palette";
@@ -208,6 +209,7 @@ function AppContent() {
       <main className="flex-1 overflow-y-auto p-8">
         {view === "dashboard" && <DashboardView onNavigate={navigate} />}
         {view === "tasks" && <TasksView />}
+        {view === "calendar" && <CalendarView />}
         {view === "goals" && <GoalsView />}
         {view === "leaderboard" && <LeaderboardView />}
         {view === "settings" && <SettingsView />}
