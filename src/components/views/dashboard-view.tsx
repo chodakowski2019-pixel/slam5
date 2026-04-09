@@ -240,8 +240,8 @@ export function DashboardView({ onNavigate }: DashboardProps) {
       </div>
 
       {/* Week */}
-      <div className="mb-6">
-        <div className="p-5 rounded-2xl border border-border bg-card">
+      <div className="mb-6 flex justify-center">
+        <div className="p-5 rounded-2xl border border-border bg-card w-full max-w-lg">
           <div className="flex items-center justify-between mb-5">
             <h3 className="text-xs text-muted-foreground uppercase tracking-wider font-medium">
               This week
