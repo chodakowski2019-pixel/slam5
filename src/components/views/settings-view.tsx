@@ -21,6 +21,7 @@ export function SettingsView() {
   const { user, signOut } = useAuth();
   const profile = data.profile;
 
+  const [name, setName] = useState(profile?.name || "");
   const [planTime, setPlanTime] = useState(profile?.planTime || "morning");
   const [planHour, setPlanHour] = useState(profile?.planHour || "08:00");
   const [saved, setSaved] = useState(false);
@@ -30,7 +31,7 @@ export function SettingsView() {
   const isPro = data.subscription?.status === "active" || data.subscription?.status === "trialing";
 
   const handleSave = () => {
-    updateProfile({ planTime, planHour, onboardingCompleted: true });
+    updateProfile({ name, planTime, planHour, onboardingCompleted: true });
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
   };
@@ -80,6 +81,15 @@ export function SettingsView() {
       <section className="mb-8">
         <h3 className="text-xs text-muted-foreground uppercase tracking-wider font-medium mb-4">Account</h3>
         <div className="space-y-4 p-5 rounded-2xl border border-border bg-card">
+          <div>
+            <label className="text-sm font-medium mb-1.5 block">Name</label>
+            <input
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Your name"
+              className="w-full px-3 py-2 rounded-lg border border-border bg-background text-sm focus:outline-none focus:border-emerald-500/50 transition-colors"
+            />
+          </div>
           <div>
             <label className="text-sm font-medium mb-1.5 block">Email</label>
             <p className="text-sm text-muted-foreground">{user?.email || "—"}</p>

@@ -25,9 +25,9 @@ interface SidebarProps {
 
 const NAV_ITEMS = [
   { id: "tasks", label: "Power List", icon: CheckSquare },
-  { id: "calendar", label: "Calendar", icon: CalendarDays },
   { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
   { id: "goals", label: "Goals", icon: Trophy },
+  { id: "calendar", label: "Calendar", icon: CalendarDays },
 ];
 
 export function Sidebar({ activeView, onViewChange }: SidebarProps) {

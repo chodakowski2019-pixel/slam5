@@ -4,13 +4,6 @@ import { useState } from "react";
 import { ChevronLeft, ChevronRight, Plus, Trash2 } from "lucide-react";
 import { useStore } from "@/lib/store-context";
 import { getTodayKey } from "@/lib/store";
-import { TaskCategory } from "@/lib/store";
-
-const CATEGORY_OPTIONS: { value: TaskCategory; label: string; emoji: string }[] = [
-  { value: "money", label: "Money", emoji: "💰" },
-  { value: "body", label: "Body", emoji: "🏋️" },
-  { value: "mind", label: "Mind", emoji: "🧠" },
-];
 
 function formatDateKey(date: Date): string {
   return date.toISOString().slice(0, 10);
@@ -42,7 +35,7 @@ export function CalendarView() {
   const [selectedDate, setSelectedDate] = useState(today);
   const [newTitle, setNewTitle] = useState("");
   const [newMinutes, setNewMinutes] = useState(25);
-  const [newCategory, setNewCategory] = useState<TaskCategory>("money");
+  const [newIsFrog, setNewIsFrog] = useState(false);
 
   const days = Array.from({ length: 7 }, (_, i) => {
     const d = addDays(weekStart, i);
@@ -60,9 +53,10 @@ export function CalendarView() {
 
   const handleAdd = () => {
     if (!newTitle.trim()) return;
-    addTask(newTitle.trim(), null, newMinutes, newCategory, false, selectedDate);
+    addTask(newTitle.trim(), null, newMinutes, "money", newIsFrog, selectedDate);
     setNewTitle("");
     setNewMinutes(25);
+    setNewIsFrog(false);
   };
 
   const prevWeek = () => setWeekStart((d) => addDays(d, -7));
@@ -152,15 +146,17 @@ export function CalendarView() {
           />
           <span className="text-xs text-muted-foreground">min</span>
         </div>
-        <select
-          value={newCategory}
-          onChange={(e) => setNewCategory(e.target.value as TaskCategory)}
-          className="px-3 py-2.5 rounded-xl border border-border bg-card text-sm focus:outline-none"
+        <button
+          onClick={() => setNewIsFrog((v) => !v)}
+          title="Mark as heavy task (frog)"
+          className={`px-3 py-2.5 rounded-xl border text-sm transition-all duration-200 ${
+            newIsFrog
+              ? "bg-emerald-500/20 border-emerald-500/40 text-emerald-400"
+              : "border-border bg-card text-muted-foreground hover:border-emerald-500/20"
+          }`}
         >
-          {CATEGORY_OPTIONS.map((c) => (
-            <option key={c.value} value={c.value}>{c.emoji} {c.label}</option>
-          ))}
-        </select>
+          🐸
+        </button>
         <button
           onClick={handleAdd}
           disabled={!newTitle.trim()}
@@ -180,11 +176,9 @@ export function CalendarView() {
               key={task.id}
               className="flex items-center gap-3 px-4 py-3 rounded-xl border border-border bg-card"
             >
+              {task.isFrog && <span className="text-sm">🐸</span>}
               <span className="text-sm flex-1">{task.title}</span>
               <span className="text-xs text-muted-foreground">{task.timerMinutes}min</span>
-              <span className="text-xs text-muted-foreground">
-                {CATEGORY_OPTIONS.find((c) => c.value === task.category)?.emoji}
-              </span>
               <button
                 onClick={() => deleteTask(task.id)}
                 className="text-muted-foreground hover:text-red-400 transition-colors"
