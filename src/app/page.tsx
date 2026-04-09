@@ -29,8 +29,9 @@ export default function LandingPage() {
           {/* Social proof pill */}
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/[0.08] bg-white/[0.04] mb-8">
             <div className="flex -space-x-1.5">
-              {["🧠","⚡","🔥","💪","🎯"].map((e, i) => (
-                <span key={i} className="w-6 h-6 rounded-full bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-[10px]">{e}</span>
+              {[10,20,32,44,56].map((n, i) => (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img key={i} src={`https://i.pravatar.cc/40?img=${n}`} alt="user" className="w-6 h-6 rounded-full border border-emerald-500/30 object-cover" />
               ))}
             </div>
             <span className="text-xs text-neutral-300">1,247 people won yesterday</span>
@@ -47,14 +48,10 @@ export default function LandingPage() {
           </p>
           <p className="text-neutral-400 max-w-lg mx-auto mb-10 leading-relaxed text-base">
             Pick 5 tasks. Do them. Win the day. That&apos;s it.
-            No complicated system. Just you vs. your list.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link href="/login" className="inline-block px-7 py-3.5 rounded-full bg-gradient-to-r from-[#10b981] to-[#14b8a6] text-white text-sm font-medium transition-all duration-300 hover:scale-[1.03] active:scale-[0.97] shadow-lg shadow-emerald-500/20">
-              Try it free — 3 days on us
-            </Link>
-            <Link href="#lead" className="inline-block px-7 py-3.5 rounded-full border border-white/[0.1] text-neutral-300 text-sm hover:border-white/[0.2] hover:text-white transition-all duration-300">
-              Get free PDF first →
+              Try it free, 3 days trial
             </Link>
           </div>
           <p className="text-xs text-neutral-500 mt-4">

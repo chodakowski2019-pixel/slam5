@@ -179,25 +179,7 @@ export function DashboardView({ onNavigate }: DashboardProps) {
       )}
 
       {/* Stats row */}
-      <div className="grid grid-cols-4 gap-3 mb-6">
-        <button
-          onClick={() => onNavigate("tasks")}
-          className="group p-5 rounded-2xl border border-border bg-card hover:border-emerald-500/30 transition-all duration-300 text-left relative overflow-hidden"
-        >
-          <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-          <div className="relative">
-            <div className="flex items-center gap-2 text-muted-foreground mb-3">
-              <CheckSquare size={14} className="text-emerald-400" />
-              <span className="text-xs font-medium">Active</span>
-            </div>
-            <span className="text-4xl font-heading font-bold tracking-tight">{activeTasks.length}</span>
-            <div className="mt-2 flex items-center gap-1 text-xs text-emerald-400 opacity-0 group-hover:opacity-100 transition-opacity">
-              <span>View tasks</span>
-              <ArrowRight size={10} />
-            </div>
-          </div>
-        </button>
-
+      <div className="grid grid-cols-3 gap-3 mb-6">
         <button
           onClick={() => onNavigate("tasks")}
           className="group p-5 rounded-2xl border border-border bg-card hover:border-emerald-500/30 transition-all duration-300 text-left relative overflow-hidden"
@@ -208,10 +190,7 @@ export function DashboardView({ onNavigate }: DashboardProps) {
               <Target size={14} className="text-emerald-400" />
               <span className="text-xs font-medium">Completed</span>
             </div>
-            <div className="flex items-baseline gap-1.5">
-              <span className="text-4xl font-heading font-bold tracking-tight">{completedToday.length}</span>
-              <span className="text-sm text-muted-foreground font-medium">/ {totalToday}</span>
-            </div>
+            <span className="text-4xl font-heading font-bold tracking-tight">{completedToday.length}<span className="text-sm text-muted-foreground font-medium ml-1.5">/ {totalToday}</span></span>
             {totalToday > 0 && (
               <div className="mt-2 h-1 rounded-full bg-border overflow-hidden">
                 <div
@@ -260,8 +239,8 @@ export function DashboardView({ onNavigate }: DashboardProps) {
         </div>
       </div>
 
-      {/* Week + chart */}
-      <div className="grid grid-cols-2 gap-3 mb-6">
+      {/* Week */}
+      <div className="mb-6">
         <div className="p-5 rounded-2xl border border-border bg-card">
           <div className="flex items-center justify-between mb-5">
             <h3 className="text-xs text-muted-foreground uppercase tracking-wider font-medium">
@@ -293,13 +272,6 @@ export function DashboardView({ onNavigate }: DashboardProps) {
               </div>
             ))}
           </div>
-        </div>
-
-        <div className="p-5 rounded-2xl border border-border bg-card">
-          <h3 className="text-xs text-muted-foreground uppercase tracking-wider font-medium mb-4">
-            Activity
-          </h3>
-          <MiniBarChart data={weeklyData} labels={weekLabels} height={56} />
         </div>
       </div>
 

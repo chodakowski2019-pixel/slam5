@@ -34,7 +34,8 @@ export function Sidebar({ activeView, onViewChange }: SidebarProps) {
   const { data } = useStore();
   const { user } = useAuth();
 
-  const activeTasks = data.tasks.filter((t) => !t.completed).length;
+  const today = new Date().toISOString().split("T")[0];
+  const activeTasks = data.tasks.filter((t) => !t.completed && t.createdAt.startsWith(today)).length;
   const runningTimer = data.tasks.find((t) => t.timerRunning);
   const isPro = data.subscription?.status === "active" || data.subscription?.status === "trialing";
 
