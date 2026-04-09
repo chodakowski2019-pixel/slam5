@@ -44,7 +44,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { type } = await request.json(); // "morning", "evening", or "no_plan"
+  void request; // no body needed
   const sb = getSb();
 
   // Get all users with phone numbers
@@ -65,69 +65,18 @@ export async function POST(request: NextRequest) {
     if (!phone) continue;
 
     const today = getTodayKey();
-    const tomorrow = getTomorrowKey();
 
-    if (type === "morning") {
-      // Get today's tasks
-      const { data: tasks } = await sb
-        .from("tasks")
-        .select("title, is_frog")
-        .eq("user_id", profile.id)
-        .gte("created_at", today + "T00:00:00")
-        .lt("created_at", tomorrow + "T00:00:00");
+    // Check if user has any tasks for today (createdAt or scheduledFor)
+    const { data: todayTasks } = await sb
+      .from("tasks")
+      .select("id")
+      .eq("user_id", profile.id)
+      .or(`scheduled_for.eq.${today},and(scheduled_for.is.null,created_at.gte.${today}T00:00:00,created_at.lt.${getTomorrowKey()}T00:00:00)`)
+      .limit(1);
 
-      let message: string;
-      if (!tasks || tasks.length === 0) {
-        message = `Hey ${profile.name || ""}! No tasks yet. Open Slam5 and pick your 5.`;
-      } else {
-        const list = tasks
-          .map((t, i) => `${i + 1}. ${t.is_frog ? "🐸 " : ""}${t.title}`)
-          .join("\n");
-        message = `Your ${tasks.length} tasks today:\n${list}\n\nSlam them.`;
-      }
-      await sendSMS(phone, message);
+    if (!todayTasks || todayTasks.length === 0) {
+      await sendSMS(phone, `Hey${profile.name ? " " + profile.name : ""}! You haven't picked your 5 tasks yet. Open Slam5 and plan your day.`);
       sent++;
-    } else if (type === "evening") {
-      // Get today's tasks for verdict
-      const { data: tasks } = await sb
-        .from("tasks")
-        .select("completed")
-        .eq("user_id", profile.id)
-        .gte("created_at", today + "T00:00:00")
-        .lt("created_at", tomorrow + "T00:00:00");
-
-      const total = tasks?.length || 0;
-      const completed = tasks?.filter((t) => t.completed).length || 0;
-      const won = total > 0 && completed === total;
-
-      let message: string;
-      if (total === 0) {
-        message = "You set 0 tasks today. That's an L. Show up tomorrow.";
-      } else if (won) {
-        message = `${completed}/${total} DONE. YOU WON TODAY. Keep going.`;
-      } else {
-        message = `${completed}/${total} done. Day lost. Come back harder tomorrow.`;
-      }
-      await sendSMS(phone, message);
-      sent++;
-    } else if (type === "no_plan") {
-      // Check if user has tasks for tomorrow — if not, remind them
-      const dayAfter = new Date();
-      dayAfter.setDate(dayAfter.getDate() + 2);
-      const dayAfterKey = dayAfter.toISOString().split("T")[0];
-
-      const { data: tomorrowTasks } = await sb
-        .from("tasks")
-        .select("id")
-        .eq("user_id", profile.id)
-        .gte("created_at", tomorrow + "T00:00:00")
-        .lt("created_at", dayAfterKey + "T00:00:00")
-        .limit(1);
-
-      if (!tomorrowTasks || tomorrowTasks.length === 0) {
-        await sendSMS(phone, `Hey ${profile.name || ""}! You haven't planned tomorrow yet. Open Slam5 and pick your 5.`);
-        sent++;
-      }
     }
   }
 

@@ -174,6 +174,18 @@ export function FloatingTimer() {
     };
   }, [activeTask, drawTimer]);
 
+  const openPopup = useCallback(() => {
+    const w = 240;
+    const h = 100;
+    const left = window.screen.width - w - 20;
+    const top = 40;
+    window.open(
+      "/timer",
+      "cc-timer",
+      `width=${w},height=${h},left=${left},top=${top},menubar=no,toolbar=no,location=no,status=no,resizable=yes`
+    );
+  }, []);
+
   const enterPiP = useCallback(() => {
     openPopup();
   }, [openPopup]);
@@ -185,19 +197,6 @@ export function FloatingTimer() {
       }
     } catch {}
     setPipActive(false);
-  }, []);
-
-  // Fallback popup for browsers without PiP
-  const openPopup = useCallback(() => {
-    const w = 240;
-    const h = 100;
-    const left = window.screen.width - w - 20;
-    const top = 40;
-    window.open(
-      "/timer",
-      "cc-timer",
-      `width=${w},height=${h},left=${left},top=${top},menubar=no,toolbar=no,location=no,status=no,resizable=yes`
-    );
   }, []);
 
   const seconds = activeTask?.timerSecondsLeft ?? 0;
