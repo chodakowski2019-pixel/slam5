@@ -11,7 +11,7 @@ const QUESTIONS = [
       { label: "I spend 20 minutes deciding which one to start", type: "A" },
       { label: "I look at the list and feel instantly drained", type: "B" },
       { label: "I start planning how to do them perfectly", type: "C" },
-      { label: "I think 'I\u2019ll do all 3' \u2014 and end up doing none", type: "D" },
+      { label: "I think 'I\u2019ll do all 3' and end up doing none", type: "D" },
     ],
   },
   {
@@ -92,8 +92,8 @@ const RESULTS = {
     emoji: "🎯",
     tagline: "You don't have a productivity problem. You have a standards problem.",
     description:
-      "'Good enough to start' doesn\u2019t exist in your vocabulary \u2014 which means you rarely start at all. The bar keeps moving and the task never begins.",
-    fix: "Time-boxing kills perfectionism. When you only have 25 minutes, 'perfect' isn\u2019t an option. Slam5 forces you to ship something imperfect \u2014 and that\u2019s the whole point.",
+      "'Good enough to start' doesn\u2019t exist in your vocabulary. Which means you rarely start at all. The bar keeps moving and the task never begins.",
+    fix: "Time-boxing kills perfectionism. When you only have 25 minutes, 'perfect' isn\u2019t an option. Slam5 forces you to ship something imperfect. That\u2019s the whole point.",
     color: "from-rose-500 to-pink-600",
     glow: "bg-rose-500/10",
   },
@@ -172,7 +172,7 @@ export default function QuizPage() {
             It&apos;s not laziness. It&apos;s not a lack of motivation.
           </p>
           <p className="text-neutral-300 mb-10 leading-relaxed">
-            Your brain has a <span className="text-white font-medium">specific blocker type</span> — and once you know it, you can fix it.
+            Your brain has a <span className="text-white font-medium">specific blocker type</span>. Once you know it, you can fix it.
           </p>
           <button
             onClick={() => setStep("quiz")}
@@ -192,7 +192,7 @@ export default function QuizPage() {
     return (
       <div className="min-h-screen bg-[#0a0a0a] text-white flex flex-col px-6 py-10">
         {/* Progress */}
-        <div className="max-w-lg mx-auto w-full mb-10">
+        <div className="max-w-lg mx-auto w-full mb-6">
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs text-neutral-500">Question {current + 1} of {QUESTIONS.length}</span>
             <span className="text-xs text-neutral-500">{Math.round(progress)}%</span>
@@ -206,7 +206,7 @@ export default function QuizPage() {
         </div>
 
         {/* Question */}
-        <div className="max-w-lg mx-auto w-full flex-1 flex flex-col justify-center">
+        <div className="max-w-lg mx-auto w-full flex-1 flex flex-col justify-start">
           <h2 className="text-2xl md:text-3xl font-bold font-heading tracking-tight mb-8 text-white">
             {q.text}
           </h2>
