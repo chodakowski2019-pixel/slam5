@@ -74,8 +74,8 @@ function buildEmail(result: string, label: string): string {
     A: {
       tagline: "Your brain is a Ferrari with no GPS.",
       description:
-        "The problem isn't effort — it's that you can never decide which road to take. You'll think your way out of starting every single time. Analysis paralysis is your default mode.",
-      fix: "Remove the choice. When the next task is already picked for you, you execute. Slam5 decides what's next — you just show up and go.",
+        "The problem isn't effort. You can never decide which road to take. You'll think your way out of starting every single time. Analysis paralysis is your default mode.",
+      fix: "Remove the choice. When the next task is already picked for you, you execute. Slam5 decides what's next. You just show up and go.",
     },
     B: {
       tagline: "Your engine takes longer to warm up.",
@@ -86,8 +86,8 @@ function buildEmail(result: string, label: string): string {
     C: {
       tagline: "You don't have a productivity problem. You have a standards problem.",
       description:
-        "'Good enough to start' doesn't exist in your vocabulary — which means you rarely start at all. The bar keeps moving and the task never begins.",
-      fix: "Time-boxing kills perfectionism. When you only have 25 minutes, 'perfect' isn't an option. Slam5 forces you to ship something imperfect — and that's the whole point.",
+        "'Good enough to start' doesn't exist in your vocabulary. Which means you rarely start at all. The bar keeps moving and the task never begins.",
+      fix: "Time-boxing kills perfectionism. When you only have 25 minutes, 'perfect' isn't an option. Slam5 forces you to ship something imperfect. That's the whole point.",
     },
     D: {
       tagline: "You see the full mountain before you take step one.",
