@@ -130,12 +130,23 @@ function buildEmail(result: string, label: string): string {
           <p style="margin:0;font-size:15px;color:#ffffff;line-height:1.6;">${c.fix}</p>
         </td></tr>
         <!-- Spacer -->
-        <tr><td style="height:24px;"></td></tr>
+        <tr><td style="height:32px;"></td></tr>
+        <!-- Personal note -->
+        <tr><td style="padding-bottom:24px;">
+          <p style="margin:0 0 12px;font-size:15px;color:#d1d5db;line-height:1.7;">It's the reason your to-do list grows but nothing gets done.<br>It's the reason you open your laptop and close it 20 minutes later.<br>It's the reason you know exactly what you need to do and still can't start.</p>
+          <p style="margin:0 0 24px;font-size:15px;color:#d1d5db;line-height:1.7;">Tomorrow I'll show you why willpower never worked for you.<br><span style="color:#9ca3af;">(It's not your fault. Seriously.)</span></p>
+          <p style="margin:0 0 4px;font-size:15px;color:#ffffff;">Kuba</p>
+          <p style="margin:0;font-size:13px;color:#6b7280;">Founder of Slam5</p>
+        </td></tr>
         <!-- CTA -->
-        <tr><td align="center">
+        <tr><td align="center" style="padding-bottom:8px;">
           <a href="https://slam5.com/login" style="display:inline-block;background:linear-gradient(135deg,#10b981,#14b8a6);color:#ffffff;text-decoration:none;font-size:16px;font-weight:600;padding:16px 40px;border-radius:50px;">
             Try Slam5 free — 3 days, no card
           </a>
+        </td></tr>
+        <!-- PS -->
+        <tr><td style="padding-top:16px;padding-bottom:8px;">
+          <p style="margin:0;font-size:13px;color:#6b7280;text-align:center;">P.S. Your free trial starts the moment you're ready. No credit card. 3 days.</p>
         </td></tr>
         <!-- Footer -->
         <tr><td style="padding-top:40px;">
