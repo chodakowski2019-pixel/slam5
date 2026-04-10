@@ -17,15 +17,12 @@ export interface OnboardingData {
   planHour: string;
 }
 
-const STEPS = 6;
+const STEPS = 4;
 
 export function OnboardingView({ onComplete }: OnboardingProps) {
   const [step, setStep] = useState(1);
   const [name, setName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [bodyGoal, setBodyGoal] = useState("");
-  const [mindGoal, setMindGoal] = useState("");
-  const [moneyGoal, setMoneyGoal] = useState("");
   const [planTime, setPlanTime] = useState<"morning" | "evening">("morning");
   const [planHour, setPlanHour] = useState("08:00");
 
@@ -34,12 +31,11 @@ export function OnboardingView({ onComplete }: OnboardingProps) {
 
   const canNext = () => {
     if (step === 1) return name.trim().length > 0;
-    if (step === 3) return bodyGoal.trim() || mindGoal.trim() || moneyGoal.trim();
     return true;
   };
 
   const handleFinish = () => {
-    onComplete({ name: name.trim(), phoneNumber: phoneNumber.trim(), bodyGoal, mindGoal, moneyGoal, planTime, planHour });
+    onComplete({ name: name.trim(), phoneNumber: phoneNumber.trim(), bodyGoal: "", mindGoal: "", moneyGoal: "", planTime, planHour });
   };
 
   return (
@@ -78,14 +74,14 @@ export function OnboardingView({ onComplete }: OnboardingProps) {
               />
               <div>
                 <Input
-                  placeholder="Phone number (optional)"
+                  placeholder="Phone number with country code e.g. +1 555 000 0000"
                   type="tel"
                   value={phoneNumber}
                   onChange={(e) => setPhoneNumber(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && canNext() && next()}
                   className="text-lg py-6 bg-card"
                 />
-                <p className="text-xs text-muted-foreground mt-2">We&apos;ll remind you of your tasks. That&apos;s how habits are built.</p>
+                <p className="text-xs text-muted-foreground mt-2">Optional. We&apos;ll text you reminders. Include country code e.g. +1 for US, +44 for UK, +48 for Poland.</p>
               </div>
             </div>
           </div>
@@ -113,55 +109,8 @@ export function OnboardingView({ onComplete }: OnboardingProps) {
           </div>
         )}
 
-        {/* Step 3 — Goals */}
+        {/* Step 3 — When */}
         {step === 3 && (
-          <div className="space-y-6">
-            <div>
-              <h2 className="text-2xl font-heading font-bold">What do you want?</h2>
-              <p className="text-sm text-muted-foreground mt-1">
-                Pick at least one.
-              </p>
-            </div>
-            <div className="space-y-4">
-              <div>
-                <label className="text-sm font-medium flex items-center gap-2 mb-1.5">
-                  🏋️ Body
-                </label>
-                <Input
-                  placeholder="e.g. Run a 5K, do 50 pushups"
-                  value={bodyGoal}
-                  onChange={(e) => setBodyGoal(e.target.value)}
-                  className="bg-card"
-                />
-              </div>
-              <div>
-                <label className="text-sm font-medium flex items-center gap-2 mb-1.5">
-                  🧠 Mind
-                </label>
-                <Input
-                  placeholder="e.g. Read 1 book a month, meditate daily"
-                  value={mindGoal}
-                  onChange={(e) => setMindGoal(e.target.value)}
-                  className="bg-card"
-                />
-              </div>
-              <div>
-                <label className="text-sm font-medium flex items-center gap-2 mb-1.5">
-                  💰 Money
-                </label>
-                <Input
-                  placeholder="e.g. Launch my product, hit $10K/month"
-                  value={moneyGoal}
-                  onChange={(e) => setMoneyGoal(e.target.value)}
-                  className="bg-card"
-                />
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Step 4 — When */}
-        {step === 4 && (
           <div className="space-y-6">
             <div>
               <h2 className="text-2xl font-heading font-bold">When do you plan?</h2>
@@ -206,35 +155,8 @@ export function OnboardingView({ onComplete }: OnboardingProps) {
           </div>
         )}
 
-        {/* Step 5 — Reminders */}
-        {step === 5 && (
-          <div className="space-y-6">
-            <div>
-              <h2 className="text-2xl font-heading font-bold">We got you.</h2>
-              <p className="text-sm text-muted-foreground mt-1">
-                Here&apos;s what you&apos;ll get.
-              </p>
-            </div>
-            <div className="space-y-3">
-              {[
-                { icon: "🌅", title: "Morning push", desc: "Your tasks are waiting." },
-                { icon: "⏰", title: "Mid-day check", desc: "How many did you do?" },
-                { icon: "🏆", title: "Daily verdict", desc: "Win or lose. No excuses." },
-              ].map((item) => (
-                <div key={item.icon} className="flex items-center gap-4 p-4 rounded-2xl bg-card border border-border">
-                  <span className="text-xl">{item.icon}</span>
-                  <div className="flex-1">
-                    <p className="text-sm font-medium">{item.title}</p>
-                    <p className="text-xs text-muted-foreground">{item.desc}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Step 6 — Ready */}
-        {step === 6 && (
+        {/* Step 4 — Ready */}
+        {step === 4 && (
           <div className="space-y-6 text-center">
             <span className="text-7xl block">🥊</span>
             <div>

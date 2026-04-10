@@ -24,8 +24,8 @@ interface SidebarProps {
 }
 
 const NAV_ITEMS = [
-  { id: "tasks", label: "Power List", icon: CheckSquare },
   { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { id: "tasks", label: "Power List", icon: CheckSquare },
   { id: "goals", label: "Goals", icon: Trophy },
   { id: "calendar", label: "Calendar", icon: CalendarDays },
 ];
