@@ -206,7 +206,7 @@ function AppContent() {
   return (
     <div className="flex h-screen overflow-hidden">
       <Sidebar activeView={view} onViewChange={navigate} />
-      <main className="flex-1 overflow-y-auto p-8">
+      <main className="flex-1 overflow-y-auto p-4 md:p-8 pb-20 md:pb-8">
         {view === "dashboard" && <DashboardView onNavigate={navigate} />}
         {view === "tasks" && <TasksView />}
         {view === "calendar" && <CalendarView />}
