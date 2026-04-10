@@ -126,7 +126,7 @@ export function GoalsView() {
 
   return (
     <div className="max-w-3xl mx-auto">
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-2">
         <h2 className="text-xl font-heading font-bold">Goals</h2>
         <button
           onClick={() => setShowForm(!showForm)}
@@ -136,6 +136,9 @@ export function GoalsView() {
           New goal
         </button>
       </div>
+      <p className="text-sm text-muted-foreground mb-6">
+        Your big picture. Break each goal into milestones. Your daily Power List should move at least one goal forward.
+      </p>
 
       {/* Horizon filter */}
       <div className="flex gap-1.5 mb-6">

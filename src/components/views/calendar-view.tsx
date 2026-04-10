@@ -66,7 +66,7 @@ export function CalendarView() {
 
   return (
     <div className="max-w-2xl mx-auto">
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-2">
         <h2 className="text-2xl font-heading font-bold tracking-tight">Calendar</h2>
         <div className="flex items-center gap-2">
           <span className="text-sm text-muted-foreground">{monthLabel}</span>
@@ -78,6 +78,9 @@ export function CalendarView() {
           </button>
         </div>
       </div>
+      <p className="text-sm text-muted-foreground mb-6">
+        Plan tasks for future days. Today&apos;s tasks live in Power List. Use calendar for anything scheduled ahead.
+      </p>
 
       {/* Week strip */}
       <div className="grid grid-cols-7 gap-1.5 mb-6">
