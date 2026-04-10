@@ -189,28 +189,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Quiz CTA */}
-      <section id="lead" className="py-12 px-6">
-        <div className="max-w-2xl mx-auto">
-          <div className="p-8 rounded-3xl border border-emerald-500/20 bg-emerald-500/[0.04] text-center relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-48 h-48 bg-emerald-500/10 rounded-full blur-[80px]" />
-            <div className="relative">
-              <span className="text-4xl mb-4 block">🧠</span>
-              <h2 className="text-2xl md:text-3xl font-bold tracking-tight mb-3">
-                What&apos;s your ADHD blocker type?
-              </h2>
-              <p className="text-neutral-400 mb-6 max-w-md mx-auto text-sm leading-relaxed">
-                Take the free 2-minute quiz. Find out why you can&apos;t start — and what to do about it.
-              </p>
-              <Link href="/quiz" className="inline-block px-7 py-3.5 rounded-full bg-gradient-to-r from-[#10b981] to-[#14b8a6] text-white text-sm font-medium transition-all duration-300 hover:scale-[1.03] active:scale-[0.97] shadow-lg shadow-emerald-500/20">
-                Take the free quiz
-              </Link>
-              <p className="text-xs text-neutral-500 mt-3">Free. No email required to start.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* FAQ */}
       <section className="py-12 px-6 bg-white/[0.015]">
         <div className="max-w-2xl mx-auto">
