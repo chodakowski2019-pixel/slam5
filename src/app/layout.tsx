@@ -3,6 +3,7 @@ import { Open_Sans, Space_Grotesk } from "next/font/google";
 import { Geist_Mono } from "next/font/google";
 import { PwaRegister } from "@/components/pwa-register";
 import { Providers } from "./providers";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
 const openSans = Open_Sans({
@@ -51,6 +52,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col bg-background text-foreground">
         <Providers>{children}</Providers>
         <PwaRegister />
+        <Analytics />
       </body>
     </html>
   );

@@ -35,7 +35,8 @@ function AppContent() {
   const localDone = typeof window !== "undefined" && user?.id
     ? localStorage.getItem(`onboardingCompleted_${user.id}`) === "true"
     : false;
-  const needsOnboarding = !localDone && !data.profile?.onboardingCompleted;
+  const hasExistingData = data.tasks.length > 0 || data.projects.length > 0 || data.goals.length > 0;
+  const needsOnboarding = !localDone && !data.profile?.onboardingCompleted && !hasExistingData;
   const isPro = data.subscription?.status === "active" || data.subscription?.status === "trialing";
 
   // Check URL params on mount — handle payment=cancelled

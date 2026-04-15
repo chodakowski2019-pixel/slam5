@@ -186,8 +186,18 @@ export function FloatingTimer() {
     );
   }, []);
 
-  const enterPiP = useCallback(() => {
-    openPopup();
+  const enterPiP = useCallback(async () => {
+    const video = videoRef.current;
+    if (!video) return;
+    try {
+      if (video.paused) await video.play();
+      await video.requestPictureInPicture();
+      setPipActive(true);
+      video.addEventListener("leavepictureinpicture", () => setPipActive(false), { once: true });
+    } catch {
+      // PiP not supported — fallback to popup
+      openPopup();
+    }
   }, [openPopup]);
 
   const exitPiP = useCallback(async () => {
