@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 
 const SPOTIFY_URL = "https://open.spotify.com/playlist/6Cf1qYa6QwYB70TVDBIaE3";
 
@@ -9,6 +10,7 @@ export default function PlaylistPage() {
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
   const [error, setError] = useState("");
+  const [agreed, setAgreed] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -45,9 +47,6 @@ export default function PlaylistPage() {
     <div className="min-h-screen bg-[#0a0a0a] text-white flex items-center justify-center px-6">
       <div className="absolute top-1/3 left-1/4 w-96 h-96 bg-emerald-500/8 rounded-full blur-[120px]" />
       <div className="max-w-md mx-auto text-center relative">
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/[0.08] bg-white/[0.04] mb-8 text-xs text-neutral-400">
-          Free · Instant download
-        </div>
         <h1 className="text-4xl md:text-5xl font-bold font-heading tracking-tight mb-4 bg-gradient-to-b from-white to-neutral-400 bg-clip-text text-transparent">
           The ADHD <br />Focus Playlist
         </h1>
@@ -69,10 +68,26 @@ export default function PlaylistPage() {
             className="w-full px-5 py-4 rounded-2xl bg-white/[0.05] border border-white/[0.10] text-white placeholder-neutral-600 focus:outline-none focus:border-emerald-500/50 text-base"
           />
           {error && <p className="text-red-400 text-sm">{error}</p>}
+          <label className="flex items-start gap-3 text-left cursor-pointer">
+            <input
+              type="checkbox"
+              required
+              checked={agreed}
+              onChange={(e) => setAgreed(e.target.checked)}
+              className="mt-0.5 w-4 h-4 rounded border border-white/20 bg-white/5 accent-emerald-500 flex-shrink-0"
+            />
+            <span className="text-xs text-neutral-500 leading-relaxed">
+              I agree to the{" "}
+              <Link href="/privacy" className="text-neutral-400 underline hover:text-white transition-colors">
+                Privacy Policy
+              </Link>
+              {" "}and consent to receiving emails from Slam5.
+            </span>
+          </label>
           <button
             type="submit"
-            disabled={submitting}
-            className="w-full py-4 rounded-2xl bg-gradient-to-r from-[#10b981] to-[#14b8a6] text-white font-semibold text-lg transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-emerald-500/20 disabled:opacity-60"
+            disabled={submitting || !agreed}
+            className="w-full py-4 rounded-2xl bg-gradient-to-r from-[#10b981] to-[#14b8a6] text-white font-semibold text-lg transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-emerald-500/20 disabled:opacity-60 disabled:scale-100"
           >
             {submitting ? "Sending..." : "Send me the playlist →"}
           </button>
