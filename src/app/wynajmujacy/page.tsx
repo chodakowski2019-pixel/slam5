@@ -2,6 +2,22 @@ import Link from "next/link";
 import { SiteNav } from "@/components/site-nav";
 import { SiteFooter } from "@/components/site-footer";
 
+// PLACEHOLDER — zdjecia stockowe, podmienic na realne po pierwszych najmach
+const AVATARS = [
+  "/avatars/u1.jpg",
+  "/avatars/u2.jpg",
+  "/avatars/u3.jpg",
+  "/avatars/u4.jpg",
+  "/avatars/u5.jpg",
+];
+
+const TRUST = [
+  "Gwarancja zwrotu",
+  "Weryfikacja w bazach dłużników",
+  "Bezpieczne płatności Stripe",
+  "Umowa przygotowana przez prawnika",
+];
+
 const PAIN_STATS = [
   {
     stat: "100%",
@@ -21,7 +37,7 @@ const STEPS = [
   {
     n: "1",
     title: "Dodajesz mieszkanie",
-    desc: "Wrzucasz zdjęcia i podstawowe dane. Aplikacja prowadzi Cię krok po kroku do spaceru 360°.",
+    desc: "Wrzucasz zdjęcia i podstawowe dane. Aplikacja prowadzi Cię krok po kroku, zajmuje to kilka minut.",
   },
   {
     n: "2",
@@ -37,6 +53,43 @@ const STEPS = [
     n: "4",
     title: "Podpisujesz umowę",
     desc: "Łączymy Cię z gotowym, sprawdzonym najemcą. Nie znajdziemy w terminie? Zwracamy 100% opłaty.",
+  },
+];
+
+const PLANS = [
+  {
+    name: "Basic",
+    price: "2000 zł",
+    term: "Gwarancja 90 dni albo zwrot",
+    features: [
+      "Wystawienie i dopasowanie najemców z bazy",
+      "Oglądanie online (nagrywasz telefonem)",
+      "Wzór umowy najmu",
+    ],
+    featured: false,
+  },
+  {
+    name: "Standard",
+    price: "4000 zł",
+    term: "Gwarancja 60 dni albo zwrot",
+    features: [
+      "Wszystko z Basic",
+      "Weryfikacja najemcy (wypłacalność, historia)",
+      "Szybszy gwarantowany termin",
+    ],
+    featured: true,
+  },
+  {
+    name: "Premium",
+    price: "6000 zł",
+    term: "Gwarancja 30 dni albo zwrot",
+    features: [
+      "Wszystko ze Standard",
+      "Pełna obsługa do podpisania umowy",
+      "Dedykowany opiekun",
+      "3 miesiące zarządzania najmem gratis",
+    ],
+    featured: false,
   },
 ];
 
@@ -94,6 +147,50 @@ export default function WynajmujacyPage() {
           >
             Wystaw mieszkanie
           </Link>
+
+          {/* Social proof (PLACEHOLDER) */}
+          <div className="mt-10 flex justify-center">
+            <div className="inline-flex items-center gap-3 rounded-full border border-border bg-card px-4 py-2 shadow-sm">
+              <div className="flex -space-x-2.5">
+                {AVATARS.map((src) => (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    key={src}
+                    src={src}
+                    alt=""
+                    className="h-8 w-8 rounded-full object-cover ring-2 ring-card"
+                  />
+                ))}
+              </div>
+              <span className="pr-1 text-sm font-medium">
+                1 247 mieszkań wynajętych w tym miesiącu
+              </span>
+            </div>
+          </div>
+
+          {/* Odznaki zaufania */}
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-3">
+            {TRUST.map((t) => (
+              <span
+                key={t}
+                className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground"
+              >
+                <svg
+                  className="h-4 w-4 text-brand"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M16.7 5.3a1 1 0 010 1.4l-7.5 7.5a1 1 0 01-1.4 0L3.3 9.7a1 1 0 011.4-1.4l3.3 3.3 6.8-6.8a1 1 0 011.4 0z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                {t}
+              </span>
+            ))}
+          </div>
         </section>
 
         {/* Problem / bol */}
@@ -162,6 +259,89 @@ export default function WynajmujacyPage() {
                 </span>
               ))}
             </div>
+          </div>
+        </section>
+
+        {/* Cennik */}
+        <section className="mx-auto max-w-5xl px-5 py-12">
+          <h2 className="mx-auto mb-3 max-w-2xl text-center font-heading text-2xl font-bold tracking-tight">
+            Wybierz pakiet
+          </h2>
+          <p className="mx-auto mb-10 max-w-xl text-center text-muted-foreground">
+            Płacisz z góry. Nie znajdziemy najemcy w terminie? Oddajemy 100%.
+          </p>
+          <div className="grid items-start gap-5 sm:grid-cols-3">
+            {PLANS.map((p) => (
+              <div
+                key={p.name}
+                className={`relative flex flex-col rounded-2xl border bg-card p-7 ${
+                  p.featured
+                    ? "border-brand shadow-lg shadow-brand/10 sm:-mt-3 sm:pb-9"
+                    : "border-border"
+                }`}
+              >
+                {p.featured && (
+                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-brand px-3 py-1 text-xs font-semibold text-white">
+                    Najczęściej wybierany
+                  </span>
+                )}
+                <h3 className="font-heading text-lg font-semibold">{p.name}</h3>
+                <div className="mt-2 font-heading text-3xl font-extrabold">
+                  {p.price}
+                </div>
+                <div className="mt-1 text-xs font-medium text-brand">
+                  {p.term}
+                </div>
+                <ul className="mt-5 flex flex-1 flex-col gap-2.5">
+                  {p.features.map((f) => (
+                    <li
+                      key={f}
+                      className="flex items-start gap-2 text-sm text-muted-foreground"
+                    >
+                      <svg
+                        className="mt-0.5 h-4 w-4 shrink-0 text-brand"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                        aria-hidden="true"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M16.7 5.3a1 1 0 010 1.4l-7.5 7.5a1 1 0 01-1.4 0L3.3 9.7a1 1 0 011.4-1.4l3.3 3.3 6.8-6.8a1 1 0 011.4 0z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+                <Link
+                  href="/login?mode=signup"
+                  className={`mt-7 inline-block rounded-full px-6 py-3 text-center text-sm font-semibold transition-opacity hover:opacity-90 ${
+                    p.featured
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-brand-soft text-brand"
+                  }`}
+                >
+                  Wybieram {p.name}
+                </Link>
+              </div>
+            ))}
+          </div>
+
+          {/* Dodatek 360 */}
+          <div className="mx-auto mt-6 flex max-w-2xl flex-col items-center gap-2 rounded-2xl border border-dashed border-border bg-card px-6 py-5 text-center sm:flex-row sm:justify-between sm:text-left">
+            <div>
+              <div className="font-heading text-sm font-semibold">
+                Profesjonalny spacer 360°
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Przyjeżdżamy i robimy wirtualny spacer za Ciebie. Dodatek do
+                dowolnego pakietu.
+              </p>
+            </div>
+            <span className="shrink-0 rounded-full bg-brand-soft px-4 py-2 text-sm font-semibold text-brand">
+              +1000 zł
+            </span>
           </div>
         </section>
 
