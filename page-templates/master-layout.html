@@ -1,0 +1,1383 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Slam5 — AI w firmie, bez konsultantów na etacie</title>
+<style>
+/* ========== TOKENS ========== */
+:root {
+  --ink: #0a0a0c;
+  --ink-2: #1d1d1f;
+  --ink-soft: #424245;
+  --mute: #86868b;
+  --mute-2: #a1a1a6;
+  --line: #ececef;
+  --line-2: #e0e0e3;
+  --bg: #ffffff;
+  --bg-2: #f6f6f8;
+  --bg-3: #f0f0f3;
+  --accent: #1f8a5b;
+  --accent-soft: #e8f3ed;
+  --warn: #d97757;
+  --radius-card: 24px;
+  --radius-sm: 12px;
+  --radius-pill: 980px;
+  --shadow-sm: 0 1px 2px rgba(10,10,12,0.04);
+  --shadow-card: 0 1px 2px rgba(10,10,12,0.04), 0 12px 40px rgba(10,10,12,0.06);
+  --shadow-float: 0 1px 2px rgba(10,10,12,0.04), 0 20px 60px rgba(10,10,12,0.10);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: var(--ink);
+  background: var(--bg);
+  line-height: 1.5;
+  letter-spacing: -0.011em;
+  text-rendering: optimizeLegibility;
+}
+
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; cursor: pointer; }
+
+img, svg { display: block; max-width: 100%; }
+
+.container { max-width: 1200px; margin: 0 auto; padding: 0 32px; }
+.container-narrow { max-width: 760px; margin: 0 auto; padding: 0 32px; }
+
+/* ========== TYPE ========== */
+.eyebrow {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.eyebrow .dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  position: relative;
+  box-shadow: 0 0 0 0 rgba(0,102,204,0.4);
+  animation: pulse 2s ease-out infinite;
+}
+@keyframes pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(31,138,91,0.5); }
+  70%  { box-shadow: 0 0 0 8px rgba(31,138,91,0); }
+  100% { box-shadow: 0 0 0 0 rgba(31,138,91,0); }
+}
+.eyebrow.mute { color: var(--mute); }
+.eyebrow.mute .dot { background: var(--mute); animation: none; box-shadow: none; }
+
+h1, h2, h3 { letter-spacing: -0.025em; text-wrap: balance; }
+p { text-wrap: pretty; }
+
+/* ========== NAV ========== */
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(255,255,255,0.72);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  border-bottom: 1px solid var(--line);
+}
+.nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 56px;
+}
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+.logo-mark {
+  width: 24px; height: 24px;
+  border-radius: 6px;
+  background: var(--ink);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  font-size: 13.5px;
+  color: var(--ink-soft);
+}
+.nav-links a:hover { color: var(--accent); }
+.nav-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: var(--radius-pill);
+  background: var(--ink);
+  color: #fff !important;
+  font-size: 13px;
+  font-weight: 500;
+  transition: background .15s ease, transform .15s ease;
+}
+.nav-cta:hover { background: var(--accent) !important; }
+
+/* ========== FORMS ========== */
+.form {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+  max-width: 440px;
+}
+.form input {
+  flex: 1;
+  min-width: 0;
+  height: 52px;
+  padding: 0 22px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--line-2);
+  background: #fff;
+  font-family: inherit;
+  font-size: 15px;
+  color: var(--ink);
+  outline: none;
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+.form input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px rgba(31,138,91,0.14);
+}
+.form input::placeholder { color: var(--mute); }
+.form button {
+  height: 52px;
+  padding: 0 24px;
+  border-radius: var(--radius-pill);
+  border: none;
+  background: var(--ink);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: background .15s ease, transform .15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.form button:hover { background: var(--accent); }
+.form button:active { transform: scale(0.98); }
+.form-note {
+  margin-top: 14px;
+  font-size: 13px;
+  color: var(--mute);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.form-note .check {
+  display: inline-flex; align-items: center; gap: 5px;
+}
+.form-note .check svg { width: 14px; height: 14px; color: var(--accent); }
+
+/* ========== HERO ========== */
+.hero {
+  position: relative;
+  padding: 96px 0 64px;
+  overflow: hidden;
+}
+.hero::before {
+  content: "";
+  position: absolute;
+  top: -200px; left: 50%;
+  transform: translateX(-50%);
+  width: 1200px; height: 700px;
+  background:
+    radial-gradient(ellipse at 30% 50%, rgba(31,138,91,0.12) 0%, rgba(31,138,91,0) 50%),
+    radial-gradient(ellipse at 70% 50%, rgba(217,119,87,0.08) 0%, rgba(217,119,87,0) 50%);
+  pointer-events: none;
+  z-index: 0;
+}
+.hero > .container { position: relative; z-index: 1; }
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1.05fr 1fr;
+  gap: 64px;
+  align-items: center;
+}
+.hero h1 {
+  font-size: 64px;
+  line-height: 1.02;
+  letter-spacing: -0.035em;
+  font-weight: 700;
+  color: var(--ink);
+  margin: 18px 0 22px;
+}
+.hero h1 .accent {
+  color: var(--accent);
+  font-style: italic;
+  font-weight: 600;
+}
+.hero .lead {
+  font-size: 19px;
+  line-height: 1.5;
+  color: var(--ink-soft);
+  margin-bottom: 32px;
+  max-width: 500px;
+}
+
+/* Hero email mockup */
+.email-mock {
+  position: relative;
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: var(--shadow-float);
+  overflow: hidden;
+  transform: rotate(0.5deg);
+  transition: transform .4s cubic-bezier(.2,.7,.3,1);
+}
+.email-mock:hover { transform: rotate(0deg) translateY(-4px); }
+.email-mock::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: 20px;
+  padding: 1px;
+  background: linear-gradient(180deg, rgba(10,10,12,0.08), rgba(10,10,12,0.02));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+.email-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--line);
+  background: var(--bg-2);
+  font-size: 12px;
+  color: var(--mute);
+}
+.email-header .dot { width: 8px; height: 8px; border-radius: 50%; }
+.email-header .dot.r { background: #ff5f57; }
+.email-header .dot.y { background: #febc2e; }
+.email-header .dot.g { background: #28c840; }
+.email-header .label { margin-left: 6px; }
+.email-body { padding: 28px 28px 24px; }
+.email-meta {
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--mute);
+  margin-bottom: 8px;
+}
+.email-title {
+  font-size: 24px;
+  line-height: 1.15;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 14px;
+}
+.email-lead {
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--ink-soft);
+  margin-bottom: 20px;
+}
+.email-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 34px;
+  padding: 0 16px;
+  border-radius: var(--radius-pill);
+  background: var(--ink);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 500;
+}
+.email-divider {
+  height: 1px;
+  background: var(--line);
+  margin: 22px 0 18px;
+}
+.email-mini {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+.email-mini + .email-mini { margin-top: 14px; }
+.email-mini .num {
+  flex: 0 0 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: var(--bg-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+}
+.email-mini .body {
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--ink-soft);
+}
+.email-mini .body .t {
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 2px;
+  font-size: 13px;
+}
+
+/* Floating issue pill */
+.issue-pill {
+  position: absolute;
+  bottom: -16px;
+  left: -16px;
+  background: #fff;
+  border-radius: var(--radius-pill);
+  padding: 8px 14px 8px 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  font-weight: 500;
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--line);
+}
+.issue-pill .avatar {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), var(--warn));
+  color: #fff;
+  font-size: 11px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  letter-spacing: -0.02em;
+}
+.issue-pill .text { color: var(--ink-soft); }
+.issue-pill strong { color: var(--ink); font-weight: 600; }
+
+/* ========== STATS STRIP ========== */
+.stats {
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  background: var(--bg);
+}
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+}
+.stat {
+  padding: 28px 24px;
+  border-right: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.stat:last-child { border-right: none; }
+.stat .num {
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -0.028em;
+  color: var(--ink);
+  font-feature-settings: "tnum";
+}
+.stat .lbl {
+  font-size: 13px;
+  color: var(--mute);
+}
+
+/* ========== SECTIONS ========== */
+.section { padding: 112px 0; }
+.section.tight { padding: 80px 0; }
+.section.soft { background: var(--bg-2); }
+.section.dark { background: var(--ink); color: #fff; }
+
+.section-head {
+  max-width: 720px;
+  margin-bottom: 56px;
+}
+.section-head.center { margin-left: auto; margin-right: auto; text-align: center; }
+.section-head h2 {
+  font-size: 48px;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  font-weight: 700;
+  margin: 14px 0 16px;
+}
+.section-head p {
+  font-size: 18px;
+  line-height: 1.5;
+  color: var(--ink-soft);
+  max-width: 560px;
+}
+.section-head.center p { margin-left: auto; margin-right: auto; }
+
+/* ========== BENTO: Co znajdziesz w środku ========== */
+.bento {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  grid-auto-rows: minmax(180px, auto);
+  gap: 16px;
+}
+.bento-card {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  padding: 32px;
+  position: relative;
+  overflow: hidden;
+  transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+}
+.bento-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-card);
+  border-color: transparent;
+}
+.bento-card.col-3 { grid-column: span 3; }
+.bento-card.col-2 { grid-column: span 2; }
+.bento-card.col-4 { grid-column: span 4; }
+.bento-card.row-2 { grid-row: span 2; }
+
+.bento-icon {
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  background: var(--accent-soft);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+  margin-bottom: 20px;
+}
+.bento-icon svg { width: 20px; height: 20px; }
+.bento-card h3 {
+  font-size: 19px;
+  line-height: 1.25;
+  letter-spacing: -0.018em;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.bento-card p {
+  font-size: 14.5px;
+  line-height: 1.5;
+  color: var(--ink-soft);
+}
+
+.bento-card.feature {
+  background: linear-gradient(135deg, var(--ink) 0%, #1d1d1f 100%);
+  color: #fff;
+  border-color: var(--ink);
+}
+.bento-card.feature h3 { color: #fff; font-size: 22px; }
+.bento-card.feature p { color: rgba(255,255,255,0.65); }
+.bento-card.feature .bento-icon {
+  background: rgba(255,255,255,0.1);
+  color: #fff;
+}
+.bento-card.feature .visual {
+  margin-top: 24px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px;
+  padding: 16px;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: rgba(255,255,255,0.8);
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+}
+.bento-card.feature .visual .h { color: rgba(255,255,255,0.4); margin-bottom: 6px; }
+.bento-card.feature .visual .l { color: #fff; }
+.bento-card.feature .visual .a { color: var(--accent); filter: brightness(1.3); }
+
+/* ========== ISSUES STRIP ========== */
+.issues {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+.issue-card {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  padding: 28px;
+  transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+  display: block;
+  color: inherit;
+}
+.issue-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-card);
+  border-color: transparent;
+}
+.issue-card .num {
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  color: var(--mute);
+  margin-bottom: 14px;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+}
+.issue-card h3 {
+  font-size: 19px;
+  line-height: 1.3;
+  letter-spacing: -0.015em;
+  font-weight: 600;
+  margin-bottom: 12px;
+  min-height: 50px;
+}
+.issue-card .read {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--accent);
+  font-weight: 500;
+}
+.issue-card:hover .read { gap: 10px; transition: gap .2s ease; }
+
+/* ========== PROBLEM (Dla kogo) ========== */
+.problem-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--line);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  border: 1px solid var(--line);
+}
+.problem-card {
+  background: #fff;
+  padding: 40px 32px;
+  position: relative;
+}
+.problem-num {
+  font-size: 14px;
+  letter-spacing: 0.04em;
+  font-weight: 600;
+  color: var(--accent);
+  margin-bottom: 20px;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+}
+.problem-card h3 {
+  font-size: 22px;
+  line-height: 1.25;
+  letter-spacing: -0.018em;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+.problem-card p {
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--ink-soft);
+}
+
+/* ========== AUTHOR ========== */
+.author {
+  background: var(--bg-2);
+  border-radius: 32px;
+  padding: 64px;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 48px;
+  align-items: center;
+}
+.author-photo {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--warn) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 56px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  position: relative;
+  box-shadow: var(--shadow-card);
+}
+.author-photo .badge {
+  position: absolute;
+  bottom: 6px; right: 6px;
+  width: 36px; height: 36px;
+  background: #fff;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+}
+.author-text .eyebrow { margin-bottom: 12px; }
+.author-text h2 {
+  font-size: 32px;
+  line-height: 1.15;
+  letter-spacing: -0.022em;
+  font-weight: 700;
+  margin-bottom: 14px;
+}
+.author-text p {
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--ink-soft);
+  max-width: 560px;
+}
+.author-text p + p { margin-top: 10px; }
+
+/* ========== FAQ ========== */
+.faq {
+  display: grid;
+  gap: 0;
+  max-width: 760px;
+  margin: 0 auto;
+}
+.faq details {
+  border-bottom: 1px solid var(--line);
+  padding: 20px 0;
+}
+.faq details:first-child { border-top: 1px solid var(--line); }
+.faq summary {
+  list-style: none;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  font-size: 17px;
+  font-weight: 500;
+  letter-spacing: -0.013em;
+  color: var(--ink);
+  padding: 4px 0;
+  transition: color .15s;
+}
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary:hover { color: var(--accent); }
+.faq summary .icon {
+  flex: 0 0 24px;
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  background: var(--bg-2);
+  display: flex; align-items: center; justify-content: center;
+  transition: transform .25s ease, background .15s;
+  color: var(--ink-soft);
+}
+.faq details[open] summary .icon {
+  transform: rotate(45deg);
+  background: var(--ink);
+  color: #fff;
+}
+.faq .answer {
+  margin-top: 14px;
+  font-size: 15.5px;
+  line-height: 1.6;
+  color: var(--ink-soft);
+  max-width: 640px;
+}
+
+/* ========== FINAL CTA ========== */
+.cta {
+  position: relative;
+  background: var(--ink);
+  color: #fff;
+  border-radius: 40px;
+  padding: 96px 64px;
+  text-align: center;
+  overflow: hidden;
+}
+.cta::before {
+  content: "";
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 800px; height: 800px;
+  background: radial-gradient(circle, var(--accent-cta-glow, rgba(31,138,91,0.30)) 0%, rgba(31,138,91,0) 60%);
+  pointer-events: none;
+}
+.cta > * { position: relative; }
+.cta .eyebrow { color: var(--accent-on-dark, #5fd49a); }
+.cta .eyebrow .dot { background: var(--accent-on-dark, #5fd49a); box-shadow: 0 0 0 0 rgba(95,212,154,0.5); }
+.cta h2 {
+  font-size: 56px;
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+  font-weight: 700;
+  margin: 18px auto 18px;
+  max-width: 720px;
+  color: #fff;
+}
+.cta p {
+  font-size: 18px;
+  line-height: 1.5;
+  color: rgba(255,255,255,0.65);
+  max-width: 500px;
+  margin: 0 auto 36px;
+}
+.cta .form { margin: 0 auto; }
+.cta .form input {
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(255,255,255,0.15);
+  color: #fff;
+}
+.cta .form input::placeholder { color: rgba(255,255,255,0.5); }
+.cta .form input:focus {
+  border-color: #fff;
+  box-shadow: 0 0 0 4px rgba(255,255,255,0.12);
+}
+.cta .form button {
+  background: #fff;
+  color: var(--ink);
+}
+.cta .form button:hover { background: var(--accent); color: #fff; }
+.cta .form-note {
+  justify-content: center;
+  color: rgba(255,255,255,0.5);
+}
+.cta .form-note .check svg { color: var(--accent-on-dark, #5fd49a); }
+
+/* ========== FOOTER ========== */
+.footer {
+  padding: 56px 0 64px;
+  background: var(--bg);
+  border-top: 1px solid var(--line);
+}
+.footer-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 24px;
+  font-size: 13px;
+  color: var(--mute);
+}
+.footer-links { display: flex; gap: 24px; }
+.footer a { color: var(--mute); }
+.footer a:hover { color: var(--ink); }
+
+/* ========== ACCENT PICKER ========== */
+.accent-picker {
+  position: fixed;
+  bottom: 24px;
+  left: 24px;
+  z-index: 100;
+  background: rgba(10,10,12,0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: var(--radius-pill);
+  padding: 8px 10px 8px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+}
+.accent-picker .lbl {
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.55);
+  font-weight: 600;
+}
+.accent-picker .swatches {
+  display: flex;
+  gap: 6px;
+}
+.accent-picker .sw {
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  padding: 0;
+  transition: transform .15s ease, border-color .15s ease;
+  position: relative;
+}
+.accent-picker .sw:hover { transform: scale(1.1); }
+.accent-picker .sw.active {
+  border-color: #fff;
+}
+.accent-picker .sw .inner {
+  position: absolute;
+  inset: 2px;
+  border-radius: 50%;
+}
+
+/* ========== MOBILE PREVIEW BUTTON ========== */
+.mobile-toggle {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 100;
+  background: rgba(10,10,12,0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-pill);
+  padding: 12px 20px;
+  font-size: 13px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+  transition: background .15s ease;
+}
+.mobile-toggle:hover { background: var(--accent); }
+.mobile-toggle.active { background: var(--accent); }
+
+.phone-overlay {
+  position: fixed; inset: 0;
+  background: rgba(10,10,12,0.92);
+  z-index: 90;
+  display: none;
+  align-items: center; justify-content: center;
+  padding: 24px;
+}
+.phone-overlay.on { display: flex; }
+.phone-frame {
+  width: 390px;
+  height: min(844px, calc(100vh - 96px));
+  background: #000;
+  border-radius: 48px;
+  padding: 10px;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+}
+.phone-frame iframe {
+  width: 100%; height: 100%;
+  border: 0; border-radius: 38px;
+  background: #fff;
+}
+
+/* ========== MOBILE ========== */
+@media (max-width: 960px) {
+  .hero { padding: 64px 0 48px; }
+  .hero-grid { grid-template-columns: 1fr; gap: 48px; }
+  .hero h1 { font-size: 42px; line-height: 1.05; letter-spacing: -0.025em; }
+  .hero .lead { font-size: 17px; }
+
+  .stats-row { grid-template-columns: repeat(2, 1fr); }
+  .stat { padding: 22px 20px; }
+  .stat:nth-child(2) { border-right: none; }
+  .stat:nth-child(1), .stat:nth-child(2) { border-bottom: 1px solid var(--line); }
+  .stat .num { font-size: 26px; }
+
+  .section { padding: 72px 0; }
+  .section-head h2 { font-size: 32px; letter-spacing: -0.022em; }
+  .section-head p { font-size: 16px; }
+
+  .bento { grid-template-columns: 1fr; grid-auto-rows: auto; }
+  .bento-card.col-3, .bento-card.col-2, .bento-card.col-4 { grid-column: span 1; }
+  .bento-card.row-2 { grid-row: span 1; }
+
+  .issues { grid-template-columns: 1fr; }
+  .issue-card h3 { min-height: auto; }
+
+  .problem-grid { grid-template-columns: 1fr; }
+  .problem-card { padding: 32px 28px; }
+
+  .author { padding: 40px 28px; grid-template-columns: 1fr; gap: 28px; text-align: center; }
+  .author-photo { width: 120px; height: 120px; font-size: 40px; margin: 0 auto; }
+  .author-text h2 { font-size: 26px; }
+
+  .cta { padding: 64px 28px; border-radius: 28px; }
+  .cta h2 { font-size: 32px; letter-spacing: -0.022em; }
+  .cta p { font-size: 16px; }
+
+  .nav-links a:not(.nav-cta) { display: none; }
+}
+
+@media (max-width: 440px) {
+  .phone-overlay { padding: 0; }
+  .phone-frame { width: 100vw; height: 100vh; border-radius: 0; padding: 0; }
+  .phone-frame iframe { border-radius: 0; }
+  .container { padding: 0 20px; }
+  .hero h1 { font-size: 36px; }
+  .section-head h2 { font-size: 28px; }
+}
+
+/* Reduce motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+</style>
+</head>
+<body>
+
+<!-- ========== NAV ========== -->
+<nav class="nav">
+  <div class="container nav-inner">
+    <a href="#" class="logo">
+      <span class="logo-mark">S5</span>
+      <span>Slam5</span>
+    </a>
+    <div class="nav-links">
+      <a href="#srodek">Co dostajesz</a>
+      <a href="#wydania">Wydania</a>
+      <a href="#autor">Autor</a>
+      <a href="#faq">FAQ</a>
+      <a href="#zapis" class="nav-cta">Zapisz się</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ========== HERO ========== -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-grid">
+      <div>
+        <span class="eyebrow"><span class="dot"></span>Newsletter · piątek 7:00</span>
+        <h1>
+          AI w&nbsp;firmie,<br/>
+          <span class="accent">bez konsultantów na&nbsp;etacie.</span>
+        </h1>
+        <p class="lead">
+          Co tydzień jedna konkretna lekcja o&nbsp;wdrażaniu AI w&nbsp;średniej firmie. Język zarządu, nie deweloperów. Pięć minut, zero teorii.
+        </p>
+        <form class="form" id="hero-form" onsubmit="event.preventDefault();">
+          <input type="email" placeholder="adres@firma.pl" required />
+          <button type="submit">
+            Zapisz się
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M1 7h11M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </form>
+        <div class="form-note">
+          <span class="check">
+            <svg viewBox="0 0 14 14" fill="none"><path d="M2 7.5l3 3 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Bez spamu
+          </span>
+          <span class="check">
+            <svg viewBox="0 0 14 14" fill="none"><path d="M2 7.5l3 3 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Wypiszesz się jednym kliknięciem
+          </span>
+        </div>
+      </div>
+
+      <!-- Email mockup -->
+      <div style="position: relative;">
+        <div class="email-mock">
+          <div class="email-header">
+            <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+            <span class="label">Slam5 · Wydanie #014</span>
+          </div>
+          <div class="email-body">
+            <div class="email-meta">Temat tygodnia</div>
+            <div class="email-title">Mapa procesów, w&nbsp;których AI zarabia w&nbsp;90&nbsp;dni</div>
+            <div class="email-lead">
+              Najtrudniejsze nie jest wybranie modelu. Najtrudniejsze jest wybranie miejsca, w&nbsp;którym AI ma realnie zacząć pracować.
+            </div>
+            <a class="email-cta">Czytaj artykuł →</a>
+
+            <div class="email-divider"></div>
+
+            <div class="email-mini">
+              <div class="num">01</div>
+              <div class="body">
+                <div class="t">Jak średnia firma B2B obcięła czas obsługi ofert o&nbsp;62%</div>
+                Case study · 4 min czytania
+              </div>
+            </div>
+            <div class="email-mini">
+              <div class="num">02</div>
+              <div class="body">
+                <div class="t">Dlaczego pilotaż AI rozbija się o&nbsp;zespół, nie o&nbsp;technologię</div>
+                Ludzie · 5 min czytania
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="issue-pill">
+          <div class="avatar">JC</div>
+          <div class="text">Nowe wydanie · <strong>piątek 7:00</strong></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== STATS STRIP ========== -->
+<section class="stats">
+  <div class="container">
+    <div class="stats-row">
+      <div class="stat">
+        <div class="num">1842</div>
+        <div class="lbl">aktywnych czytelników</div>
+      </div>
+      <div class="stat">
+        <div class="num">14</div>
+        <div class="lbl">wydań w archiwum</div>
+      </div>
+      <div class="stat">
+        <div class="num">5 min</div>
+        <div class="lbl">średni czas czytania</div>
+      </div>
+      <div class="stat">
+        <div class="num">68%</div>
+        <div class="lbl">open rate (vs. 22% średnio)</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== BENTO: Co znajdziesz w środku ========== -->
+<section id="srodek" class="section">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow mute"><span class="dot"></span>Co znajdziesz w środku</span>
+      <h2>Każde wydanie to&nbsp;jedna lekcja, którą możesz wdrożyć w&nbsp;poniedziałek.</h2>
+      <p>Bez listy linków, bez przeglądu prasy, bez „top 10 narzędzi AI". Konkretny problem, konkretna rama, konkretny przykład.</p>
+    </div>
+
+    <div class="bento">
+      <!-- Feature card (large dark) -->
+      <div class="bento-card feature col-3 row-2">
+        <div class="bento-icon">
+          <svg viewBox="0 0 20 20" fill="none"><path d="M3 6l7 4 7-4M3 6v8l7 4 7-4V6M3 6l7-4 7 4" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+        </div>
+        <h3>Mapa procesów, w&nbsp;których AI zarabia w&nbsp;90&nbsp;dni</h3>
+        <p>Co tydzień rozkładam jeden konkretny proces na&nbsp;czynniki pierwsze i&nbsp;mówię: tu warto, tu nie, dlaczego.</p>
+        <div class="visual">
+          <div class="h">// Przykładowy proces</div>
+          <div class="l">obsługa ofert handlowych</div>
+          <div class="l">czas pre-AI:  3h 20min / oferta</div>
+          <div class="l">czas post-AI: 1h 15min / oferta</div>
+          <div class="a">→ ROI: 6 tygodni</div>
+        </div>
+      </div>
+
+      <div class="bento-card col-3">
+        <div class="bento-icon">
+          <svg viewBox="0 0 20 20" fill="none"><rect x="3" y="3" width="14" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M3 8h14M8 3v14" stroke="currentColor" stroke-width="1.5"/></svg>
+        </div>
+        <h3>Ramy, nie listy narzędzi</h3>
+        <p>Dostajesz sposób myślenia, który zostaje &mdash; nawet kiedy zmieni się model, dostawca albo cena.</p>
+      </div>
+
+      <div class="bento-card col-3">
+        <div class="bento-icon">
+          <svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M10 6v4l2.5 2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+        <h3>Pięć minut. Co piątek. Bez wyjątku.</h3>
+        <p>Jedno wydanie tygodniowo. Bez serii powitalnych, bez „bonusów", bez sprzedaży kursu pod koniec.</p>
+      </div>
+
+      <div class="bento-card col-2">
+        <div class="bento-icon">
+          <svg viewBox="0 0 20 20" fill="none"><path d="M3 16V8l4-4 6 6 4-4v10" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+        </div>
+        <h3>Case studies z&nbsp;liczbami</h3>
+        <p>Realne wdrożenia z&nbsp;polskich firm &mdash; nazwiska zmienione, liczby prawdziwe.</p>
+      </div>
+
+      <div class="bento-card col-2">
+        <div class="bento-icon">
+          <svg viewBox="0 0 20 20" fill="none"><path d="M4 17V7l6-3 6 3v10" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M8 17v-6h4v6" stroke="currentColor" stroke-width="1.5"/></svg>
+        </div>
+        <h3>Język zarządu, nie&nbsp;deweloperów</h3>
+        <p>Możesz to&nbsp;przeczytać i&nbsp;od&nbsp;razu porozmawiać z&nbsp;działem &mdash; bez tłumacza.</p>
+      </div>
+
+      <div class="bento-card col-2">
+        <div class="bento-icon">
+          <svg viewBox="0 0 20 20" fill="none"><path d="M10 3v14M3 10h14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+        <h3>Krytyczna ocena ofert</h3>
+        <p>Ramy, żeby ocenić, co w&nbsp;ofercie agencji jest standardem, a&nbsp;co narzutem.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== ISSUES (Ostatnie wydania) ========== -->
+<section id="wydania" class="section soft">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow mute"><span class="dot"></span>Ostatnie trzy wydania</span>
+      <h2>Zobacz, co dostają subskrybenci.</h2>
+      <p>Wszystkie wydania są jawne &mdash; nic nie jest „ekskluzywne dla zapisanych". Newsletter to relacja, nie zasób.</p>
+    </div>
+
+    <div class="issues">
+      <a class="issue-card" href="#">
+        <div class="num">#014 · 19 maja 2026</div>
+        <h3>Mapa procesów, w&nbsp;których AI zarabia w&nbsp;90&nbsp;dni</h3>
+        <span class="read">
+          Czytaj
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 6h10M7 2l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        </span>
+      </a>
+      <a class="issue-card" href="#">
+        <div class="num">#013 · 12 maja 2026</div>
+        <h3>Dlaczego pilotaż AI rozbija się o&nbsp;zespół, nie o&nbsp;technologię</h3>
+        <span class="read">
+          Czytaj
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 6h10M7 2l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        </span>
+      </a>
+      <a class="issue-card" href="#">
+        <div class="num">#012 · 5 maja 2026</div>
+        <h3>Jak średnia firma B2B obcięła czas obsługi ofert o&nbsp;62%</h3>
+        <span class="read">
+          Czytaj
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 6h10M7 2l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        </span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ========== PROBLEM: Dla kogo ========== -->
+<section class="section">
+  <div class="container">
+    <div class="section-head center">
+      <span class="eyebrow"><span class="dot"></span>Dla kogo to jest</span>
+      <h2>Jeśli rozważasz AI w&nbsp;firmie, ale nie&nbsp;wiesz, od&nbsp;czego zacząć.</h2>
+      <p>Trzy sytuacje, w&nbsp;których najczęściej spotykam właścicieli i&nbsp;zarządy MŚP &mdash; i&nbsp;dla których piszę ten newsletter.</p>
+    </div>
+
+    <div class="problem-grid">
+      <div class="problem-card">
+        <div class="problem-num">01 / Niepewność</div>
+        <h3>Czujesz, że konkurencja zaraz ucieknie</h3>
+        <p>LinkedIn pełen wdrożeń, a&nbsp;u&nbsp;Ciebie cisza. Nie chcesz inwestować pochopnie &mdash; ale jeszcze bardziej nie chcesz obudzić się za&nbsp;12 miesięcy.</p>
+      </div>
+      <div class="problem-card">
+        <div class="problem-num">02 / Pilotaż</div>
+        <h3>Pierwsza próba spaliła na&nbsp;panewce</h3>
+        <p>Ktoś u&nbsp;Ciebie próbował, wyszło średnio. Trzeba podejść jeszcze raz &mdash; ale tym razem od&nbsp;procesu, nie od&nbsp;narzędzia.</p>
+      </div>
+      <div class="problem-card">
+        <div class="problem-num">03 / Decyzja</div>
+        <h3>Masz ofertę z&nbsp;agencji, nie&nbsp;wiesz czy płacić</h3>
+        <p>Trzy strony PDF, dużo modnych słów. Potrzebujesz języka i&nbsp;liczb, żeby ocenić, czy to dla Ciebie ma sens.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== AUTHOR ========== -->
+<section id="autor" class="section tight soft">
+  <div class="container">
+    <div class="author">
+      <div class="author-photo">
+        JC
+        <div class="badge">✓</div>
+      </div>
+      <div class="author-text">
+        <span class="eyebrow"><span class="dot"></span>Autor</span>
+        <h2>Jakub Chodakowski</h2>
+        <p>Przez ostatnie lata przeprowadzałem audyty AI w&nbsp;średnich firmach &mdash; od&nbsp;sprzedaży B2B przez logistykę po&nbsp;obsługę klienta. W&nbsp;pewnym momencie zauważyłem, że większość moich rekomendacji powtarza te same pięć ram.</p>
+        <p>Slam5 to ten zestaw ram &mdash; podawany w&nbsp;mniejszych dawkach, co tydzień, żeby zarządy MŚP mogły podejmować decyzje o&nbsp;AI same. Bez czekania, bez audytora na&nbsp;etacie.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== FAQ ========== -->
+<section id="faq" class="section">
+  <div class="container">
+    <div class="section-head center">
+      <span class="eyebrow"><span class="dot"></span>FAQ</span>
+      <h2>Trzy pytania, które dostaję najczęściej.</h2>
+    </div>
+
+    <div class="faq">
+      <details>
+        <summary>
+          Czy newsletter jest płatny?
+          <span class="icon">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          </span>
+        </summary>
+        <div class="answer">
+          Nie. Slam5 jest i&nbsp;zostanie darmowy. Jeśli kiedyś pojawi się płatny poziom, dotychczasowi czytelnicy dostaną cały bezpłatny dostęp na&nbsp;stałe.
+        </div>
+      </details>
+      <details>
+        <summary>
+          Dla kogo dokładnie to&nbsp;jest, a&nbsp;dla kogo nie?
+          <span class="icon">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          </span>
+        </summary>
+        <div class="answer">
+          Dla właścicieli i&nbsp;zarządów firm 20&ndash;500 osób, którzy rozważają wdrożenie AI w&nbsp;perspektywie 12&nbsp;miesięcy. Nie dla&nbsp;deweloperów szukających nowych narzędzi, nie dla&nbsp;korporacji z&nbsp;własnym zespołem ML.
+        </div>
+      </details>
+      <details>
+        <summary>
+          Co dokładnie się znajdzie w&nbsp;pierwszym e-mailu?
+          <span class="icon">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          </span>
+        </summary>
+        <div class="answer">
+          Najnowsze wydanie tygodnia (jedno) plus link do&nbsp;archiwum. Bez automatu powitalnego, bez serii „nurturującej". Wpisujesz adres dziś, najbliższy piątek o&nbsp;7:00 dostajesz pierwszą lekcję.
+        </div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ========== FINAL CTA ========== -->
+<section id="zapis" class="section tight">
+  <div class="container">
+    <div class="cta">
+      <span class="eyebrow"><span class="dot"></span>Slam5 · Newsletter</span>
+      <h2>Wpisz adres. Piątek o&nbsp;7:00 zaczynamy.</h2>
+      <p>Dołącz do&nbsp;1842 osób z&nbsp;zarządów MŚP, które wolą zrozumieć AI raz, a&nbsp;dobrze.</p>
+      <form class="form" id="cta-form" onsubmit="event.preventDefault();">
+        <input type="email" placeholder="adres@firma.pl" required />
+        <button type="submit">
+          Zapisz się
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <path d="M1 7h11M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </form>
+      <div class="form-note">
+        <span class="check">
+          <svg viewBox="0 0 14 14" fill="none"><path d="M2 7.5l3 3 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Bez spamu
+        </span>
+        <span class="check">
+          <svg viewBox="0 0 14 14" fill="none"><path d="M2 7.5l3 3 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Wypiszesz się jednym kliknięciem
+        </span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== FOOTER ========== -->
+<footer class="footer">
+  <div class="container footer-inner">
+    <div>© 2026 Slam5 · Jakub Chodakowski</div>
+    <div class="footer-links">
+      <a href="#">Polityka prywatności</a>
+      <a href="#">Regulamin</a>
+      <a href="#">Kontakt</a>
+    </div>
+  </div>
+</footer>
+
+<!-- ========== ACCENT PICKER ========== -->
+<div class="accent-picker" id="accentPicker">
+  <span class="lbl">Akcent</span>
+  <div class="swatches">
+    <button type="button" class="sw" data-a="green" title="Leśna zieleń" style="background:#1f8a5b"></button>
+    <button type="button" class="sw" data-a="terracotta" title="Terakota" style="background:#d97757"></button>
+    <button type="button" class="sw" data-a="purple" title="Głęboki fiolet" style="background:#5b3df5"></button>
+    <button type="button" class="sw" data-a="wine" title="Burgund" style="background:#a8324b"></button>
+    <button type="button" class="sw" data-a="mono" title="Mono (czerń)" style="background:#0a0a0c"></button>
+  </div>
+</div>
+
+<!-- ========== MOBILE PREVIEW ========== -->
+<button type="button" class="mobile-toggle" id="mobileToggle" title="Podgląd mobilny">
+  <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+    <rect x="3.5" y="1" width="7" height="12" rx="1.5" stroke="currentColor" stroke-width="1.4"/>
+    <circle cx="7" cy="11" r="0.6" fill="currentColor"/>
+  </svg>
+  Mobile
+</button>
+
+<div class="phone-overlay" id="phoneOverlay">
+  <div class="phone-frame">
+    <iframe id="phoneFrame" src="about:blank" title="Mobile preview"></iframe>
+  </div>
+</div>
+
+<script>
+  // ===== Accent palette switcher =====
+  (function(){
+    const PALETTES = {
+      green:      { accent: '#1f8a5b', soft: '#e8f3ed', glow: 'rgba(31,138,91,0.30)',  onDark: '#5fd49a', focus: 'rgba(31,138,91,0.14)' },
+      terracotta: { accent: '#c25a36', soft: '#f9ece4', glow: 'rgba(217,119,87,0.30)',  onDark: '#f0a583', focus: 'rgba(194,90,54,0.14)' },
+      purple:     { accent: '#5b3df5', soft: '#ece8fe', glow: 'rgba(91,61,245,0.30)',   onDark: '#9d8aff', focus: 'rgba(91,61,245,0.14)' },
+      wine:       { accent: '#a8324b', soft: '#f6e5ea', glow: 'rgba(168,50,75,0.30)',   onDark: '#e58fa3', focus: 'rgba(168,50,75,0.14)' },
+      mono:       { accent: '#0a0a0c', soft: '#ebebed', glow: 'rgba(80,80,90,0.35)',    onDark: '#cfcfd6', focus: 'rgba(10,10,12,0.16)' },
+    };
+    const root = document.documentElement.style;
+    function apply(key) {
+      const p = PALETTES[key]; if (!p) return;
+      root.setProperty('--accent', p.accent);
+      root.setProperty('--accent-soft', p.soft);
+      root.setProperty('--accent-cta-glow', p.glow);
+      root.setProperty('--accent-on-dark', p.onDark);
+      // pulse keyframes use a different rgba shadow; rebuild via a runtime style block
+      let s = document.getElementById('__accent_dyn');
+      if (!s) { s = document.createElement('style'); s.id = '__accent_dyn'; document.head.appendChild(s); }
+      s.textContent =
+        `@keyframes pulse { 0%{box-shadow:0 0 0 0 ${p.glow.replace('0.30','0.50')};} 70%{box-shadow:0 0 0 8px ${p.glow.replace('0.30','0')};} 100%{box-shadow:0 0 0 0 ${p.glow.replace('0.30','0')};} }
+         .form input:focus { box-shadow: 0 0 0 4px ${p.focus} !important; }`;
+      document.querySelectorAll('.accent-picker .sw').forEach(b => b.classList.toggle('active', b.dataset.a === key));
+      try { localStorage.setItem('slam5_accent', key); } catch(e) {}
+    }
+    document.querySelectorAll('.accent-picker .sw').forEach(b => {
+      b.addEventListener('click', () => apply(b.dataset.a));
+    });
+    let saved = null;
+    try { saved = localStorage.getItem('slam5_accent'); } catch(e) {}
+    apply(saved && PALETTES[saved] ? saved : 'green');
+  })();
+</script>
+
+<script>
+  (function(){
+    const overlay = document.getElementById('phoneOverlay');
+    const frame = document.getElementById('phoneFrame');
+    const btn = document.getElementById('mobileToggle');
+
+    function openPhone() {
+      const url = new URL(location.href);
+      url.search = '?phone=1';
+      url.hash = '';
+      frame.src = url.toString();
+      overlay.classList.add('on');
+      btn.classList.add('active');
+    }
+    function closePhone() {
+      overlay.classList.remove('on');
+      btn.classList.remove('active');
+      frame.src = 'about:blank';
+    }
+    btn.addEventListener('click', () => {
+      if (overlay.classList.contains('on')) closePhone();
+      else openPhone();
+    });
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) closePhone();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && overlay.classList.contains('on')) closePhone();
+    });
+
+    // If page is iframed as phone preview, hide chrome
+    if (new URLSearchParams(location.search).get('phone') === '1') {
+      btn.style.display = 'none';
+      const picker = document.getElementById('accentPicker');
+      if (picker) picker.style.display = 'none';
+    }
+  })();
+</script>
+
+</body>
+</html>

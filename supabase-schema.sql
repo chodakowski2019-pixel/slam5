@@ -1,131 +1,117 @@
--- Slam5 Database Schema
--- Run this in Supabase SQL Editor (Dashboard → SQL Editor → New query)
+-- Platforma Najmu — schemat bazy
+-- Uruchom w Supabase: Dashboard → SQL Editor → New query → Run
 
--- Profiles (one per user)
+-- ============ PROFILES (jeden na uzytkownika) ============
 create table if not exists profiles (
   id uuid primary key references auth.users(id) on delete cascade,
-  name text,
-  phone_number text,
-  body_goal text,
-  mind_goal text,
-  money_goal text,
-  plan_time text default 'morning',
-  plan_hour text default '08:00',
-  onboarding_completed boolean default false,
-  subscription_status text default 'none',
+  full_name text,
+  phone text,
+  role text,                       -- 'wynajmujacy' | 'najemca' | null
   stripe_customer_id text,
-  stripe_subscription_id text,
-  current_period_end timestamptz,
-  total_points integer default 0,
-  created_at timestamptz default now(),
-  updated_at timestamptz default now()
+  created_at timestamptz default now()
 );
 
--- Tasks
-create table if not exists tasks (
-  id text primary key,
-  user_id uuid not null references auth.users(id) on delete cascade,
+-- ============ PROPERTIES (mieszkania wystawiane przez wynajmujacych) ============
+create table if not exists properties (
+  id uuid primary key default gen_random_uuid(),
+  owner_id uuid not null references auth.users(id) on delete cascade,
   title text not null,
-  completed boolean default false,
-  project_id text,
-  category text default 'money',
-  is_frog boolean default false,
-  timer_minutes integer default 25,
-  timer_seconds_left integer,
-  timer_running boolean default false,
-  points integer default 0,
+  city text not null,
+  district text,
+  rooms int,
+  area numeric,
+  price int,                       -- zl / mc
+  available_from text,
+  description text,
+  image_url text,
+  tour_url text,
+  has_tour boolean default false,
+  status text default 'aktywne',   -- aktywne | wynajete | wstrzymane
+  created_at timestamptz default now()
+);
+
+-- ============ TENANT_LEADS (najemcy — czego szukaja) ============
+create table if not exists tenant_leads (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid references auth.users(id) on delete cascade,
+  full_name text,
+  contact text,
+  city text,
+  district text,
+  budget_max int,
+  rooms_min int,
+  move_in text,
+  pets boolean default false,
+  duration text,
+  notes text,
+  source text,                     -- skad lead: fb | olx | formularz | instagram
+  created_at timestamptz default now()
+);
+
+-- ============ FAVORITES (ulubione mieszkania najemcy) ============
+create table if not exists favorites (
+  user_id uuid references auth.users(id) on delete cascade,
+  property_id uuid references properties(id) on delete cascade,
   created_at timestamptz default now(),
-  completed_at timestamptz
+  primary key (user_id, property_id)
 );
 
--- Projects
-create table if not exists projects (
-  id text primary key,
+-- ============ ORDERS (pakiety + gwarancja) ============
+create table if not exists orders (
+  id uuid primary key default gen_random_uuid(),
   user_id uuid not null references auth.users(id) on delete cascade,
-  name text not null,
-  emoji text default '📁',
-  color text default '#818cf8',
-  description text,
+  property_id uuid references properties(id) on delete set null,
+  package text,                    -- basic | standard | premium
+  amount int,
+  guarantee_days int,
+  status text default 'oczekuje',  -- oczekuje | oplacone | wynajete | zwrot
+  refund_due date,
+  stripe_session_id text,
+  paid_at timestamptz,
   created_at timestamptz default now()
 );
 
--- Goals
-create table if not exists goals (
-  id text primary key,
-  user_id uuid not null references auth.users(id) on delete cascade,
-  title text not null,
-  description text,
-  deadline date,
-  horizon text default '1y',
-  progress integer default 0,
-  milestones jsonb default '[]'::jsonb,
-  project_id text,
-  completed boolean default false,
-  created_at timestamptz default now()
-);
+-- ============ INDEKSY ============
+create index if not exists idx_properties_owner on properties(owner_id);
+create index if not exists idx_properties_city on properties(city);
+create index if not exists idx_leads_user on tenant_leads(user_id);
+create index if not exists idx_orders_user on orders(user_id);
 
--- Parking Lot
-create table if not exists parking_lot (
-  id text primary key,
-  user_id uuid not null references auth.users(id) on delete cascade,
-  text text not null,
-  created_at timestamptz default now()
-);
-
--- Day Records
-create table if not exists day_records (
-  id serial primary key,
-  user_id uuid not null references auth.users(id) on delete cascade,
-  date date not null,
-  tasks_total integer default 0,
-  tasks_completed integer default 0,
-  won boolean default false,
-  points integer default 0,
-  unique(user_id, date)
-);
-
--- Indexes for fast queries
-create index if not exists idx_tasks_user on tasks(user_id);
-create index if not exists idx_tasks_created on tasks(user_id, created_at);
-create index if not exists idx_projects_user on projects(user_id);
-create index if not exists idx_goals_user on goals(user_id);
-create index if not exists idx_parking_user on parking_lot(user_id);
-create index if not exists idx_day_records_user on day_records(user_id, date);
-
--- Row Level Security (RLS) — users can only see their own data
+-- ============ RLS ============
 alter table profiles enable row level security;
-alter table tasks enable row level security;
-alter table projects enable row level security;
-alter table goals enable row level security;
-alter table parking_lot enable row level security;
-alter table day_records enable row level security;
+alter table properties enable row level security;
+alter table tenant_leads enable row level security;
+alter table favorites enable row level security;
+alter table orders enable row level security;
 
--- RLS Policies
-create policy "Users read own profile" on profiles for select using (auth.uid() = id);
-create policy "Users update own profile" on profiles for update using (auth.uid() = id);
-create policy "Users insert own profile" on profiles for insert with check (auth.uid() = id);
+-- profiles: tylko swoje
+create policy "profiles_select_own" on profiles for select using (auth.uid() = id);
+create policy "profiles_insert_own" on profiles for insert with check (auth.uid() = id);
+create policy "profiles_update_own" on profiles for update using (auth.uid() = id);
 
-create policy "Users read own tasks" on tasks for select using (auth.uid() = user_id);
-create policy "Users manage own tasks" on tasks for all using (auth.uid() = user_id);
+-- properties: publiczny odczyt (lista mieszkan), zapis tylko wlasciciel
+create policy "properties_select_all" on properties for select using (true);
+create policy "properties_insert_own" on properties for insert with check (auth.uid() = owner_id);
+create policy "properties_update_own" on properties for update using (auth.uid() = owner_id);
+create policy "properties_delete_own" on properties for delete using (auth.uid() = owner_id);
 
-create policy "Users read own projects" on projects for select using (auth.uid() = user_id);
-create policy "Users manage own projects" on projects for all using (auth.uid() = user_id);
+-- tenant_leads: kazdy moze dodac (lead z formularza), czyta tylko swoje
+create policy "leads_insert_any" on tenant_leads for insert with check (true);
+create policy "leads_select_own" on tenant_leads for select using (auth.uid() = user_id);
 
-create policy "Users read own goals" on goals for select using (auth.uid() = user_id);
-create policy "Users manage own goals" on goals for all using (auth.uid() = user_id);
+-- favorites: tylko swoje
+create policy "favorites_all_own" on favorites for all using (auth.uid() = user_id);
 
-create policy "Users read own parking" on parking_lot for select using (auth.uid() = user_id);
-create policy "Users manage own parking" on parking_lot for all using (auth.uid() = user_id);
+-- orders: tylko swoje
+create policy "orders_select_own" on orders for select using (auth.uid() = user_id);
+create policy "orders_insert_own" on orders for insert with check (auth.uid() = user_id);
 
-create policy "Users read own records" on day_records for select using (auth.uid() = user_id);
-create policy "Users manage own records" on day_records for all using (auth.uid() = user_id);
-
--- Auto-create profile on signup
+-- ============ AUTO-PROFIL PRZY REJESTRACJI ============
 create or replace function public.handle_new_user()
 returns trigger as $$
 begin
-  insert into public.profiles (id)
-  values (new.id);
+  insert into public.profiles (id) values (new.id)
+  on conflict (id) do nothing;
   return new;
 end;
 $$ language plpgsql security definer;

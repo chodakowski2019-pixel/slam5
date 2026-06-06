@@ -16,7 +16,7 @@ export default function LoginPage() {
     if (typeof window !== "undefined") {
       const params = new URLSearchParams(window.location.search);
       if (params.get("deleted") === "true") {
-        setMessage("Your account has been deleted. Sorry to see you go.");
+        setMessage("Twoje konto zostało usunięte.");
       }
       if (params.get("mode") === "signup") {
         setMode("signup");
@@ -57,7 +57,7 @@ export default function LoginPage() {
       if (error) {
         setError(error.message);
       } else {
-        setMessage("Check your email for a confirmation link.");
+        setMessage("Sprawdź email i kliknij link potwierdzający.");
       }
     } else {
       const { error } = await supabase.auth.signInWithPassword({
@@ -77,11 +77,11 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-background p-8">
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
-          <Link href="/" className="text-2xl font-heading font-bold tracking-tight mb-2 block">
-            Slam<span className="text-emerald-400">5</span>
+          <Link href="/" className="font-heading text-2xl font-extrabold tracking-tight mb-2 block">
+            Slam<span className="text-brand">5</span>
           </Link>
           <p className="text-sm text-muted-foreground">
-            5 tasks. Win the day.
+            Zaloguj się jako wynajmujący lub najemca.
           </p>
         </div>
 
@@ -89,7 +89,7 @@ export default function LoginPage() {
         <button
           onClick={handleGoogleLogin}
           disabled={loading}
-          className="w-full flex items-center justify-center gap-3 px-4 py-3 rounded-xl border border-border bg-card hover:bg-accent/50 transition-colors text-sm font-medium disabled:opacity-50"
+          className="w-full flex items-center justify-center gap-3 px-4 py-3 rounded-xl border border-border bg-card hover:bg-accent transition-colors text-sm font-medium disabled:opacity-50"
         >
           <svg width="18" height="18" viewBox="0 0 24 24">
             <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4" />
@@ -97,13 +97,13 @@ export default function LoginPage() {
             <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
             <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
           </svg>
-          {loading ? "Connecting..." : "Continue with Google"}
+          {loading ? "Łączę..." : "Kontynuuj z Google"}
         </button>
 
         {/* Divider */}
         <div className="flex items-center gap-3 my-6">
           <div className="flex-1 h-px bg-border" />
-          <span className="text-xs text-muted-foreground">or</span>
+          <span className="text-xs text-muted-foreground">lub</span>
           <div className="flex-1 h-px bg-border" />
         </div>
 
@@ -114,24 +114,24 @@ export default function LoginPage() {
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full px-4 py-3 rounded-xl border border-border bg-card text-sm outline-none focus:border-emerald-500 transition-colors"
+            className="w-full px-4 py-3 rounded-xl border border-border bg-card text-sm outline-none focus:border-brand transition-colors"
             required
           />
           <input
             type="password"
-            placeholder="Password"
+            placeholder="Hasło"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full px-4 py-3 rounded-xl border border-border bg-card text-sm outline-none focus:border-emerald-500 transition-colors"
+            className="w-full px-4 py-3 rounded-xl border border-border bg-card text-sm outline-none focus:border-brand transition-colors"
             minLength={6}
             required
           />
           <button
             type="submit"
             disabled={loading}
-            className="w-full px-4 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 transition-all duration-200 text-sm font-medium disabled:opacity-50"
+            className="w-full px-4 py-3 rounded-xl bg-primary text-primary-foreground hover:opacity-90 transition-all duration-200 text-sm font-medium disabled:opacity-50"
           >
-            {loading ? "..." : mode === "login" ? "Log in" : "Create account"}
+            {loading ? "..." : mode === "login" ? "Zaloguj się" : "Załóż konto"}
           </button>
         </form>
 
@@ -139,26 +139,26 @@ export default function LoginPage() {
         <p className="text-center text-xs text-muted-foreground mt-4">
           {mode === "login" ? (
             <>
-              No account?{" "}
-              <button onClick={() => { setMode("signup"); setError(null); setMessage(null); }} className="text-emerald-400 hover:text-emerald-300">
-                Sign up
+              Nie masz konta?{" "}
+              <button onClick={() => { setMode("signup"); setError(null); setMessage(null); }} className="text-brand hover:opacity-80">
+                Załóż konto
               </button>
             </>
           ) : (
             <>
-              Already have an account?{" "}
-              <button onClick={() => { setMode("login"); setError(null); setMessage(null); }} className="text-emerald-400 hover:text-emerald-300">
-                Log in
+              Masz już konto?{" "}
+              <button onClick={() => { setMode("login"); setError(null); setMessage(null); }} className="text-brand hover:opacity-80">
+                Zaloguj się
               </button>
             </>
           )}
         </p>
 
         {error && (
-          <p className="text-sm text-red-400 mt-4 text-center">{error}</p>
+          <p className="text-sm text-red-500 mt-4 text-center">{error}</p>
         )}
         {message && (
-          <p className="text-sm text-emerald-400 mt-4 text-center">{message}</p>
+          <p className="text-sm text-brand mt-4 text-center">{message}</p>
         )}
 
       </div>

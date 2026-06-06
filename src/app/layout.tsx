@@ -1,7 +1,5 @@
-import type { Metadata } from "next";
-import { Open_Sans, Space_Grotesk } from "next/font/google";
-import { Geist_Mono } from "next/font/google";
-import { PwaRegister } from "@/components/pwa-register";
+import type { Metadata, Viewport } from "next";
+import { Open_Sans, Poppins } from "next/font/google";
 import { Providers } from "./providers";
 import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
@@ -11,32 +9,20 @@ const openSans = Open_Sans({
   subsets: ["latin", "latin-ext"],
 });
 
-const spaceGrotesk = Space_Grotesk({
-  variable: "--font-space-grotesk",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+const poppins = Poppins({
+  variable: "--font-poppins",
+  weight: ["500", "600", "700", "800"],
+  subsets: ["latin", "latin-ext"],
 });
 
 export const metadata: Metadata = {
-  title: "Slam5 — Slam your 5. Win the day.",
-  description: "Gamified task management for brains that work differently. 5 wins a day. Every day.",
-  manifest: "/manifest.json",
-  themeColor: "#10b981",
-  appleWebApp: {
-    capable: true,
-    statusBarStyle: "black-translucent",
-    title: "Slam5",
-  },
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-    maximumScale: 1,
-    userScalable: false,
-  },
+  title: "Slam5 — znajdziemy Ci najemcę albo zwrot",
+  description:
+    "Platforma najmu: wystaw mieszkanie, znajdziemy najemcę dopasowanego do Twoich kryteriów. Oglądanie online, bez wychodzenia z domu.",
+};
+
+export const viewport: Viewport = {
+  themeColor: "#06b6d4",
 };
 
 export default function RootLayout({
@@ -46,12 +32,11 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="en"
-      className={`${openSans.variable} ${spaceGrotesk.variable} ${geistMono.variable} h-full antialiased dark`}
+      lang="pl"
+      className={`${openSans.variable} ${poppins.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-background text-foreground">
         <Providers>{children}</Providers>
-        <PwaRegister />
         <Analytics />
       </body>
     </html>
