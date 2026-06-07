@@ -20,39 +20,30 @@ const TRUST = [
 
 const PAIN_STATS = [
   {
-    stat: "100%",
-    label: "właścicieli boi się, że trafi na niepłacącego najemcę",
-  },
-  {
-    stat: "3 mies.",
-    label: "tyle średnio szukasz najemcy, gdy robisz to sam",
+    stat: "3 msc.",
+    label: "Tyle średnio zajmuje znalezienie najemcy",
   },
   {
     stat: "9 000 zł",
-    label: "średnia strata na jednym problematycznym najemcy",
+    label: "śr. strata na 1 problematycznym najemcy",
   },
 ];
 
 const STEPS = [
   {
     n: "1",
-    title: "Dodajesz mieszkanie",
-    desc: "Wrzucasz zdjęcia i podstawowe dane. Aplikacja prowadzi Cię krok po kroku, zajmuje to kilka minut.",
+    title: "Powiedz kogo chcesz",
+    desc: "Wypełnij ankietę, powiedz nam jaki jest Twój wymarzony najemca.",
   },
   {
     n: "2",
-    title: "My szukamy i sprawdzamy",
-    desc: "Dopasowujemy najemcę dokładnie pod Twoje kryteria i weryfikujemy go, zanim do Ciebie trafi.",
+    title: "Szukamy najemcy",
+    desc: "Dopasowujemy najemcę dokładnie pod Twoje kryteria i weryfikujemy go.",
   },
   {
     n: "3",
-    title: "Najemca ogląda online",
-    desc: "Bez umawiania pokazów i czekania na nikogo. Zainteresowani oglądają mieszkanie zdalnie.",
-  },
-  {
-    n: "4",
     title: "Podpisujesz umowę",
-    desc: "Łączymy Cię z gotowym, sprawdzonym najemcą. Nie znajdziemy w terminie? Zwracamy 100% opłaty.",
+    desc: "Łączymy Cię z Twoim wymarzonym najemcą.",
   },
 ];
 
@@ -60,7 +51,7 @@ const PLANS = [
   {
     name: "Basic",
     price: "2000 zł",
-    term: "Gwarancja 90 dni albo zwrot",
+    term: "Znajdziemy go w 90 dni",
     features: [
       "Wystawienie i dopasowanie najemców z bazy",
       "Oglądanie online (nagrywasz telefonem)",
@@ -71,7 +62,7 @@ const PLANS = [
   {
     name: "Standard",
     price: "4000 zł",
-    term: "Gwarancja 60 dni albo zwrot",
+    term: "Znajdziemy go w 60 dni",
     features: [
       "Wszystko z Basic",
       "Weryfikacja najemcy (wypłacalność, historia)",
@@ -82,7 +73,7 @@ const PLANS = [
   {
     name: "Premium",
     price: "6000 zł",
-    term: "Gwarancja 30 dni albo zwrot",
+    term: "Znajdziemy go w 30 dni",
     features: [
       "Wszystko ze Standard",
       "Pełna obsługa do podpisania umowy",
@@ -132,24 +123,11 @@ export default function WynajmujacyPage() {
         {/* Hero */}
         <section className="mx-auto max-w-4xl px-5 pb-12 pt-16 text-center sm:pt-24">
           <span className="inline-block rounded-full bg-brand-soft px-4 py-1.5 text-sm font-medium text-brand">
-            Dla wynajmujących
+            Bezpieczne mieszkania
           </span>
-          <h1 className="mx-auto mt-6 max-w-2xl font-heading text-4xl font-extrabold leading-[1.05] tracking-tight sm:text-5xl">
-            Znajdziemy Ci sprawdzonego najemcę. Albo zwracamy pieniądze.
-          </h1>
-          <p className="mx-auto mt-6 max-w-xl text-lg text-muted-foreground">
-            Ty wystawiasz, my szukamy i weryfikujemy najemcę dopasowanego do
-            Twoich wymagań. Bez pokazów, bez stresu, bez straconego czasu.
-          </p>
-          <Link
-            href="/login?mode=signup"
-            className="mt-9 inline-block rounded-full bg-primary px-8 py-3.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
-          >
-            Wystaw mieszkanie
-          </Link>
 
-          {/* Social proof (PLACEHOLDER) */}
-          <div className="mt-10 flex justify-center">
+          {/* Social proof (PLACEHOLDER) — nad naglowkiem */}
+          <div className="mt-6 flex justify-center">
             <div className="inline-flex items-center gap-3 rounded-full border border-border bg-card px-4 py-2 shadow-sm">
               <div className="flex -space-x-2.5">
                 {AVATARS.map((src) => (
@@ -163,20 +141,33 @@ export default function WynajmujacyPage() {
                 ))}
               </div>
               <span className="pr-1 text-sm font-medium">
-                1 247 mieszkań wynajętych w tym miesiącu
+                + 1 247 wynajętych mieszkań
               </span>
             </div>
           </div>
 
-          {/* Odznaki zaufania */}
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-3">
+          <h1 className="mx-auto mt-6 max-w-2xl font-heading text-4xl font-extrabold leading-[1.05] tracking-tight sm:text-5xl">
+            Znajdziemy Ci najemcę. Albo zwracamy pieniądze.
+          </h1>
+          <p className="mx-auto mt-6 max-w-xl text-lg text-muted-foreground">
+            Opisz nam wymarzonego klienta. My go znajdziemy!
+          </p>
+          <Link
+            href="/login?mode=signup"
+            className="mt-9 inline-block rounded-full bg-primary px-8 py-3.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+          >
+            Wystaw mieszkanie
+          </Link>
+
+          {/* Odznaki zaufania — 4 kafelki */}
+          <div className="mx-auto mt-10 grid max-w-3xl grid-cols-2 gap-3 sm:grid-cols-4">
             {TRUST.map((t) => (
-              <span
+              <div
                 key={t}
-                className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground"
+                className="flex flex-col items-center gap-2 rounded-2xl border border-border bg-card px-4 py-5 text-center"
               >
                 <svg
-                  className="h-4 w-4 text-brand"
+                  className="h-5 w-5 text-brand"
                   viewBox="0 0 20 20"
                   fill="currentColor"
                   aria-hidden="true"
@@ -187,8 +178,10 @@ export default function WynajmujacyPage() {
                     clipRule="evenodd"
                   />
                 </svg>
-                {t}
-              </span>
+                <span className="text-xs font-medium text-muted-foreground">
+                  {t}
+                </span>
+              </div>
             ))}
           </div>
         </section>
@@ -196,12 +189,12 @@ export default function WynajmujacyPage() {
         {/* Problem / bol */}
         <section className="mx-auto max-w-5xl px-5 py-12">
           <h2 className="mx-auto mb-3 max-w-2xl text-center font-heading text-2xl font-bold tracking-tight">
-            Wynajem sam z siebie to ryzyko i stracony czas
+            Nie podejmuj ryzyka i nie trać czasu
           </h2>
           <p className="mx-auto mb-10 max-w-xl text-center text-muted-foreground">
-            Dlatego zdejmujemy to z Ciebie i bierzemy ryzyko na siebie.
+            Wynajmiemy Twoje mieszkanie.
           </p>
-          <div className="grid gap-5 sm:grid-cols-3">
+          <div className="mx-auto grid max-w-2xl gap-5 sm:grid-cols-2">
             {PAIN_STATS.map((p) => (
               <div
                 key={p.stat}
@@ -219,9 +212,9 @@ export default function WynajmujacyPage() {
         {/* Jak to dziala */}
         <section className="mx-auto max-w-5xl px-5 py-12">
           <h2 className="mb-10 text-center font-heading text-2xl font-bold tracking-tight">
-            Jak to działa
+            Jak zarobić na wynajmie?
           </h2>
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-5 sm:grid-cols-3">
             {STEPS.map((s) => (
               <div
                 key={s.n}
@@ -243,11 +236,10 @@ export default function WynajmujacyPage() {
         <section className="mx-auto max-w-3xl px-5 py-12">
           <div className="rounded-3xl border border-border bg-card p-8 text-center sm:p-10">
             <h2 className="font-heading text-2xl font-bold tracking-tight">
-              Każdego najemcę sprawdzamy zanim do Ciebie trafi
+              Bezpieczny najemca
             </h2>
             <p className="mx-auto mt-3 max-w-lg text-muted-foreground">
-              Koniec z wybieraniem na oko. Dostajesz osobę z konkretami, nie
-              obietnicami.
+              Koniec z przypadkowymi najemcami.
             </p>
             <div className="mt-7 flex flex-wrap justify-center gap-3">
               {CHECKS.map((c) => (
@@ -265,10 +257,10 @@ export default function WynajmujacyPage() {
         {/* Cennik */}
         <section className="mx-auto max-w-5xl px-5 py-12">
           <h2 className="mx-auto mb-3 max-w-2xl text-center font-heading text-2xl font-bold tracking-tight">
-            Wybierz pakiet
+            Wynajmij bezpiecznie mieszkanie
           </h2>
           <p className="mx-auto mb-10 max-w-xl text-center text-muted-foreground">
-            Płacisz z góry. Nie znajdziemy najemcy w terminie? Oddajemy 100%.
+            Nie znajdziemy Twojego wymarzonego najemcy? 100% zwrotu.
           </p>
           <div className="grid items-start gap-5 sm:grid-cols-3">
             {PLANS.map((p) => (
