@@ -39,7 +39,7 @@ export default function KontaktPage() {
 
   return (
     <>
-      <SiteNav />
+      <SiteNav homeLink />
       <main className="flex-1">
         <section className="mx-auto max-w-md px-5 py-16 sm:py-24">
           {status === "ok" ? (
@@ -71,9 +71,6 @@ export default function KontaktPage() {
               <h1 className="font-heading text-3xl font-extrabold tracking-tight">
                 Napisz do nas
               </h1>
-              <p className="mt-2 text-muted-foreground">
-                Zostaw kontakt, odezwiemy się i znajdziemy Ci najemcę.
-              </p>
               <form onSubmit={handleSubmit} className="mt-8 flex flex-col gap-3">
                 <input
                   name="name"

@@ -21,7 +21,7 @@ const TRUST = [
 
 const PAIN_STATS = [
   {
-    stat: "3 msc.",
+    stat: "3 miesiące",
     label: "Tyle zajmuje znalezienie najemcy",
   },
   {
@@ -133,8 +133,8 @@ export default function HomePage() {
       <SiteNav />
       <main className="flex-1">
         {/* Hero */}
-        <section className="mx-auto max-w-4xl px-5 pb-12 pt-16 text-center sm:pt-24">
-          <h1 className="mx-auto max-w-2xl font-heading text-4xl font-extrabold leading-[1.05] tracking-tight sm:text-5xl">
+        <section className="mx-auto max-w-4xl px-5 pb-6 pt-16 text-center sm:pt-24">
+          <h1 className="mx-auto max-w-2xl font-heading text-[1.6rem] font-extrabold leading-[1.15] tracking-tight sm:text-5xl">
             Znajdziemy Ci najemcę,
             <br />
             albo zwrócimy pieniądze
@@ -165,21 +165,18 @@ export default function HomePage() {
           </p>
           <a
             href="#cennik"
-            className="mt-9 inline-block rounded-full bg-primary px-8 py-3.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+            className="mt-6 inline-block rounded-full bg-primary px-8 py-3.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
           >
             Chcę bezpiecznego najemcę!
           </a>
 
-          {/* Odznaki zaufania — 4 kafelki */}
-          <div className="mx-auto mt-10 grid max-w-3xl grid-cols-2 gap-4 sm:grid-cols-4">
+          {/* Odznaki zaufania — lista, do lewej */}
+          <div className="mx-auto mt-8 flex max-w-xs flex-col gap-3 text-left">
             {TRUST.map((t) => (
-              <div
-                key={t}
-                className="flex flex-col items-center gap-3 rounded-2xl border border-border bg-card px-4 py-6 text-center shadow-sm transition-all hover:-translate-y-0.5 hover:border-brand/40 hover:shadow-md"
-              >
-                <span className="flex h-11 w-11 items-center justify-center rounded-full bg-brand-soft">
+              <div key={t} className="flex items-center gap-3">
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand-soft">
                   <svg
-                    className="h-5 w-5 text-brand"
+                    className="h-3.5 w-3.5 text-brand"
                     viewBox="0 0 20 20"
                     fill="currentColor"
                     aria-hidden="true"
@@ -191,18 +188,18 @@ export default function HomePage() {
                     />
                   </svg>
                 </span>
-                <span className="text-sm font-semibold text-foreground">
-                  {t}
-                </span>
+                <span className="text-sm font-semibold text-foreground">{t}</span>
               </div>
             ))}
           </div>
         </section>
 
         {/* Problem / bol */}
-        <section className="mx-auto max-w-5xl px-5 py-12">
-          <h2 className="mx-auto mb-10 max-w-2xl text-center font-heading text-2xl font-bold tracking-tight">
-            Nie podejmuj ryzyka i nie trać czasu
+        <section className="mx-auto max-w-5xl px-5 py-4">
+          <h2 className="mx-auto mb-6 max-w-2xl text-center font-heading text-2xl font-bold tracking-tight">
+            Nie podejmuj ryzyka{" "}
+            <br className="sm:hidden" />
+            i nie trać czasu
           </h2>
           <div className="grid gap-5 sm:grid-cols-3">
             {PAIN_STATS.map((p) => (
@@ -220,18 +217,18 @@ export default function HomePage() {
         </section>
 
         {/* Poglebienie problemu / agitacja */}
-        <section className="mx-auto max-w-5xl px-5 py-12">
+        <section className="mx-auto max-w-5xl px-5 py-4">
           <h2 className="mx-auto max-w-2xl text-center font-heading text-2xl font-bold tracking-tight">
             Potem może być tylko gorzej
           </h2>
           <p className="mx-auto mt-3 max-w-xl text-center text-muted-foreground">
-            Zły najemca to dopiero początek.
+            Zły najemca to dopiero początek
           </p>
-          <div className="mt-10 grid gap-5 sm:grid-cols-3">
+          <div className="mt-6 grid gap-5 sm:grid-cols-3">
             {AGITATE.map((a) => (
               <div
                 key={a.title}
-                className="rounded-2xl border border-border bg-card p-7"
+                className="rounded-2xl border border-border bg-card p-7 text-center"
               >
                 <h3 className="font-heading text-lg font-semibold text-red-500">
                   {a.title}
@@ -243,15 +240,15 @@ export default function HomePage() {
         </section>
 
         {/* Jak to dziala */}
-        <section className="mx-auto max-w-5xl px-5 py-12">
-          <h2 className="mb-10 text-center font-heading text-2xl font-bold tracking-tight">
+        <section className="mx-auto max-w-5xl px-5 py-4">
+          <h2 className="mb-6 text-center font-heading text-2xl font-bold tracking-tight">
             Jak zarobisz na wynajmie?
           </h2>
           <div className="grid gap-5 sm:grid-cols-3">
             {STEPS.map((s) => (
               <div
                 key={s.n}
-                className="rounded-2xl border border-border bg-card p-6"
+                className="flex flex-col items-center rounded-2xl border border-border bg-card p-6 text-center"
               >
                 <div className="flex h-10 w-10 items-center justify-center rounded-full bg-brand text-sm font-bold text-white">
                   {s.n}
@@ -266,7 +263,7 @@ export default function HomePage() {
         </section>
 
         {/* Co sprawdzamy */}
-        <section className="mx-auto max-w-3xl px-5 py-12">
+        <section className="mx-auto max-w-3xl px-5 py-4">
           <div className="rounded-3xl border border-border bg-card p-8 text-center sm:p-10">
             <h2 className="font-heading text-2xl font-bold tracking-tight">
               Koniec z przypadkowymi najemcami
@@ -274,7 +271,7 @@ export default function HomePage() {
             <p className="mx-auto mt-3 max-w-lg text-muted-foreground">
               Sprawdzamy...
             </p>
-            <div className="mt-7 flex flex-wrap justify-center gap-3">
+            <div className="mt-7 flex flex-col items-center gap-3">
               {CHECKS.map((c) => (
                 <span
                   key={c}
@@ -288,11 +285,13 @@ export default function HomePage() {
         </section>
 
         {/* Cennik */}
-        <section id="cennik" className="mx-auto max-w-5xl px-5 py-12 scroll-mt-20">
+        <section id="cennik" className="mx-auto max-w-5xl px-5 py-4 scroll-mt-10">
           <h2 className="mx-auto mb-3 max-w-2xl text-center font-heading text-2xl font-bold tracking-tight">
-            Wynajmij bezpiecznie mieszkanie
+            Wynajmij{" "}
+            <br className="sm:hidden" />
+            bezpiecznie mieszkanie
           </h2>
-          <p className="mx-auto mb-10 max-w-xl text-center text-muted-foreground">
+          <p className="mx-auto mb-6 max-w-xl text-center text-muted-foreground">
             Nie znajdziemy Twojego wymarzonego najemcy? 100% zwrotu.
           </p>
 
@@ -326,7 +325,7 @@ export default function HomePage() {
           </div>
 
           {/* 3 warianty cenowe — rozni sie tylko termin */}
-          <h3 className="mb-10 mt-20 text-center font-heading text-2xl font-bold tracking-tight">
+          <h3 className="mb-6 mt-10 text-center font-heading text-2xl font-bold tracking-tight">
             Jak szybko chcesz wynająć mieszkanie?
           </h3>
           <div className="grid items-stretch gap-5 sm:grid-cols-3">
@@ -367,25 +366,25 @@ export default function HomePage() {
         </section>
 
         {/* Gwarancja */}
-        <section className="mx-auto max-w-3xl px-5 py-12">
-          <div className="rounded-3xl border border-brand/20 bg-brand-soft p-8 text-center sm:p-12">
+        <section className="mx-auto max-w-3xl px-5 py-4">
+          <div className="rounded-3xl border border-brand/20 bg-brand-soft p-6 text-center sm:p-10">
             <h2 className="font-heading text-2xl font-bold tracking-tight text-brand">
               Gwarancja zwrotu 100%
             </h2>
             <p className="mx-auto mt-3 max-w-lg text-muted-foreground">
               Jeśli nie znajdziemy najemcy w ustalonym terminie, oddajemy 100%
-              opłaty. Bez podawania przyczyny.
+              opłaty.
             </p>
           </div>
         </section>
 
         {/* FAQ */}
-        <section className="mx-auto max-w-2xl px-5 py-12">
+        <section className="mx-auto max-w-2xl px-5 py-4">
           <h2 className="mb-8 text-center font-heading text-2xl font-bold tracking-tight">
             Najczęstsze pytania
           </h2>
           <FaqAccordion items={FAQ} />
-          <div className="mt-10 text-center">
+          <div className="mt-6 text-center">
             <Link
               href="/login?mode=signup"
               className="inline-block rounded-full bg-primary px-8 py-3.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"

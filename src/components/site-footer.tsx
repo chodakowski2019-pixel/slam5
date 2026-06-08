@@ -2,29 +2,30 @@ import Link from "next/link";
 
 export function SiteFooter() {
   return (
-    <footer className="border-t border-border bg-card">
-      <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-5 py-10 sm:flex-row">
-        <Link href="/" className="flex items-center gap-2 font-heading text-lg font-light tracking-tight">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/lokra-mark.png" alt="" className="h-7 w-auto" />
+    <footer className="bg-neutral-900 text-neutral-100">
+      <div className="mx-auto flex max-w-6xl flex-col items-center gap-5 px-5 py-10 sm:flex-row sm:justify-between">
+        <Link
+          href="/"
+          className="font-heading text-xl font-light tracking-tight text-white"
+        >
           Lokra
         </Link>
-        <div className="flex flex-col items-center gap-3 sm:items-end">
-          <nav className="flex gap-5 text-xs text-muted-foreground">
-            <Link href="/regulamin" className="hover:text-foreground">
-              Regulamin
-            </Link>
-            <Link
-              href="/polityka-prywatnosci"
-              className="hover:text-foreground"
-            >
-              Polityka prywatności
-            </Link>
-          </nav>
-          <p className="text-xs text-muted-foreground">
-            © 2020 Lokra. Wszystkie prawa zastrzeżone.
-          </p>
-        </div>
+        <nav className="flex items-center gap-6 text-sm text-neutral-300">
+          <Link href="/regulamin" className="transition-colors hover:text-white">
+            Regulamin
+          </Link>
+          <Link
+            href="/polityka-prywatnosci"
+            className="transition-colors hover:text-white"
+          >
+            Polityka prywatności
+          </Link>
+        </nav>
+      </div>
+      <div className="border-t border-white/10">
+        <p className="mx-auto max-w-6xl px-5 py-5 text-center text-xs text-neutral-400 sm:text-left">
+          © 2020 Lokra. Wszystkie prawa zastrzeżone.
+        </p>
       </div>
     </footer>
   );
