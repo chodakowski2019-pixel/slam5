@@ -10,15 +10,24 @@ export function SiteFooter() {
         >
           Lokra
         </Link>
-        <nav className="flex items-center gap-6 text-sm text-neutral-300">
-          <Link href="/regulamin" className="transition-colors hover:text-white">
+        <nav className="flex items-center divide-x divide-white/20 text-sm text-neutral-300">
+          <Link
+            href="/regulamin"
+            className="px-4 transition-colors first:pl-0 last:pr-0 hover:text-white"
+          >
             Regulamin
           </Link>
           <Link
             href="/polityka-prywatnosci"
-            className="transition-colors hover:text-white"
+            className="px-4 transition-colors first:pl-0 last:pr-0 hover:text-white"
           >
             Polityka prywatności
+          </Link>
+          <Link
+            href="/kontakt"
+            className="px-4 transition-colors first:pl-0 last:pr-0 hover:text-white"
+          >
+            Kontakt
           </Link>
         </nav>
       </div>

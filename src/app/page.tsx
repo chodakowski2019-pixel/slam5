@@ -1,15 +1,14 @@
-import Link from "next/link";
 import { SiteNav } from "@/components/site-nav";
 import { SiteFooter } from "@/components/site-footer";
 import { FaqAccordion } from "@/components/faq-accordion";
 
 // PLACEHOLDER — zdjecia stockowe, podmienic na realne po pierwszych najmach
 const AVATARS = [
-  "/avatars/u1.jpg",
-  "/avatars/u2.jpg",
-  "/avatars/u3.jpg",
-  "/avatars/u4.jpg",
-  "/avatars/u5.jpg",
+  "/avatars/u1.png",
+  "/avatars/u2.png",
+  "/avatars/u3.png",
+  "/avatars/u4.png",
+  "/avatars/u5.png",
 ];
 
 const TRUST = [
@@ -124,6 +123,11 @@ const FAQ = [
   {
     q: "Co jeśli nie znajdziecie najemcy?",
     a: "Otrzymasz zwrot 100% w przeciągu 5 dni roboczych.",
+  },
+  {
+    q: "Mam inne pytanie",
+    a: "Napisz do nas ",
+    link: { label: "TUTAJ", href: "/kontakt" },
   },
 ];
 
@@ -385,12 +389,12 @@ export default function HomePage() {
           </h2>
           <FaqAccordion items={FAQ} />
           <div className="mt-6 text-center">
-            <Link
-              href="/login?mode=signup"
+            <a
+              href="#cennik"
               className="inline-block rounded-full bg-primary px-8 py-3.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
             >
               Ok! Zaczynamy!
-            </Link>
+            </a>
           </div>
         </section>
       </main>

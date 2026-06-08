@@ -2,7 +2,11 @@
 
 import { useState } from "react";
 
-type Item = { q: string; a: string };
+type Item = {
+  q: string;
+  a: string;
+  link?: { label: string; href: string };
+};
 
 export function FaqAccordion({ items }: { items: Item[] }) {
   const [open, setOpen] = useState<number | null>(null);
@@ -39,7 +43,17 @@ export function FaqAccordion({ items }: { items: Item[] }) {
               </svg>
             </button>
             {isOpen && (
-              <p className="px-6 pb-6 text-sm text-muted-foreground">{f.a}</p>
+              <p className="px-6 pb-6 text-sm text-muted-foreground">
+                {f.a}
+                {f.link && (
+                  <a
+                    href={f.link.href}
+                    className="font-semibold text-brand underline underline-offset-2"
+                  >
+                    {f.link.label}
+                  </a>
+                )}
+              </p>
             )}
           </div>
         );

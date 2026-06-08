@@ -10,10 +10,10 @@ export function SiteNav({ homeLink = false }: { homeLink?: boolean }) {
         </Link>
 
         <Link
-          href={homeLink ? "/" : "/kontakt"}
+          href={homeLink ? "/" : "/#cennik"}
           className="rounded-full bg-primary px-5 py-2 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
         >
-          {homeLink ? "Strona główna" : "Kontakt"}
+          {homeLink ? "Strona główna" : "Zaczynamy"}
         </Link>
       </nav>
     </header>
