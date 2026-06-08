@@ -26,11 +26,26 @@ const PAIN_STATS = [
   },
   {
     stat: "12",
-    label: "tyle pokazów średnio, zanim podpiszesz umowę",
+    label: "tyle średnio pokazów, zanim podpiszesz umowę",
   },
   {
     stat: "9 000 zł",
     label: "śr. strata na 1 problematycznym najemcy",
+  },
+];
+
+const AGITATE = [
+  {
+    title: "Nie płaci czynszu",
+    desc: "A Ty dalej spłacasz kredyt i czynsz do spółdzielni z własnej kieszeni.",
+  },
+  {
+    title: "Niszczy mieszkanie",
+    desc: "Kaucja nie pokrywa szkód, remont idzie w tysiące.",
+  },
+  {
+    title: "Nie chce się wyprowadzić",
+    desc: "Eksmisja w Polsce ciągnie się miesiącami: sąd, komornik, nerwy.",
   },
 ];
 
@@ -143,7 +158,7 @@ export default function HomePage() {
           </div>
 
           <p className="mx-auto mt-6 max-w-xl text-lg text-muted-foreground">
-            Opisz nam wymarzonego klienta. My go znajdziemy!
+            Opisz nam wymarzonego klienta.
           </p>
           <a
             href="#cennik"
@@ -196,6 +211,29 @@ export default function HomePage() {
                   {p.stat}
                 </div>
                 <p className="mt-3 text-sm text-muted-foreground">{p.label}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Poglebienie problemu / agitacja */}
+        <section className="mx-auto max-w-5xl px-5 py-12">
+          <h2 className="mx-auto max-w-2xl text-center font-heading text-2xl font-bold tracking-tight">
+            Potem może być tylko gorzej
+          </h2>
+          <p className="mx-auto mt-3 max-w-xl text-center text-muted-foreground">
+            Zły najemca to dopiero początek. Problem narasta z każdym miesiącem.
+          </p>
+          <div className="mt-10 grid gap-5 sm:grid-cols-3">
+            {AGITATE.map((a) => (
+              <div
+                key={a.title}
+                className="rounded-2xl border border-border bg-card p-7"
+              >
+                <h3 className="font-heading text-lg font-semibold">
+                  {a.title}
+                </h3>
+                <p className="mt-2 text-sm text-muted-foreground">{a.desc}</p>
               </div>
             ))}
           </div>
@@ -258,7 +296,7 @@ export default function HomePage() {
           {/* W kazdym wariancie dostajesz to samo */}
           <div className="mx-auto mb-8 max-w-3xl rounded-3xl border border-border bg-card p-7 sm:p-9">
             <h3 className="text-center font-heading text-lg font-semibold">
-              W każdym wariancie dostajesz
+              W każdym wariancie otrzymasz
             </h3>
             <ul className="mx-auto mt-6 grid max-w-xl gap-3 sm:grid-cols-2">
               {INCLUDED.map((f) => (
@@ -285,9 +323,9 @@ export default function HomePage() {
           </div>
 
           {/* 3 warianty cenowe — rozni sie tylko termin */}
-          <p className="mb-5 text-center text-sm font-medium text-muted-foreground">
-            Wybierz, jak szybko chcesz mieć najemcę:
-          </p>
+          <h3 className="mb-10 mt-20 text-center font-heading text-2xl font-bold tracking-tight">
+            Wybierz, jak szybko chcesz mieć najemcę
+          </h3>
           <div className="grid items-stretch gap-5 sm:grid-cols-3">
             {PLANS.map((p) => (
               <div

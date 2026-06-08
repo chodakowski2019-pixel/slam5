@@ -64,7 +64,7 @@ export function ContactModal() {
 
       {open && (
         <div
-          className="fixed inset-0 z-[100] flex items-center justify-center p-4"
+          className="fixed inset-0 z-[100] flex items-center justify-center overflow-y-auto p-4"
           role="dialog"
           aria-modal="true"
         >
@@ -72,7 +72,7 @@ export function ContactModal() {
             className="absolute inset-0 bg-black/50"
             onClick={() => setOpen(false)}
           />
-          <div className="relative z-10 w-full max-w-md rounded-3xl border border-border bg-card p-6 shadow-xl sm:p-8">
+          <div className="relative z-10 my-auto max-h-[90vh] w-full max-w-md overflow-y-auto rounded-3xl border border-border bg-card p-6 shadow-xl sm:p-8">
             <button
               onClick={() => setOpen(false)}
               aria-label="Zamknij"
@@ -119,28 +119,28 @@ export function ContactModal() {
                   <input
                     name="name"
                     required
-                    placeholder="Imię"
+                    placeholder="Imię *"
                     className="w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm outline-none transition-colors focus:border-brand"
                   />
                   <input
                     name="phone"
                     type="tel"
                     required
-                    placeholder="Numer telefonu"
+                    placeholder="Numer telefonu *"
                     className="w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm outline-none transition-colors focus:border-brand"
                   />
                   <input
                     name="email"
                     type="email"
                     required
-                    placeholder="Email"
+                    placeholder="Email *"
                     className="w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm outline-none transition-colors focus:border-brand"
                   />
                   <textarea
                     name="message"
                     required
                     rows={4}
-                    placeholder="Twoje pytanie"
+                    placeholder="Twoje pytanie *"
                     className="w-full resize-none rounded-xl border border-border bg-background px-4 py-2.5 text-sm outline-none transition-colors focus:border-brand"
                   />
                   {status === "error" && (
