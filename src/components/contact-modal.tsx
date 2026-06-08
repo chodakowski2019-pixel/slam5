@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 
 // Web3Forms — darmowy klucz publiczny (web3forms.com).
 // Stworz klucz na adres chodakowski2019@gmail.com, wklej tutaj:
-const ACCESS_KEY = "WSTAW_KLUCZ_WEB3FORMS";
+const ACCESS_KEY = "9e5b5116-b976-4684-b47b-2ca4590fef65";
 
 type Status = "idle" | "sending" | "ok" | "error";
 
