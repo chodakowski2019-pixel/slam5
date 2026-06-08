@@ -14,19 +14,7 @@ export function SiteNav() {
           <img src="/lokra-mark.png" alt="Lokra" className="h-9 w-auto" />
         </Link>
 
-        <div className="hidden items-center gap-8 md:flex">
-          <Link href="/" className="text-sm text-muted-foreground transition-colors hover:text-foreground">
-            Mieszkania
-          </Link>
-          <Link href="/wynajmujacy" className="text-sm text-muted-foreground transition-colors hover:text-foreground">
-            Dla wynajmujących
-          </Link>
-          <Link href="/najemca" className="text-sm text-muted-foreground transition-colors hover:text-foreground">
-            Dla najemców
-          </Link>
-        </div>
-
-        <div className="flex items-center gap-3">
+<div className="flex items-center gap-3">
           {!loading && user ? (
             <Link
               href="/dashboard"
