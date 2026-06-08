@@ -14,7 +14,7 @@ const AVATARS = [
 
 const TRUST = [
   "Gwarancja zwrotu",
-  "Weryfikacja w bazach dłużników",
+  "Weryfikacja wypłacalności",
   "Bezpieczne płatności Stripe",
   "Umowa przygotowana przez prawnika",
 ];
@@ -107,7 +107,7 @@ const PLANS = [
 const CHECKS = [
   "Tożsamość",
   "Dochody",
-  "Bazy dłużników",
+  "Zatrudnienie",
   "Referencje",
   "Stabilność",
 ];
@@ -115,7 +115,7 @@ const CHECKS = [
 const FAQ = [
   {
     q: "Jak sprawdzacie najemcę?",
-    a: "Weryfikujemy tożsamość, dochody, obecność w bazach dłużników, referencje i stabilność sytuacji. Do Ciebie trafia tylko dopasowany i sprawdzony kandydat, nie ktoś z przypadku.",
+    a: "Weryfikujemy tożsamość, dochody, zatrudnienie, referencje i stabilność sytuacji, a najemca podpisuje oświadczenie o niezaleganiu w opłatach. Do Ciebie trafia tylko dopasowany i sprawdzony kandydat, nie ktoś z przypadku.",
   },
   {
     q: "Kiedy i ile płacę?",
@@ -161,7 +161,7 @@ export default function HomePage() {
           </div>
 
           <p className="mx-auto mt-6 max-w-xl text-lg text-muted-foreground">
-            Opisz nam wymarzonego klienta.
+            Opisz nam wymarzonego klienta
           </p>
           <a
             href="#cennik"
@@ -374,7 +374,7 @@ export default function HomePage() {
             </h2>
             <p className="mx-auto mt-3 max-w-lg text-muted-foreground">
               Jeśli nie znajdziemy najemcy w ustalonym terminie, oddajemy 100%
-              opłaty.
+              opłaty. Bez podawania przyczyny.
             </p>
           </div>
         </section>

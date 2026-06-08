@@ -9,9 +9,22 @@ export function SiteFooter() {
           <img src="/lokra-mark.png" alt="" className="h-7 w-auto" />
           Lokra
         </Link>
-        <p className="text-xs text-muted-foreground">
-          © 2020 Lokra. Wszystkie prawa zastrzeżone.
-        </p>
+        <div className="flex flex-col items-center gap-3 sm:items-end">
+          <nav className="flex gap-5 text-xs text-muted-foreground">
+            <Link href="/regulamin" className="hover:text-foreground">
+              Regulamin
+            </Link>
+            <Link
+              href="/polityka-prywatnosci"
+              className="hover:text-foreground"
+            >
+              Polityka prywatności
+            </Link>
+          </nav>
+          <p className="text-xs text-muted-foreground">
+            © 2020 Lokra. Wszystkie prawa zastrzeżone.
+          </p>
+        </div>
       </div>
     </footer>
   );
