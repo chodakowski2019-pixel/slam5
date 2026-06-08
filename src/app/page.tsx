@@ -22,15 +22,15 @@ const TRUST = [
 const PAIN_STATS = [
   {
     stat: "3 msc.",
-    label: "Tyle średnio zajmuje znalezienie najemcy",
+    label: "Tyle zajmuje znalezienie najemcy",
   },
   {
     stat: "12",
-    label: "tyle średnio pokazów, zanim podpiszesz umowę",
+    label: "tyle pokazów, zanim podpiszesz umowę",
   },
   {
     stat: "9 000 zł",
-    label: "śr. strata na 1 problematycznym najemcy",
+    label: "strata na 1 problematycznym najemcy",
   },
 ];
 
@@ -69,7 +69,7 @@ const STEPS = [
 
 // Te same rzeczy w KAZDYM wariancie. Rozni sie tylko gwarantowany termin.
 const INCLUDED = [
-  "Znalezienie wymarzonego najemcy",
+  "Wymarzonego najemcę",
   "Weryfikacja najemcy",
   "Wzór umowy najmu",
   "Gwarancja zwrotu 100%",
@@ -79,24 +79,27 @@ const INCLUDED = [
 
 const PLANS = [
   {
-    name: "Basic",
+    name: "Premium I",
     price: "2000 zł",
     href: "https://buy.stripe.com/6oU7sKfLiaxS1k99Icebu09",
-    term: "Najemca w 90 dni",
+    term: "Najemca do 90 dni",
+    cta: "To coś dla mnie",
     featured: false,
   },
   {
-    name: "Standard",
+    name: "Premium II",
     price: "4000 zł",
     href: "https://buy.stripe.com/14AaEWbv20XiaUJ9Icebu08",
-    term: "Najemca w 60 dni",
+    term: "Najemca do 60 dni",
+    cta: "Chcę tego najemcę!",
     featured: true,
   },
   {
-    name: "Premium",
+    name: "Premium III",
     price: "6000 zł",
     href: "https://buy.stripe.com/6oU7sKaqYbBWd2RaMgebu05",
-    term: "Najemca w 30 dni",
+    term: "Najemca do 30 dni",
+    cta: "Zaczynamy!",
     featured: false,
   },
 ];
@@ -222,7 +225,7 @@ export default function HomePage() {
             Potem może być tylko gorzej
           </h2>
           <p className="mx-auto mt-3 max-w-xl text-center text-muted-foreground">
-            Zły najemca to dopiero początek. Problem narasta z każdym miesiącem.
+            Zły najemca to dopiero początek.
           </p>
           <div className="mt-10 grid gap-5 sm:grid-cols-3">
             {AGITATE.map((a) => (
@@ -230,7 +233,7 @@ export default function HomePage() {
                 key={a.title}
                 className="rounded-2xl border border-border bg-card p-7"
               >
-                <h3 className="font-heading text-lg font-semibold">
+                <h3 className="font-heading text-lg font-semibold text-red-500">
                   {a.title}
                 </h3>
                 <p className="mt-2 text-sm text-muted-foreground">{a.desc}</p>
@@ -296,7 +299,7 @@ export default function HomePage() {
           {/* W kazdym wariancie dostajesz to samo */}
           <div className="mx-auto mb-8 max-w-3xl rounded-3xl border border-border bg-card p-7 sm:p-9">
             <h3 className="text-center font-heading text-lg font-semibold">
-              W każdym wariancie otrzymasz
+              Otrzymasz od nas
             </h3>
             <ul className="mx-auto mt-6 grid max-w-xl gap-3 sm:grid-cols-2">
               {INCLUDED.map((f) => (
@@ -324,7 +327,7 @@ export default function HomePage() {
 
           {/* 3 warianty cenowe — rozni sie tylko termin */}
           <h3 className="mb-10 mt-20 text-center font-heading text-2xl font-bold tracking-tight">
-            Wybierz, jak szybko chcesz mieć najemcę
+            Jak szybko chcesz wynająć mieszkanie?
           </h3>
           <div className="grid items-stretch gap-5 sm:grid-cols-3">
             {PLANS.map((p) => (
@@ -341,8 +344,7 @@ export default function HomePage() {
                     Najczęściej wybierany
                   </span>
                 )}
-                <h3 className="font-heading text-lg font-semibold">{p.name}</h3>
-                <div className="mt-2 font-heading text-3xl font-extrabold">
+                <div className="font-heading text-3xl font-extrabold">
                   {p.price}
                 </div>
                 <div className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-brand-soft px-3 py-1 text-xs font-semibold text-brand">
@@ -356,7 +358,7 @@ export default function HomePage() {
                       : "bg-brand-soft text-brand"
                   }`}
                 >
-                  Wybieram {p.name}
+                  {p.cta}
                 </a>
               </div>
             ))}
