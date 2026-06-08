@@ -11,7 +11,7 @@ export function SiteNav({ homeLink = false }: { homeLink?: boolean }) {
 
         <Link
           href={homeLink ? "/" : "/#cennik"}
-          className="rounded-full bg-primary px-5 py-2 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
+          className="rounded-full border border-border bg-white px-5 py-2 text-sm font-medium text-foreground transition-colors hover:bg-neutral-50"
         >
           {homeLink ? "Strona główna" : "Zaczynamy"}
         </Link>
