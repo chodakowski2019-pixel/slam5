@@ -9,8 +9,9 @@ export function SiteNav() {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/80 backdrop-blur-xl">
       <nav className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5">
-        <Link href="/" className="font-heading text-xl font-extrabold tracking-tight">
-          Slam<span className="text-brand">5</span>
+        <Link href="/" className="flex items-center">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/lokra-mark.png" alt="Lokra" className="h-9 w-auto" />
         </Link>
 
         <div className="hidden items-center gap-8 md:flex">

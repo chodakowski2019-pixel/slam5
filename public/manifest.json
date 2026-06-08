@@ -1,11 +1,11 @@
 {
-  "name": "Slam5 — Win the day",
-  "short_name": "Slam5",
-  "description": "5 tasks. Win or lose. Every day.",
-  "start_url": "/dashboard",
+  "name": "Lokra — znajdziemy Ci najemcę",
+  "short_name": "Lokra",
+  "description": "Platforma najmu: wystaw mieszkanie, znajdziemy dopasowanego najemcę albo zwracamy pieniądze.",
+  "start_url": "/",
   "display": "standalone",
-  "background_color": "#0a0a0b",
-  "theme_color": "#6366f1",
+  "background_color": "#ffffff",
+  "theme_color": "#06b6d4",
   "orientation": "portrait",
   "icons": [
     {

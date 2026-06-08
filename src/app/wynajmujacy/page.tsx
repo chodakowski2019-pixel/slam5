@@ -51,6 +51,7 @@ const PLANS = [
   {
     name: "Basic",
     price: "2000 zł",
+    href: "https://buy.stripe.com/6oU7sKfLiaxS1k99Icebu09",
     term: "Znajdziemy go w 90 dni",
     features: [
       "Wystawienie i dopasowanie najemców z bazy",
@@ -62,6 +63,7 @@ const PLANS = [
   {
     name: "Standard",
     price: "4000 zł",
+    href: "https://buy.stripe.com/14AaEWbv20XiaUJ9Icebu08",
     term: "Znajdziemy go w 60 dni",
     features: [
       "Wszystko z Basic",
@@ -73,6 +75,7 @@ const PLANS = [
   {
     name: "Premium",
     price: "6000 zł",
+    href: "https://buy.stripe.com/6oU7sKaqYbBWd2RaMgebu05",
     term: "Znajdziemy go w 30 dni",
     features: [
       "Wszystko ze Standard",
@@ -306,8 +309,8 @@ export default function WynajmujacyPage() {
                     </li>
                   ))}
                 </ul>
-                <Link
-                  href="/login?mode=signup"
+                <a
+                  href={p.href}
                   className={`mt-7 inline-block rounded-full px-6 py-3 text-center text-sm font-semibold transition-opacity hover:opacity-90 ${
                     p.featured
                       ? "bg-primary text-primary-foreground"
@@ -315,7 +318,7 @@ export default function WynajmujacyPage() {
                   }`}
                 >
                   Wybieram {p.name}
-                </Link>
+                </a>
               </div>
             ))}
           </div>

@@ -78,7 +78,7 @@ export default function LoginPage() {
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
           <Link href="/" className="font-heading text-2xl font-extrabold tracking-tight mb-2 block">
-            Slam<span className="text-brand">5</span>
+            Lokra
           </Link>
           <p className="text-sm text-muted-foreground">
             Zaloguj się jako wynajmujący lub najemca.
