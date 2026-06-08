@@ -16,7 +16,7 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "Lokra — znajdziemy Ci najemcę albo zwrot",
+  title: "Lokra - wynajem nieruchomości",
   description:
     "Platforma najmu: wystaw mieszkanie, znajdziemy najemcę dopasowanego do Twoich kryteriów. Oglądanie online, bez wychodzenia z domu.",
 };
