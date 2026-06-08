@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { SiteNav } from "@/components/site-nav";
 import { SiteFooter } from "@/components/site-footer";
+import { FaqAccordion } from "@/components/faq-accordion";
 
 // PLACEHOLDER — zdjecia stockowe, podmienic na realne po pierwszych najmach
 const AVATARS = [
@@ -22,6 +23,10 @@ const PAIN_STATS = [
   {
     stat: "3 msc.",
     label: "Tyle średnio zajmuje znalezienie najemcy",
+  },
+  {
+    stat: "12",
+    label: "tyle pokazów średnio, zanim podpiszesz umowę",
   },
   {
     stat: "9 000 zł",
@@ -47,42 +52,36 @@ const STEPS = [
   },
 ];
 
+// Te same rzeczy w KAZDYM wariancie. Rozni sie tylko gwarantowany termin.
+const INCLUDED = [
+  "Znalezienie wymarzonego najemcy",
+  "Weryfikacja najemcy",
+  "Wzór umowy najmu",
+  "Gwarancja zwrotu 100%",
+  "Dedykowany opiekun",
+  "Wsparcie po podpisaniu umowy (30 dni)",
+];
+
 const PLANS = [
   {
     name: "Basic",
     price: "2000 zł",
     href: "https://buy.stripe.com/6oU7sKfLiaxS1k99Icebu09",
-    term: "Znajdziemy go w 90 dni",
-    features: [
-      "Wystawienie i dopasowanie najemców z bazy",
-      "Oglądanie online (nagrywasz telefonem)",
-      "Wzór umowy najmu",
-    ],
+    term: "Najemca w 90 dni",
     featured: false,
   },
   {
     name: "Standard",
     price: "4000 zł",
     href: "https://buy.stripe.com/14AaEWbv20XiaUJ9Icebu08",
-    term: "Znajdziemy go w 60 dni",
-    features: [
-      "Wszystko z Basic",
-      "Weryfikacja najemcy (wypłacalność, historia)",
-      "Szybszy gwarantowany termin",
-    ],
+    term: "Najemca w 60 dni",
     featured: true,
   },
   {
     name: "Premium",
     price: "6000 zł",
     href: "https://buy.stripe.com/6oU7sKaqYbBWd2RaMgebu05",
-    term: "Znajdziemy go w 30 dni",
-    features: [
-      "Wszystko ze Standard",
-      "Pełna obsługa do podpisania umowy",
-      "Dedykowany opiekun",
-      "3 miesiące zarządzania najmem gratis",
-    ],
+    term: "Najemca w 30 dni",
     featured: false,
   },
 ];
@@ -102,19 +101,11 @@ const FAQ = [
   },
   {
     q: "Kiedy i ile płacę?",
-    a: "Płacisz z góry jeden pakiet, przy wystawieniu mieszkania. Jeśli nie znajdziemy najemcy w gwarantowanym terminie, oddajemy całą kwotę.",
+    a: "Płatność dokonywana jest teraz, po jej dokonaniu zaczynamy szukać najemcy.",
   },
   {
     q: "Co jeśli nie znajdziecie najemcy?",
-    a: "Dostajesz zwrot 100%. Gwarancja obowiązuje przy cenie rynkowej i jeśli nie odrzucasz dopasowanych najemców.",
-  },
-  {
-    q: "Czy muszę robić pokazy mieszkania?",
-    a: "Nie. Najemcy oglądają mieszkanie online, ze spacerem 360°. Ograniczamy fizyczne pokazy do minimum, oszczędzasz czas i dojazdy.",
-  },
-  {
-    q: "Pierwszy raz wynajmuję, dam radę?",
-    a: "Tak. Prowadzimy Cię za rękę: dodanie mieszkania, oglądanie online, dopasowanie najemcy. Najem to nasza robota, Ty masz mieć spokój.",
+    a: "Otrzymasz zwrot 100% w przeciągu 5 dni roboczych.",
   },
 ];
 
@@ -126,9 +117,9 @@ export default function HomePage() {
         {/* Hero */}
         <section className="mx-auto max-w-4xl px-5 pb-12 pt-16 text-center sm:pt-24">
           <h1 className="mx-auto max-w-2xl font-heading text-4xl font-extrabold leading-[1.05] tracking-tight sm:text-5xl">
-            Znajdziemy Ci najemcę
+            Znajdziemy Ci najemcę,
             <br />
-            Albo zwrócimy pieniądze
+            albo zwrócimy pieniądze
           </h1>
 
           {/* Social proof (PLACEHOLDER) — pod naglowkiem */}
@@ -192,13 +183,10 @@ export default function HomePage() {
 
         {/* Problem / bol */}
         <section className="mx-auto max-w-5xl px-5 py-12">
-          <h2 className="mx-auto mb-3 max-w-2xl text-center font-heading text-2xl font-bold tracking-tight">
+          <h2 className="mx-auto mb-10 max-w-2xl text-center font-heading text-2xl font-bold tracking-tight">
             Nie podejmuj ryzyka i nie trać czasu
           </h2>
-          <p className="mx-auto mb-10 max-w-xl text-center text-muted-foreground">
-            Wynajmiemy Twoje mieszkanie.
-          </p>
-          <div className="mx-auto grid max-w-2xl gap-5 sm:grid-cols-2">
+          <div className="grid gap-5 sm:grid-cols-3">
             {PAIN_STATS.map((p) => (
               <div
                 key={p.stat}
@@ -216,7 +204,7 @@ export default function HomePage() {
         {/* Jak to dziala */}
         <section className="mx-auto max-w-5xl px-5 py-12">
           <h2 className="mb-10 text-center font-heading text-2xl font-bold tracking-tight">
-            Jak zarobić na wynajmie?
+            Jak zarobisz na wynajmie?
           </h2>
           <div className="grid gap-5 sm:grid-cols-3">
             {STEPS.map((s) => (
@@ -240,10 +228,10 @@ export default function HomePage() {
         <section className="mx-auto max-w-3xl px-5 py-12">
           <div className="rounded-3xl border border-border bg-card p-8 text-center sm:p-10">
             <h2 className="font-heading text-2xl font-bold tracking-tight">
-              Bezpieczny najemca
+              Koniec z przypadkowymi najemcami
             </h2>
             <p className="mx-auto mt-3 max-w-lg text-muted-foreground">
-              Koniec z przypadkowymi najemcami.
+              Sprawdzamy...
             </p>
             <div className="mt-7 flex flex-wrap justify-center gap-3">
               {CHECKS.map((c) => (
@@ -266,11 +254,45 @@ export default function HomePage() {
           <p className="mx-auto mb-10 max-w-xl text-center text-muted-foreground">
             Nie znajdziemy Twojego wymarzonego najemcy? 100% zwrotu.
           </p>
-          <div className="grid items-start gap-5 sm:grid-cols-3">
+
+          {/* W kazdym wariancie dostajesz to samo */}
+          <div className="mx-auto mb-8 max-w-3xl rounded-3xl border border-border bg-card p-7 sm:p-9">
+            <h3 className="text-center font-heading text-lg font-semibold">
+              W każdym wariancie dostajesz
+            </h3>
+            <ul className="mx-auto mt-6 grid max-w-xl gap-3 sm:grid-cols-2">
+              {INCLUDED.map((f) => (
+                <li
+                  key={f}
+                  className="flex items-start gap-2.5 text-sm font-medium text-foreground"
+                >
+                  <svg
+                    className="mt-0.5 h-5 w-5 shrink-0 text-brand"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                    aria-hidden="true"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M16.7 5.3a1 1 0 010 1.4l-7.5 7.5a1 1 0 01-1.4 0L3.3 9.7a1 1 0 011.4-1.4l3.3 3.3 6.8-6.8a1 1 0 011.4 0z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                  {f}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* 3 warianty cenowe — rozni sie tylko termin */}
+          <p className="mb-5 text-center text-sm font-medium text-muted-foreground">
+            Wybierz, jak szybko chcesz mieć najemcę:
+          </p>
+          <div className="grid items-stretch gap-5 sm:grid-cols-3">
             {PLANS.map((p) => (
               <div
                 key={p.name}
-                className={`relative flex flex-col rounded-2xl border bg-card p-7 ${
+                className={`relative flex flex-col items-center rounded-2xl border bg-card p-7 text-center ${
                   p.featured
                     ? "border-brand shadow-lg shadow-brand/10 sm:-mt-3 sm:pb-9"
                     : "border-border"
@@ -285,34 +307,12 @@ export default function HomePage() {
                 <div className="mt-2 font-heading text-3xl font-extrabold">
                   {p.price}
                 </div>
-                <div className="mt-1 text-xs font-medium text-brand">
+                <div className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-brand-soft px-3 py-1 text-xs font-semibold text-brand">
                   {p.term}
                 </div>
-                <ul className="mt-5 flex flex-1 flex-col gap-2.5">
-                  {p.features.map((f) => (
-                    <li
-                      key={f}
-                      className="flex items-start gap-2 text-sm text-muted-foreground"
-                    >
-                      <svg
-                        className="mt-0.5 h-4 w-4 shrink-0 text-brand"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
-                        aria-hidden="true"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M16.7 5.3a1 1 0 010 1.4l-7.5 7.5a1 1 0 01-1.4 0L3.3 9.7a1 1 0 011.4-1.4l3.3 3.3 6.8-6.8a1 1 0 011.4 0z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                      {f}
-                    </li>
-                  ))}
-                </ul>
                 <a
                   href={p.href}
-                  className={`mt-7 inline-block rounded-full px-6 py-3 text-center text-sm font-semibold transition-opacity hover:opacity-90 ${
+                  className={`mt-7 inline-block w-full rounded-full px-6 py-3 text-center text-sm font-semibold transition-opacity hover:opacity-90 ${
                     p.featured
                       ? "bg-primary text-primary-foreground"
                       : "bg-brand-soft text-brand"
@@ -324,32 +324,17 @@ export default function HomePage() {
             ))}
           </div>
 
-          {/* Dodatek 360 */}
-          <div className="mx-auto mt-6 flex max-w-2xl flex-col items-center gap-2 rounded-2xl border border-dashed border-border bg-card px-6 py-5 text-center sm:flex-row sm:justify-between sm:text-left">
-            <div>
-              <div className="font-heading text-sm font-semibold">
-                Profesjonalny spacer 360°
-              </div>
-              <p className="text-sm text-muted-foreground">
-                Przyjeżdżamy i robimy wirtualny spacer za Ciebie. Dodatek do
-                dowolnego pakietu.
-              </p>
-            </div>
-            <span className="shrink-0 rounded-full bg-brand-soft px-4 py-2 text-sm font-semibold text-brand">
-              +1000 zł
-            </span>
-          </div>
         </section>
 
         {/* Gwarancja */}
         <section className="mx-auto max-w-3xl px-5 py-12">
           <div className="rounded-3xl border border-brand/20 bg-brand-soft p-8 text-center sm:p-12">
             <h2 className="font-heading text-2xl font-bold tracking-tight text-brand">
-              Gwarancja zwrotu
+              Gwarancja zwrotu 100%
             </h2>
             <p className="mx-auto mt-3 max-w-lg text-muted-foreground">
               Jeśli nie znajdziemy najemcy w ustalonym terminie, oddajemy 100%
-              opłaty. Zero ryzyka po Twojej stronie.
+              opłaty.
             </p>
           </div>
         </section>
@@ -359,23 +344,13 @@ export default function HomePage() {
           <h2 className="mb-8 text-center font-heading text-2xl font-bold tracking-tight">
             Najczęstsze pytania
           </h2>
-          <div className="flex flex-col gap-4">
-            {FAQ.map((f) => (
-              <div
-                key={f.q}
-                className="rounded-2xl border border-border bg-card p-6"
-              >
-                <h3 className="font-heading font-semibold">{f.q}</h3>
-                <p className="mt-2 text-sm text-muted-foreground">{f.a}</p>
-              </div>
-            ))}
-          </div>
+          <FaqAccordion items={FAQ} />
           <div className="mt-10 text-center">
             <Link
               href="/login?mode=signup"
               className="inline-block rounded-full bg-primary px-8 py-3.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
             >
-              Zacznij teraz
+              Ok! Zaczynamy!
             </Link>
           </div>
         </section>
